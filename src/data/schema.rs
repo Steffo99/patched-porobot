@@ -41,7 +41,7 @@ pub struct Card {
     /// Localized name of the card.
     name: String,
     /// Unique seven-character identifier of the card.
-    card_code: [char; 7],
+    card_code: String,
 
     /// List of keywords of this card, with their localized names.
     keywords: Vec<String>,
