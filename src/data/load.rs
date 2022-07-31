@@ -34,7 +34,7 @@ fn load_file_and_warn(path: PathBuf) -> Vec<Card> {
 }
 
 
-/// Load all possible data files.
+/// Create a [Vec] of all cards contained in the data files.
 pub fn load_files() -> Vec<Card> {
     glob("./data/*/en_us/data/*.json")
         .unwrap()
