@@ -140,7 +140,8 @@ pub enum SpellSpeed {
 
     Slow,
     Fast,
-    Focus,
+
+    /// Both Focus and Burst cards have `Burst` speed; to disambiguate between the two, check for the `Focus` keyword.
     Burst,
 }
 
@@ -161,4 +162,6 @@ pub enum CardSet {
     BeyondTheBandlewood,
     #[serde(rename = "Set6")]
     Worldwalker,
+    #[serde(rename = "SetEvent")]
+    Events,
 }
