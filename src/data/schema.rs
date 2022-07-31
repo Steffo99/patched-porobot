@@ -1,7 +1,7 @@
 /// A single Legends of Runeterra card as represented in the data files from [Data Dragon](https://developer.riotgames.com/docs/lor).
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 #[serde(rename_all="camelCase")]
-struct Card {
+pub struct Card {
     /// Localized names of the cards associated with this one.
     /// For some reason, might not match what is contained in `associated_card_refs`.
     associated_cards: Vec<String>,
@@ -78,7 +78,7 @@ struct Card {
 /// An art asset associated with a given card.
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 #[serde(rename_all="camelCase")]
-struct Asset {
+pub struct Asset {
     /// URL to the card art as it is displayed in-game.
     game_absolute_path: String,
     /// URL to the full-size card art as it is displayed when the card is inspected.
@@ -89,7 +89,7 @@ struct Asset {
 /// Possible card types.
 #[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-enum CardType {
+pub enum CardType {
     /// A spell.
     Spell,
     /// An unit: either a minion, or a champion.
@@ -105,7 +105,7 @@ enum CardType {
 /// Possible card supertypes.
 #[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-enum CardSupertype {
+pub enum CardSupertype {
     #[serde(alias = "")]
     None,
 
@@ -116,7 +116,7 @@ enum CardSupertype {
 /// Possible card rarities.
 #[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-enum CardRarity {
+pub enum CardRarity {
     #[serde(alias = "NONE")]
     None,
     #[serde(alias = "COMMON")]
@@ -133,7 +133,7 @@ enum CardRarity {
 /// Possible spell speeds.
 #[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-enum SpellSpeed {
+pub enum SpellSpeed {
     /// Non-spell cards have this speed.
     #[serde(alias = "")]
     None,
@@ -148,7 +148,7 @@ enum SpellSpeed {
 /// Release sets [Card]s may belong to.
 #[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-enum CardSet {
+pub enum CardSet {
     #[serde(rename = "Set1")]
     Foundations,
     #[serde(rename = "Set2")]
