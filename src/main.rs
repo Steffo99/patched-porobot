@@ -8,6 +8,10 @@ mod data;
 #[tokio::main]
 async fn main() {
     pretty_env_logger::init();
+
+    let data = data::load::load_files();
+    debug!("{:?}", data);
+
     info!("patched-porobot is starting...");
 
     let bot = Bot::from_env().auto_send();
