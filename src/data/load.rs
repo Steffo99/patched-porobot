@@ -1,5 +1,6 @@
 //! This module contains functions to load **Set Bundles** from [Data Dragon](https://developer.riotgames.com/docs/lol).
 
+use log::*;
 use itertools::Itertools;
 use crate::data::schema::Card;
 
@@ -13,6 +14,7 @@ enum LoadingError {
 
 /// Load a single Set Bundle and create a [Vec] with the cards contained in it.
 fn load_setbundle(path: std::path::PathBuf) -> Result<Vec<Card>, LoadingError> {
+    debug!("Loading Set Bundle {:?}", &path);
     let file = std::fs::File::open(path)
         .map_err(LoadingError::IO)?;
     let data = serde_json::de::from_reader::<std::fs::File, Vec<Card>>(file)

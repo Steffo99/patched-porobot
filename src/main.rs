@@ -1,52 +1,96 @@
 #[macro_use] extern crate tantivy;
-#[macro_use] extern crate log;
 
 use teloxide::prelude::*;
 use teloxide::types::*;
 use log::*;
-use tantivy::{IndexReader, ReloadPolicy};
+use reqwest::Url;
+use itertools::Itertools;
 
 mod data;
 mod search;
 
 
+/// Run the bot.
 #[tokio::main]
 async fn main() {
     pretty_env_logger::init();
 
     debug!("Loading Set Bundles...");
-    let cards = data::load::load_setbundles_infallible("./data/*/en_us/data/*-en_us.json");
+    let cards = data::load::load_setbundles_infallible("./data/*/en_us/data/set*-en_us.json");
+    debug!("Loaded {} cards!", &cards.len());
 
-    debug!("Creating Tantivy index...");
+    debug!("Creating Card index...");
     let card_index = search::index::build_card_index();
+    debug!("Card index created successfully!");
 
-    debug!("Writing cards to the index...");
+    debug!("Creating Card hashmap...");
+    let card_map = data::map::build_card_code_hashmap(&cards);
+    debug!("Card hashmap contains {} cards!", &card_map.len());
+
+    debug!("Writing Cards to the Card index...");
     search::index::write_cards_to_index(&card_index, &cards);
+    debug!("Wrote Cards to the Card index!");
 
-    debug!("Creating Tantivy reader...");
+    debug!("Creating Card query parser...");
+    let card_query_parser = search::query::build_query_parser(&card_index);
+    debug!("Created Card query parser!");
+
+    debug!("Creating Card reader...");
     let card_reader = search::index::build_reader(&card_index);
+    debug!("Created Card reader!");
 
-    let inline_query_closure = |query: InlineQuery, bot: AutoSend<Bot>| async move {
-        bot.answer_inline_query(&query.id, handle_query(&query, &card_reader)).await;
-        respond(())
-    };
-
-    info!("patched-porobot is starting...");
-
+    debug!("Creating Telegram Bot with parameters from the environment...");
     let bot = Bot::from_env().auto_send();
+    let bot_me = bot.get_me().await.expect("Telegram Bot parameters to be valid");
+    debug!("Created Telegram Bot @{}!", &bot_me.username.as_ref().unwrap());
 
-    let handler = Update::filter_inline_query().branch(dptree::endpoint(inline_query_closure));
+    let handler = Update::filter_inline_query().branch(dptree::endpoint(move |query: InlineQuery, bot: AutoSend<Bot>| {
+        let card_schema = card_index.schema();
+        let card_query_parser = &card_query_parser;
+        let card_reader = &card_reader;
+        let card_map = &card_map;
+
+        let results = search::query::search_card(
+            &card_schema,
+            &card_query_parser,
+            &card_reader,
+            &card_map,
+            &query.query
+        );
+
+        async move {
+            let reply = results.iter()
+                /*
+                .map(|card| InlineQueryResult::Photo(InlineQueryResultPhoto {
+                    id: card.card_code.to_owned(),
+                    title: Some(card.name.to_owned()),
+                    description: Some(card.description_raw.to_owned()),
+                    caption: Some(card.description_raw.to_owned()),
+                    photo_url: Url::parse( & card.assets.get(0).expect("card to have assets").game_absolute_path).expect("card to have a valid asset URL"),
+                    thumb_url: Url::parse( & card.assets.get(0).expect("card to have assets").full_absolute_path).expect("card to have a valid asset URL"),
+                    photo_width: None,
+                    photo_height: None,
+                    parse_mode: None,
+                    caption_entities: None,
+                    reply_markup: None,
+                    input_message_content: None,
+                }))
+                */
+                .map(|card| InlineQueryResult::Article(InlineQueryResultArticle::new(
+                    card.card_code.to_owned(),
+                    card.name.to_owned(),
+                    InputMessageContent::Text(InputMessageContentText::new(
+                        format!("<b>{}<b>\n\n{}", &card.name, &card.description_raw)
+                    ))
+                )))
+                .collect_vec();
+
+            if let Err(e) = bot.answer_inline_query(&query.id, reply).send().await {
+                error!("{:?}", e);
+            };
+            respond(())
+        }
+    }));
 
     Dispatcher::builder(bot, handler).enable_ctrlc_handler().build().dispatch().await;
-}
-
-
-/// Handle a [InlineQuery] incoming from Telegram.
-fn handle_query(query: &InlineQuery, reader: &IndexReader) -> Vec<InlineQueryResult> {
-    debug!("Creating Tantivy searcher...");
-    let card_searcher = reader.searcher();
-
-    let result = InlineQueryResult::Article(InlineQueryResultArticle::new("test", "Test", InputMessageContent::Text(InputMessageContentText::new("Qui è dove metterei la mia carta, se solo ne avessi una!"))));
-
-    vec![result]
 }
