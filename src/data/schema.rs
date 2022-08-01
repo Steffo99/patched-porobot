@@ -61,7 +61,7 @@ pub struct Card {
     /// The subtypes the card has, such as `PORO`.
     pub subtypes: Vec<String>,
     /// The [CardSupertype] the card belongs to, such as `Champion`.
-    pub supertype: CardSupertype,
+    pub supertype: String,
 
     /// If `true`, the card can be found in chests, crafted, or used in decks.
     /// If `false`, the card is not available for direct use, as it is probably created by another card.
@@ -101,17 +101,6 @@ pub enum CardType {
     Landmark,
     /// A trap or boon.
     Trap,
-}
-
-
-/// Possible card supertypes.
-#[non_exhaustive]
-#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
-pub enum CardSupertype {
-    #[serde(alias = "")]
-    None,
-
-    Champion,
 }
 
 

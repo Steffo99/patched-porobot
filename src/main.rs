@@ -1,13 +1,11 @@
 #[macro_use] extern crate tantivy;
 
 use teloxide::prelude::*;
-use teloxide::types::*;
 use log::*;
-use reqwest::Url;
-use itertools::Itertools;
 
 mod data;
 mod search;
+mod telegram;
 
 
 /// Run the bot.
@@ -60,30 +58,7 @@ async fn main() {
 
         async move {
             let reply = results.iter()
-                /*
-                .map(|card| InlineQueryResult::Photo(InlineQueryResultPhoto {
-                    id: card.card_code.to_owned(),
-                    title: Some(card.name.to_owned()),
-                    description: Some(card.description_raw.to_owned()),
-                    caption: Some(card.description_raw.to_owned()),
-                    photo_url: Url::parse( & card.assets.get(0).expect("card to have assets").game_absolute_path).expect("card to have a valid asset URL"),
-                    thumb_url: Url::parse( & card.assets.get(0).expect("card to have assets").full_absolute_path).expect("card to have a valid asset URL"),
-                    photo_width: None,
-                    photo_height: None,
-                    parse_mode: None,
-                    caption_entities: None,
-                    reply_markup: None,
-                    input_message_content: None,
-                }))
-                */
-                .map(|card| InlineQueryResult::Article(InlineQueryResultArticle::new(
-                    card.card_code.to_owned(),
-                    card.name.to_owned(),
-                    InputMessageContent::Text(InputMessageContentText::new(
-                        format!("<b>{}<b>\n\n{}", &card.name, &card.description_raw)
-                    ))
-                )))
-                .collect_vec();
+                .map(telegram::result::create_inlinequeryresult);
 
             if let Err(e) = bot.answer_inline_query(&query.id, reply).send().await {
                 error!("{:?}", e);
