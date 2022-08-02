@@ -139,7 +139,7 @@ pub enum CardType {
     /// A spell.
     Spell,
     /// An unit: either a minion, or a champion.
-    /// Champions have their `supertype` set to `Champion`.
+    /// Champions have their `supertype` set to `Champion`, and their `rarity` set to `Champion` as well.
     Unit,
     /// An ability triggered by an unit.
     Ability,
@@ -154,20 +154,28 @@ pub enum CardType {
 }
 
 
-/// Possible card rarities.
-#[non_exhaustive]
+/// A possible card rarity.
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardRarity {
+    /// The card has no rarity, as it probably is not collectible.
     #[serde(alias = "NONE")]
     None,
+    /// A common card.
     #[serde(alias = "COMMON")]
     Common,
+    /// A rare card.
     #[serde(alias = "RARE")]
     Rare,
+    /// An epic card.
     #[serde(alias = "EPIC")]
     Epic,
+    /// A champion.
     #[serde(alias = "CHAMPION")]
     Champion,
+
+    /// Unsupported card rarity.
+    #[serde(other)]
+    Unsupported,
 }
 
 
