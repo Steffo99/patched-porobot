@@ -1,11 +1,11 @@
+use std::collections::HashMap;
+
 /// A single Legends of Runeterra card as represented in the data files from [Data Dragon](https://developer.riotgames.com/docs/lor).
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 #[serde(rename_all="camelCase")]
 pub struct Card {
-    /// Localized names of the cards associated with this one.
-    /// For some reason, might not match what is contained in `associated_card_refs`.
-    pub associated_cards: Vec<String>,
-    /// `card_code`s of the cards associated with this one.
+    /// Codes of other cards associated with this one.
+    /// To access
     pub associated_card_refs: Vec<String>,
 
     /// Art assets of this card.
@@ -72,6 +72,14 @@ pub struct Card {
 
     #[serde(rename(serialize = "type", deserialize = "type"))]
     pub card_type: CardType,
+}
+
+
+impl Card {
+    /// Get references to the cards associated with this one, given an hashmap of all cards.
+    pub fn associated_cards<'c, 'hm: 'c>(&'c self, hashmap: &'hm HashMap<String, Card>) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
+        self.associated_card_refs.iter().map(|r| hashmap.get(r))
+    }
 }
 
 
