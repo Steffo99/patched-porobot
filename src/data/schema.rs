@@ -86,7 +86,7 @@ impl Card {
 }
 
 
-/// Regions to which cards can belong to.
+/// A region to which cards can belong to.
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardRegion {
     /// Noxus.
