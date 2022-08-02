@@ -133,8 +133,7 @@ pub struct Asset {
 }
 
 
-/// Possible card types.
-#[non_exhaustive]
+/// A possible card type.
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardType {
     /// A spell.
@@ -148,6 +147,10 @@ pub enum CardType {
     Landmark,
     /// A trap or boon.
     Trap,
+
+    /// Unsupported card type.
+    #[serde(other)]
+    Unsupported,
 }
 
 
