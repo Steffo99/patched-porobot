@@ -1,7 +1,7 @@
 //! Module defining [CardArt].
 
 /// An art asset associated with a [Card].
-#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
     /// URL to the `.png` image of the rendered card.
     ///
@@ -50,5 +50,33 @@ impl CardArt {
         self.full_png
             .replace("https://dd.b.pvp.net/latest/set1", "https://poro.steffo.eu/set1-en_us")
             .replace(".png", ".jpg")
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::CardArt;
+
+    #[test]
+    fn deserialize() {
+        assert_eq!(
+            serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png, "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(),
+            CardArt {
+                card_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png",
+                full_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
+            }
+        );
+    }
+
+    #[test]
+    fn png_to_jpg() {
+        let art = CardArt {
+            card_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png",
+            full_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
+        };
+
+        assert_eq!(art.card_jpg(), "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg");
+        assert_eq!(art.full_jpg(), "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg");
     }
 }

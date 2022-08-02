@@ -10,7 +10,7 @@ use super::rarity::CardRarity;
 use super::speed::SpellSpeed;
 
 /// A single Legends of Runeterra card as represented in the data files from [Data Dragon](https://developer.riotgames.com/docs/lor).
-#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct Card {
     /// Unique seven-character identifier of the card.

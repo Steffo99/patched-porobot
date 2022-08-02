@@ -4,7 +4,7 @@
 ///
 /// Since more keywords will probably be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
 #[non_exhaustive]
-#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum CardKeyword {
     /// Overwhelm on spells.
     ///
@@ -330,4 +330,90 @@ pub enum CardKeyword {
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::CardKeyword;
+
+    macro_rules! test_deserialization {
+        ( $id:ident, $src:literal, $res:expr ) => {
+            #[test]
+            fn $id() {
+                assert_eq!(serde_json::de::from_str::<'static, CardKeyword>($src).unwrap(), $res);
+            }
+        }
+    }
+
+    test_deserialization!(deserialize_spelloverwhelm, "SpellOverwhelm", CardKeyword::SpellOverwhelm);
+    test_deserialization!(deserialize_burst, "Burst", CardKeyword::Burst);
+    test_deserialization!(deserialize_countdown, "Countdown", CardKeyword::Countdown);
+    test_deserialization!(deserialize_onplay, "PlaySkillMark", CardKeyword::OnPlay);
+    test_deserialization!(deserialize_landmark, "LandmarkVisualOnly", CardKeyword::Landmark);
+    test_deserialization!(deserialize_shurima, "Shurima", CardKeyword::Shurima);
+    test_deserialization!(deserialize_attach, "Attach", CardKeyword::Attach);
+    test_deserialization!(deserialize_noxus, "Noxus", CardKeyword::Noxus);
+    test_deserialization!(deserialize_fleeting, "Fleeting", CardKeyword::Fleeting);
+    test_deserialization!(deserialize_clobbernoemptyslotrequirement, "ClobberNoEmptySlotRequirement", CardKeyword::ClobberNoEmptySlotRequirement);
+    test_deserialization!(deserialize_nab, "Nab", CardKeyword::Nab);
+    test_deserialization!(deserialize_focus, "Focus", CardKeyword::Focus);
+    test_deserialization!(deserialize_enlightened, "Enlightened", CardKeyword::Enlightened);
+    test_deserialization!(deserialize_invoke, "Invoke", CardKeyword::Invoke);
+    test_deserialization!(deserialize_boon, "Boon", CardKeyword::Boon);
+    test_deserialization!(deserialize_trap, "Autoplay", CardKeyword::Trap);
+    test_deserialization!(deserialize_drain, "Drain", CardKeyword::Drain);
+    test_deserialization!(deserialize_lastbreath, "LastBreath", CardKeyword::LastBreath);
+    test_deserialization!(deserialize_demacia, "Demacia", CardKeyword::Demacia);
+    test_deserialization!(deserialize_bandlecity, "BandleCity", CardKeyword::BandleCity);
+    test_deserialization!(deserialize_fast, "Fast", CardKeyword::Fast);
+    test_deserialization!(deserialize_bilgewater, "Bilgewater", CardKeyword::Bilgewater);
+    test_deserialization!(deserialize_runeterra, "Runeterra", CardKeyword::Runeterra);
+    test_deserialization!(deserialize_recall, "Recall", CardKeyword::Recall);
+    test_deserialization!(deserialize_weakest, "Weakest", CardKeyword::Weakest);
+    test_deserialization!(deserialize_support, "Support", CardKeyword::Support);
+    test_deserialization!(deserialize_slow, "Slow", CardKeyword::Slow);
+    test_deserialization!(deserialize_obliterate, "Obliterate", CardKeyword::Obliterate);
+    test_deserialization!(deserialize_imbue, "Imbue", CardKeyword::Imbue);
+    test_deserialization!(deserialize_targon, "MtTargon", CardKeyword::Targon);
+    test_deserialization!(deserialize_shadowisles, "ShadowIsles", CardKeyword::ShadowIsles);
+    test_deserialization!(deserialize_auravisualfakekeyword, "AuraVisualFakeKeyword", CardKeyword::AuraVisualFakeKeyword);
+    test_deserialization!(deserialize_ionia, "Ionia", CardKeyword::Ionia);
+    test_deserialization!(deserialize_nightfall, "Nightfall", CardKeyword::Nightfall);
+    test_deserialization!(deserialize_piltoverzaun, "PiltoverZaun", CardKeyword::PiltoverZaun);
+    test_deserialization!(deserialize_attune, "Attune", CardKeyword::Attune);
+    test_deserialization!(deserialize_daybreak, "Daybreak", CardKeyword::Daybreak);
+    test_deserialization!(deserialize_silenceindividualkeyword, "SilenceIndividualKeyword", CardKeyword::SilenceIndividualKeyword);
+    test_deserialization!(deserialize_skill, "Skill", CardKeyword::Skill);
+    test_deserialization!(deserialize_plunder, "Plunder", CardKeyword::Plunder);
+    test_deserialization!(deserialize_doubleattack, "DoubleAttack", CardKeyword::DoubleAttack);
+    test_deserialization!(deserialize_vulnerable, "Vulnerable", CardKeyword::Vulnerable);
+    test_deserialization!(deserialize_elusive, "Elusive", CardKeyword::Elusive);
+    test_deserialization!(deserialize_stun, "Stun", CardKeyword::Stun);
+    test_deserialization!(deserialize_fated, "Fated", CardKeyword::Fated);
+    test_deserialization!(deserialize_blockelusive, "BlockElusive", CardKeyword::BlockElusive);
+    test_deserialization!(deserialize_fury, "Fury", CardKeyword::Fury);
+    test_deserialization!(deserialize_barrier, "Barrier", CardKeyword::Barrier);
+    test_deserialization!(deserialize_immobile, "Immobile", CardKeyword::Immobile);
+    test_deserialization!(deserialize_hallowed, "Hallowed", CardKeyword::Hallowed);
+    test_deserialization!(deserialize_evolve, "Evolve", CardKeyword::Evolve);
+    test_deserialization!(deserialize_frostbite, "Frostbite", CardKeyword::Frostbite);
+    test_deserialization!(deserialize_overwhelm, "Overwhelm", CardKeyword::Overwhelm);
+    test_deserialization!(deserialize_quickattack, "QuickStrike", CardKeyword::QuickAttack);
+    test_deserialization!(deserialize_tough, "Tough", CardKeyword::Tough);
+    test_deserialization!(deserialize_regeneration, "Regeneration", CardKeyword::Regeneration);
+    test_deserialization!(deserialize_silenced, "Silenced", CardKeyword::Silenced);
+    test_deserialization!(deserialize_spellshield, "SpellShield", CardKeyword::SpellShield);
+    test_deserialization!(deserialize_lifesteal, "Lifesteal", CardKeyword::Lifesteal);
+    test_deserialization!(deserialize_augment, "Augment", CardKeyword::Augment);
+    test_deserialization!(deserialize_impact, "Impact", CardKeyword::Impact);
+    test_deserialization!(deserialize_scout, "Scout", CardKeyword::Scout);
+    test_deserialization!(deserialize_ephemeral, Ephemeral, CardKeyword::Ephemeral);
+    test_deserialization!(deserialize_lurk, Lurker, CardKeyword::Lurk);
+    test_deserialization!(deserialize_formidable, Formidable, CardKeyword::Formidable);
+    test_deserialization!(deserialize_challenger, Challenger, CardKeyword::Challenger);
+    test_deserialization!(deserialize_fearsome, Fearsome, CardKeyword::Fearsome);
+    test_deserialization!(deserialize_cantblock, CantBlock, CardKeyword::CantBlock);
+    test_deserialization!(deserialize_deep, Deep, CardKeyword::Deep);
+    test_deserialization!(deserialize_unsupported, Unsupported, CardKeyword::Unsupported);
 }
