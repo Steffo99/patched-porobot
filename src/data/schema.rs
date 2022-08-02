@@ -18,11 +18,11 @@ pub struct Card {
     pub regions: Vec<CardRegion>,
 
     /// Base attack of the card.
-    pub attack: i64,
+    pub attack: u64,
     /// Base cost of the card.
-    pub cost: i8,
+    pub cost: u64,
     /// Base health of the card.
-    pub health: i8,
+    pub health: u64,
 
     /// Localized description of the card, in XML.
     pub description: String,
