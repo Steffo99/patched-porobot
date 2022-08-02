@@ -87,25 +87,40 @@ impl Card {
 
 
 /// Regions to which cards can belong to.
-#[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardRegion {
+    /// Noxus.
     Noxus,
+    /// Demacia.
     Demacia,
+    /// Freljord.
     Freljord,
+    /// Shadow Isles.
     ShadowIsles,
+    /// Targon.
     Targon,
+    /// Ionia.
     Ionia,
+    /// Shurima.
     Shurima,
+    /// Piltover & Zaun.
     PiltoverZaun,
+    /// Bandle City.
     BandleCity,
 
-    // I'm not sure what this region is for.
+    /// Runeterra.
     Runeterra,
 
+    /// Origin: The Virtuoso.
     Jhin,
+    /// Origin: Agony's Embrace.
     Evelynn,
+    /// Origin: The Wandering Caretaker.
     Bard,
+
+    /// Unsupported region.
+    #[serde(other)]
+    Unsupported,
 }
 
 
