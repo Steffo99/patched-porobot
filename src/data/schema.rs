@@ -13,13 +13,12 @@ pub struct Card {
     /// Art assets of this card.
     pub assets: Vec<Asset>,
 
-    /// Localized names of the regions this card belongs to.
-    pub regions: Vec<String>,
-    /// IDs of the regions this card belongs to.
-    pub region_refs: Vec<String>,
+    /// Regions this card belongs to.
+    #[serde(rename = "region_refs")]
+    pub regions: Vec<CardRegion>,
 
     /// Base attack of the card.
-    pub attack: i8,
+    pub attack: i64,
     /// Base cost of the card.
     pub cost: i8,
     /// Base health of the card.
@@ -82,6 +81,29 @@ impl Card {
     pub fn associated_cards<'c, 'hm: 'c>(&'c self, hashmap: &'hm HashMap<String, Card>) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
         self.associated_card_codes.iter().map(|r| hashmap.get(r))
     }
+}
+
+
+/// Regions to which cards can belong to.
+#[non_exhaustive]
+#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
+pub enum CardRegion {
+    Noxus,
+    Demacia,
+    Freljord,
+    ShadowIsles,
+    Targon,
+    Ionia,
+    Shurima,
+    PiltoverZaun,
+    BandleCity,
+
+    // I'm not sure what this region is for.
+    Runeterra,
+
+    Jhin,
+    Evelynn,
+    Bard,
 }
 
 
