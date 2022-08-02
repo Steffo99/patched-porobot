@@ -5,8 +5,10 @@ use std::collections::HashMap;
 #[serde(rename_all="camelCase")]
 pub struct Card {
     /// Codes of other cards associated with this one.
-    /// To access
-    pub associated_card_refs: Vec<String>,
+    ///
+    /// To access references to the cards themselves, use [associated_cards].
+    #[serde(rename = "associated_card_refs")]
+    pub associated_card_codes: Vec<String>,
 
     /// Art assets of this card.
     pub assets: Vec<Asset>,
@@ -78,7 +80,7 @@ pub struct Card {
 impl Card {
     /// Get references to the cards associated with this one, given an hashmap of all cards.
     pub fn associated_cards<'c, 'hm: 'c>(&'c self, hashmap: &'hm HashMap<String, Card>) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
-        self.associated_card_refs.iter().map(|r| hashmap.get(r))
+        self.associated_card_codes.iter().map(|r| hashmap.get(r))
     }
 }
 
