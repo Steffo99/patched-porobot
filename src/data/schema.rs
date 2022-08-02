@@ -4,6 +4,7 @@ use std::collections::HashMap;
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 #[serde(rename_all="camelCase")]
 pub struct Card {
+
     /// Codes of other cards associated with this one.
     ///
     /// To access references to the cards themselves, use [associated_cards].
@@ -42,7 +43,8 @@ pub struct Card {
     /// Localized name of the card.
     pub name: String,
     /// Unique seven-character identifier of the card.
-    pub card_code: String,
+    #[serde(rename = "card_code")]
+    pub code: String,
 
     /// List of keywords of this card, with their localized names.
     pub keywords: Vec<String>,
