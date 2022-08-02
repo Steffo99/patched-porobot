@@ -51,15 +51,13 @@ pub struct Card {
     /// List of keywords of this card, with their internal names.
     pub keyword_refs: Vec<String>,
 
-    /// Localized spell speed.
-    pub spell_speed: String,
     /// [SpellSpeed] of the card.
-    pub spell_speed_ref: SpellSpeed,
+    #[serde(rename = "spell_speed_ref")]
+    pub spell_speed: SpellSpeed,
 
-    /// Localized rarity of the card.
-    pub rarity: String,
     /// [CardRarity] of the card.
-    pub rarity_ref: CardRarity,
+    #[serde(rename = "rarity_ref")]
+    pub rarity: CardRarity,
 
     /// The subtypes the card has, such as `PORO`.
     pub subtypes: Vec<String>,
