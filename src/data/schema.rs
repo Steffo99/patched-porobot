@@ -85,6 +85,7 @@ impl Card {
 
 
 /// A region to which cards can belong to.
+#[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardRegion {
     /// Noxus.
@@ -134,6 +135,7 @@ pub struct Asset {
 
 
 /// A possible card type.
+#[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardType {
     /// A spell.
@@ -155,6 +157,7 @@ pub enum CardType {
 
 
 /// A possible card rarity.
+#[non_exhaustive]
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum CardRarity {
     /// The card has no rarity, as it probably is not collectible.
