@@ -16,7 +16,7 @@ use super::speed::SpellSpeed;
 #[serde(rename_all="camelCase")]
 pub struct Card {
     /// Unique seven-character identifier of the card.
-    #[serde(rename = "card_code")]
+    #[serde(rename = "cardCode")]
     pub code: String,
 
     /// Localized name of the card.
@@ -63,14 +63,15 @@ pub struct Card {
     pub health: u64,
 
     /// [SpellSpeed] of the card.
-    #[serde(rename = "spell_speed_ref")]
+    #[serde(rename = "spellSpeedRef")]
     pub spell_speed: SpellSpeed,
     /// Localized name of the [SpellSpeed] of the card.
     #[deprecated = "Only for re-serialization purposes, use spell_speed instead!"]
+    #[serde(rename = "spellSpeed")]
     pub spell_speed_localized: String,
 
     /// List of keywords of this card.
-    #[serde(rename="keyword_refs")]
+    #[serde(rename="keywordRefs")]
     pub keywords: Vec<CardKeyword>,
     /// Localized names of keywords of this card.
     #[deprecated = "Only for re-serialization purposes, use keywords instead!"]
@@ -133,10 +134,10 @@ impl Card {
 
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
     use super::Card;
     use super::super::art::CardArt;
-    use super::super::keyword::CardKeyword;
     use super::super::rarity::CardRarity;
     use super::super::region::CardRegion;
     use super::super::set::CardSet;
@@ -146,7 +147,7 @@ mod tests {
     #[test]
     fn deserialize_card() {
         assert_eq!(
-            serde_json::de::from_str(r#"
+            serde_json::de::from_str::<'static, Card>(r#"
             {
                 "associatedCards": [],
                 "associatedCardRefs": [
@@ -200,7 +201,6 @@ mod tests {
                 regions: vec![
                     CardRegion::Runeterra
                 ],
-                #[allow(deprecated)]
                 regions_localized: vec![
                     String::from("Runeterra")
                 ],
@@ -214,10 +214,8 @@ mod tests {
                 cost: 4u64,
                 health: 5u64,
                 spell_speed: SpellSpeed::None,
-                #[allow(deprecated)]
                 spell_speed_localized: String::from(""),
                 keywords: vec![],
-                #[allow(deprecated)]
                 keywords_localized: vec![],
                 description: String::from("<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk."),
                 description_raw: String::from("Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk."),

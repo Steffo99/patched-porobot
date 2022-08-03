@@ -28,34 +28,19 @@ pub enum CardType {
 #[cfg(test)]
 mod tests {
     use super::CardType;
-
-    #[test]
-    fn deserialize_spell() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Spell").unwrap(), CardType::Spell);
+    
+    macro_rules! test_deserialization {
+        ( $id:ident, $src:literal, $res:expr ) => {
+            #[test]
+            fn $id() {
+                assert_eq!(serde_json::de::from_str::<'static, CardType>($src).unwrap(), $res);
+            }
+        }
     }
 
-    #[test]
-    fn deserialize_unit() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Unit").unwrap(), CardType::Unit);
-    }
-
-    #[test]
-    fn deserialize_ability() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Ability").unwrap(), CardType::Ability);
-    }
-
-    #[test]
-    fn deserialize_landmark() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Landmark").unwrap(), CardType::Landmark);
-    }
-
-    #[test]
-    fn deserialize_trap() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Trap").unwrap(), CardType::Trap);
-    }
-
-    #[test]
-    fn deserialize_fallback() {
-        assert_eq!(serde_json::de::from_str::<'static, CardType>("Xyzzy").unwrap(), CardType::Unsupported);
-    }
+    test_deserialization!(deserialize_spell, r#""Spell""#, CardType::Spell);
+    test_deserialization!(deserialize_unit, r#""Unit""#, CardType::Unit);
+    test_deserialization!(deserialize_ability, r#""Ability""#, CardType::Ability);
+    test_deserialization!(deserialize_landmark, r#""Landmark""#, CardType::Landmark);
+    test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardType::Unsupported);
 }

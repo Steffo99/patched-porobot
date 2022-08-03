@@ -35,11 +35,11 @@ mod tests {
         }
     }
 
-    test_deserialization!(deserialize_none, "None", CardRarity::None);
-    test_deserialization!(deserialize_common, "COMMON", CardRarity::Common);
-    test_deserialization!(deserialize_rare, "RARE", CardRarity::Rare);
-    test_deserialization!(deserialize_epic, "EPIC", CardRarity::Epic);
-    test_deserialization!(deserialize_champion, "Champion", CardRarity::Champion);
+    test_deserialization!(deserialize_none, r#""None""#, CardRarity::None);
+    test_deserialization!(deserialize_common, r#""COMMON""#, CardRarity::Common);
+    test_deserialization!(deserialize_rare, r#""RARE""#, CardRarity::Rare);
+    test_deserialization!(deserialize_epic, r#""EPIC""#, CardRarity::Epic);
+    test_deserialization!(deserialize_champion, r#""Champion""#, CardRarity::Champion);
 
     #[test]
     fn deserialize_fallback() {

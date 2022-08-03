@@ -61,7 +61,7 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png, "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(),
+            serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png", "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(),
             CardArt {
                 card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
                 full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"),

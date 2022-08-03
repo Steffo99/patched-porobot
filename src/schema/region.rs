@@ -54,18 +54,18 @@ mod tests {
         }
     }
 
-    test_deserialization!(deserialize_noxus, "Noxus", CardRegion::Noxus);
-    test_deserialization!(deserialize_demacia, "Demacia", CardRegion::Demacia);
-    test_deserialization!(deserialize_freljord, "Freljord", CardRegion::Freljord);
-    test_deserialization!(deserialize_shadowisles, "ShadowIsles", CardRegion::ShadowIsles);
-    test_deserialization!(deserialize_targon, "Targon", CardRegion::Targon);
-    test_deserialization!(deserialize_ionia, "Ionia", CardRegion::Ionia);
-    test_deserialization!(deserialize_shurima, "Shurima", CardRegion::Shurima);
-    test_deserialization!(deserialize_piltoverzaun, "PiltoverZaun", CardRegion::PiltoverZaun);
-    test_deserialization!(deserialize_bandlecity, "BandleCity", CardRegion::BandleCity);
-    test_deserialization!(deserialize_runeterra, "Runeterra", CardRegion::Runeterra);
-    test_deserialization!(deserialize_jhin, "Jhin", CardRegion::Jhin);
-    test_deserialization!(deserialize_evelynn, "Evelynn", CardRegion::Evelynn);
-    test_deserialization!(deserialize_bard, "Bard", CardRegion::Bard);
-    test_deserialization!(deserialize_fallback, "Xyzzy", CardRegion::Unsupported);
+    test_deserialization!(deserialize_noxus, r#""Noxus""#, CardRegion::Noxus);
+    test_deserialization!(deserialize_demacia, r#""Demacia""#, CardRegion::Demacia);
+    test_deserialization!(deserialize_freljord, r#""Freljord""#, CardRegion::Freljord);
+    test_deserialization!(deserialize_shadowisles, r#""ShadowIsles""#, CardRegion::ShadowIsles);
+    test_deserialization!(deserialize_targon, r#""Targon""#, CardRegion::Targon);
+    test_deserialization!(deserialize_ionia, r#""Ionia""#, CardRegion::Ionia);
+    test_deserialization!(deserialize_shurima, r#""Shurima""#, CardRegion::Shurima);
+    test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardRegion::PiltoverZaun);
+    test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardRegion::BandleCity);
+    test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardRegion::Runeterra);
+    test_deserialization!(deserialize_jhin, r#""Jhin""#, CardRegion::Jhin);
+    test_deserialization!(deserialize_evelynn, r#""Evelynn""#, CardRegion::Evelynn);
+    test_deserialization!(deserialize_bard, r#""Bard""#, CardRegion::Bard);
+    test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardRegion::Unsupported);
 }

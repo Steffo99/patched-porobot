@@ -29,10 +29,10 @@ mod tests {
         }
     }
 
-    test_deserialization!(deserialize_none, "", SpellSpeed::None);
-    test_deserialization!(deserialize_slow, "Slow", SpellSpeed::Slow);
-    test_deserialization!(deserialize_fast, "Fast", SpellSpeed::Fast);
-    test_deserialization!(deserialize_burst, "Burst", SpellSpeed::Burst);
+    test_deserialization!(deserialize_none, r#""""#, SpellSpeed::None);
+    test_deserialization!(deserialize_slow, r#""Slow""#, SpellSpeed::Slow);
+    test_deserialization!(deserialize_fast, r#""Fast""#, SpellSpeed::Fast);
+    test_deserialization!(deserialize_burst, r#""Burst""#, SpellSpeed::Burst);
 
     #[test]
     fn deserialize_fallback() {

@@ -53,12 +53,12 @@ mod tests {
         }
     }
 
-    test_deserialization!(deserialize_set1, "Set1", CardSet::Foundations);
-    test_deserialization!(deserialize_set2, "Set2", CardSet::RisingTides);
-    test_deserialization!(deserialize_set3, "Set3", CardSet::CallOfTheMountain);
-    test_deserialization!(deserialize_set4, "Set4", CardSet::EmpiresOfTheAscended);
-    test_deserialization!(deserialize_set5, "Set5", CardSet::BeyondTheBandlewood);
-    test_deserialization!(deserialize_set6, "Set6", CardSet::Worldwalker);
-    test_deserialization!(deserialize_setevent, "SetEvent", CardSet::Events);
-    test_deserialization!(deserialize_fallback, "Xyzzy", CardSet::Unsupported);
+    test_deserialization!(deserialize_set1, r#""Set1""#, CardSet::Foundations);
+    test_deserialization!(deserialize_set2, r#""Set2""#, CardSet::RisingTides);
+    test_deserialization!(deserialize_set3, r#""Set3""#, CardSet::CallOfTheMountain);
+    test_deserialization!(deserialize_set4, r#""Set4""#, CardSet::EmpiresOfTheAscended);
+    test_deserialization!(deserialize_set5, r#""Set5""#, CardSet::BeyondTheBandlewood);
+    test_deserialization!(deserialize_set6, r#""Set6""#, CardSet::Worldwalker);
+    test_deserialization!(deserialize_setevent, r#""SetEvent""#, CardSet::Events);
+    test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardSet::Unsupported);
 }
