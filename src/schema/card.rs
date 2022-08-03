@@ -53,7 +53,7 @@ pub struct Card {
     ///
     /// Should always contain at least an element; may sometimes contain two or more.
     ///
-    /// To quickly access the first element, use [main_art].
+    /// To quickly access the first element, use [Card::main_art].
     #[serde(rename = "assets")]
     pub art: Vec<CardArt>,
 
@@ -96,12 +96,12 @@ pub struct Card {
     /// If the card has no level up text, contains an empty string.
     pub levelup_description_raw: String,
 
-    /// [Vec] with [code]s of other cards associated with this one.
+    /// [Vec] with [Card::code]s of other cards associated with this one.
     ///
-    /// To access references to the cards themselves, use [associated_cards].
+    /// To access references to the cards themselves, use [Card::associated_cards].
     #[serde(rename = "associatedCardRefs")]
     pub associated_card_codes: Vec<String>,
-    /// [Vec] with [name]s of other cards associated with this one.
+    /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
     /// Sometimes, it may be missing some references.
     #[deprecated = "Only for re-serialization purposes, use associated_card_codes instead!"]

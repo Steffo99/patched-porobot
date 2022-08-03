@@ -1,6 +1,6 @@
 //! Module defining [CardRarity].
 
-/// A possible card rarity.
+/// A possible [super::Card] rarity.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum CardRarity {
     /// The card has no rarity, as it probably is not collectible.

@@ -11,7 +11,7 @@ pub enum CardKeyword {
     /// > Inflicts damage beyond what would kill the target(s) to the enemy Nexus.
     SpellOverwhelm,
 
-    /// [SpellSpeed::Burst].
+    /// [super::SpellSpeed::Burst].
     ///
     /// > Can be played whenever you may act. Happens instantly and allows you to continue to play other cards.
     Burst,
@@ -27,7 +27,7 @@ pub enum CardKeyword {
     #[serde(rename = "PlaySkillMark")]
     OnPlay,
 
-    /// [CardType::Landmark].
+    /// [super::CardType::Landmark].
     ///
     /// > Landmarks take up a space on the board. They can't attack, block, or take damage.
     #[serde(rename = "LandmarkVisualOnly")]
@@ -57,7 +57,7 @@ pub enum CardKeyword {
 
     /// Focus.
     ///
-    /// Used to disambiguate between Burst and Focus with [SpellSpeed::Burst].
+    /// Used to disambiguate between Burst and Focus with [super::SpellSpeed::Burst].
     ///
     /// > Can be played outside combat or when no other spells or skills are pending. Happens instantly and allows you to continue to play other cards.
     Focus,
@@ -99,7 +99,7 @@ pub enum CardKeyword {
     /// ???
     BandleCity,
 
-    /// [SpellSpeed::Fast].
+    /// [super::SpellSpeed::Fast].
     ///
     /// > Can be played whenever you may act. Happens after your opponent has a chance to react.
     Fast,
