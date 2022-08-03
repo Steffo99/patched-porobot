@@ -63,8 +63,8 @@ mod tests {
         assert_eq!(
             serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png, "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(),
             CardArt {
-                card_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png",
-                full_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
+                card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
+                full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"),
             }
         );
     }
@@ -72,8 +72,8 @@ mod tests {
     #[test]
     fn png_to_jpg() {
         let art = CardArt {
-            card_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png",
-            full_png: "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
+            card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
+            full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"),
         };
 
         assert_eq!(art.card_jpg(), "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg");

@@ -1,5 +1,6 @@
 //! Module defining [Card].
 
+
 use std::collections::HashMap;
 use super::art::CardArt;
 use super::set::CardSet;
@@ -8,6 +9,7 @@ use super::region::CardRegion;
 use super::keyword::CardKeyword;
 use super::rarity::CardRarity;
 use super::speed::SpellSpeed;
+
 
 /// A single Legends of Runeterra card as represented in the data files from [Data Dragon](https://developer.riotgames.com/docs/lor).
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -95,6 +97,8 @@ pub struct Card {
     #[serde(rename = "associatedCardRefs")]
     pub associated_card_codes: Vec<String>,
     /// [Names](name) of other cards associated with this one.
+    ///
+    /// Sometimes, it may be missing some references.
     #[deprecated = "Only for re-serialization purposes, use associated_card_codes instead!"]
     #[serde(rename = "associatedCards")]
     pub associated_card_names_localized: Vec<String>,
@@ -124,5 +128,112 @@ impl Card {
     /// If the card has no associated [CardArt].
     pub fn main_art(&self) -> &CardArt {
         self.art.get(0).expect("card to have at least one art asset")
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::Card;
+    use super::super::art::CardArt;
+    use super::super::keyword::CardKeyword;
+    use super::super::rarity::CardRarity;
+    use super::super::region::CardRegion;
+    use super::super::set::CardSet;
+    use super::super::speed::SpellSpeed;
+    use super::super::r#type::CardType;
+
+    #[test]
+    fn deserialize_card() {
+        assert_eq!(
+            serde_json::de::from_str(r#"
+            {
+                "associatedCards": [],
+                "associatedCardRefs": [
+                  "06RU025T14",
+                  "06RU025T6",
+                  "06RU025T5"
+                ],
+                "assets": [
+                    {
+                        "gameAbsolutePath": "http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025.png",
+                        "fullAbsolutePath": "http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025-full.png"
+                    }
+                ],
+                "regions": [
+                    "Runeterra"
+                ],
+                "regionRefs": [
+                    "Runeterra"
+                ],
+                "attack": 0,
+                "cost": 4,
+                "health": 5,
+                "description": "<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk.",
+                "descriptionRaw": "Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk.",
+                "levelupDescription": "When you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
+                "levelupDescriptionRaw": "When you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
+                "flavorText": "The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began.",
+                "artistName": "Kudos Productions",
+                "name": "Evelynn",
+                "cardCode": "06RU025",
+                "keywords": [],
+                "keywordRefs": [],
+                "spellSpeed": "",
+                "spellSpeedRef": "",
+                "rarity": "Champion",
+                "rarityRef": "Champion",
+                "subtypes": [],
+                "supertype": "Champion",
+                "type": "Unit",
+                "collectible": true,
+                "set": "Set6"
+            }
+            "#).unwrap(),
+            Card {
+                code: String::from("06RU025"),
+                name: String::from("Evelynn"),
+                r#type: CardType::Unit,
+                set: CardSet::Worldwalker,
+                rarity: CardRarity::Champion,
+                collectible: true,
+                regions: vec![
+                    CardRegion::Runeterra
+                ],
+                #[allow(deprecated)]
+                regions_localized: vec![
+                    String::from("Runeterra")
+                ],
+                art: vec![
+                    CardArt {
+                        card_png: String::from("http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025.png"),
+                        full_png: String::from("http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025-full.png"),
+                    }
+                ],
+                attack: 0u64,
+                cost: 4u64,
+                health: 5u64,
+                spell_speed: SpellSpeed::None,
+                #[allow(deprecated)]
+                spell_speed_localized: String::from(""),
+                keywords: vec![],
+                #[allow(deprecated)]
+                keywords_localized: vec![],
+                description: String::from("<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk."),
+                description_raw: String::from("Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk."),
+                levelup_description: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
+                levelup_description_raw: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
+                associated_card_codes: vec![
+                    String::from("06RU025T14"),
+                    String::from("06RU025T6"),
+                    String::from("06RU025T5"),
+                ],
+                associated_card_names_localized: vec![],
+                flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),
+                artist_name: String::from("Kudos Productions"),
+                subtypes: vec![],
+                supertype: String::from("Champion"),
+            }
+        )
     }
 }
