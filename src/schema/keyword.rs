@@ -6,7 +6,7 @@
 #[non_exhaustive]
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum CardKeyword {
-    /// Overwhelm on spells.
+    /// Like [CardKeyword::Overwhelm], but on [super::CardType::Spell]s.
     ///
     /// > Inflicts damage beyond what would kill the target(s) to the enemy Nexus.
     SpellOverwhelm,

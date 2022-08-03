@@ -11,7 +11,9 @@ use super::rarity::CardRarity;
 use super::speed::SpellSpeed;
 
 
-/// A single Legends of Runeterra card as represented in the data files from [Data Dragon](https://developer.riotgames.com/docs/lor).
+/// A single Legends of Runeterra card.
+/// 
+/// The information is represented in a developer-friendly manner, but it can be serialized and deserialized via [serde] in the exact same format used in Data Dragon.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct Card {
@@ -23,6 +25,8 @@ pub struct Card {
     pub name: String,
 
     /// The [CardType] of the card.
+    /// 
+    /// The `r#` prefix is required by the Rust syntax, since `type` is a reserved keyword.
     #[serde(rename = "type")]
     pub r#type: CardType,
 
@@ -70,20 +74,20 @@ pub struct Card {
     #[serde(rename = "spellSpeed")]
     pub spell_speed_localized: String,
 
-    /// List of keywords of this card.
+    /// [Vec] of [CardKeyword]s of the card.
     #[serde(rename="keywordRefs")]
     pub keywords: Vec<CardKeyword>,
-    /// Localized names of keywords of this card.
+    /// [Vec] of localized names of [CardKeyword]s of the card.
     #[deprecated = "Only for re-serialization purposes, use keywords instead!"]
     #[serde(rename="keywords")]
     pub keywords_localized: Vec<String>,
 
-    /// Localized description of the card, in XML.
+    /// Localized description of the card, in pseudo-XML.
     pub description: String,
     /// Localized description of the card, in plain text.
     pub description_raw: String,
 
-    /// Localized level up text of the card, in XML.
+    /// Localized level up text of the card, in pseudo-XML.
     ///
     /// If the card has no level up text, contains an empty string.
     pub levelup_description: String,
@@ -92,12 +96,12 @@ pub struct Card {
     /// If the card has no level up text, contains an empty string.
     pub levelup_description_raw: String,
 
-    /// [Codes](code) of other cards associated with this one.
+    /// [Vec] with [code]s of other cards associated with this one.
     ///
     /// To access references to the cards themselves, use [associated_cards].
     #[serde(rename = "associatedCardRefs")]
     pub associated_card_codes: Vec<String>,
-    /// [Names](name) of other cards associated with this one.
+    /// [Vec] with [name]s of other cards associated with this one.
     ///
     /// Sometimes, it may be missing some references.
     #[deprecated = "Only for re-serialization purposes, use associated_card_codes instead!"]
@@ -109,9 +113,17 @@ pub struct Card {
     /// Name of the artist who drew the card.
     pub artist_name: String,
 
-    /// The subtypes the card has, such as `PORO`.
+    /// The subtypes the card has, such as `"PORO"`.
+    /// 
+    /// Beware of Riot's inconsistent capitalization!
+    /// 
+    /// TODO: Make this a enum.
     pub subtypes: Vec<String>,
-    /// The [CardSupertype] the card belongs to, such as `Champion`.
+    /// The supertype the card belongs to, such as `"Champion"`.
+    /// 
+    /// Beware of Riot's inconsistent capitalization!
+    /// 
+    /// TODO: Make this a enum.
     pub supertype: String,
 }
 

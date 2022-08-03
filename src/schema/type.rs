@@ -1,4 +1,4 @@
-//! Module defining [Type].
+//! Module defining [CardType].
 
 
 /// A possible card type.
