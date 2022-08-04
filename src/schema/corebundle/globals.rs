@@ -1,3 +1,5 @@
+use crate::schema::corebundle::CoreSet;
+
 use super::keyword::CoreKeyword;
 use super::rarity::CoreRarity;
 use super::region::CoreRegion;
@@ -25,6 +27,9 @@ pub struct CoreGlobals {
 
     /// A [Vec] of all [CoreRarity]s in the game.
     pub rarities: Vec<CoreRarity>,
+
+    /// A [Vec] of all [CardSet]s in the game.
+    pub sets: Vec<CoreSet>,
 }
 
 
@@ -116,6 +121,13 @@ mod tests {
                         name: "COMMON".to_string(),
                     }
                 ],
+                sets: vec![
+                    CoreSet {
+                        set: CardSet::CallOfTheMountain,
+                        name: "Call of the Mountain".to_string(),
+                        icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string(),
+                    }
+                ]
             }
         )
     }
