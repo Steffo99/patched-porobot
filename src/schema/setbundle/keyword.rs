@@ -1,6 +1,10 @@
 //! Module defining [CardKeyword].
 
 
+use std::collections::HashMap;
+
+use crate::schema::corebundle::CoreKeyword;
+
 /// A keyword which cards can have.
 ///
 /// Since more keywords will probably be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
@@ -331,6 +335,16 @@ pub enum CardKeyword {
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
+}
+
+
+impl CardKeyword {
+    /// Get localized text about the keyword from [crate::schema::corebundle] data.
+    ///
+    /// Returns `None` if no matching [CoreKeyword] was found, for example for [CardKeyword::Unsupported] keywords.
+    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardKeyword, CoreKeyword>) -> Option<&'hm CoreKeyword> {
+        hm.get(&self)
+    }
 }
 
 

@@ -1,6 +1,10 @@
 //! Module defining [CardRegion].
 
 
+use std::collections::HashMap;
+
+use crate::schema::corebundle::CoreRegion;
+
 /// A region to which [super::Card]s can belong to.
 ///
 /// Since more regions might be added in the future, especially Origin ones, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
@@ -39,6 +43,16 @@ pub enum CardRegion {
     /// Unsupported region.
     #[serde(other)]
     Unsupported,
+}
+
+
+impl CardRegion {
+    /// Get localized text about the region from [crate::schema::corebundle] data.
+    ///
+    /// Returns `None` if no matching [CoreRegion] was found, for example for [CardRegion::Unsupported] regions.
+    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardRegion, CoreRegion>) -> Option<&'hm CoreRegion> {
+        hm.get(&self)
+    }
 }
 
 

@@ -1,6 +1,10 @@
 //! Module defining [CardSet].
 
 
+use std::collections::HashMap;
+
+use crate::schema::corebundle::CoreSet;
+
 /// The release set a [super::Card] may belong to.
 ///
 /// Since more sets will definitely be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
@@ -38,6 +42,16 @@ pub enum CardSet {
     /// Unsupported card set.
     #[serde(other)]
     Unsupported,
+}
+
+
+impl CardSet {
+    /// Get localized text about the set from [crate::schema::corebundle] data.
+    ///
+    /// Returns `None` if no matching [CoreSet] was found, for example for [CardSet::Unsupported] sets.
+    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardSet, CoreSet>) -> Option<&'hm CoreSet> {
+        hm.get(&self)
+    }
 }
 
 

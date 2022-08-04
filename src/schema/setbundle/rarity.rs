@@ -1,6 +1,10 @@
 //! Module defining [CardRarity].
 
 
+use std::collections::HashMap;
+
+use crate::schema::corebundle::CoreRarity;
+
 /// A possible [super::Card] rarity.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum CardRarity {
@@ -20,6 +24,16 @@ pub enum CardRarity {
     /// A champion.
     #[serde(alias = "CHAMPION")]
     Champion,
+}
+
+
+impl CardRarity {
+    /// Get localized text about the rarity from [crate::schema::corebundle] data.
+    ///
+    /// Returns `None` if no matching [CoreRarity] was found, for example if the hashmap is incomplete.
+    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardRarity, CoreRarity>) -> Option<&'hm CoreRarity> {
+        hm.get(&self)
+    }
 }
 
 
