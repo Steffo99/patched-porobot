@@ -1,9 +1,13 @@
 [package]
 name = "patched-porobot"
 version = "0.1.0"
+authors = ["Stefano Pigozzi <me@steffo.eu>"]
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Legends of Runeterra card database utilities and bots"
+repository = "https://github.com/Steffo99/patched-porobot"
+license = "AGPL-3.0-or-later"
+keywords = ["game", "deserialization", "legends-of-runeterra", "bot", "search"]
+categories = ["games", "parser-implementations"]
 
 [dependencies]
 serde = "1.0.140"
