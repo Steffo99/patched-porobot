@@ -1,3 +1,3 @@
-//! This module implements full-text search on [crate::schema::Card]s of multiple locales.
+//! This module implements full-text search on Legends of Runeterra data.
 
-mod card;
+pub mod card;
