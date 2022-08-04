@@ -35,7 +35,7 @@ mod tests {
     use super::*;
     use crate::schema::*;
 
-    const TEST_DATA: &'static str = r#"
+    const TEST_DATA: &str = r#"
         [
             {
                 "associatedCards": [],
