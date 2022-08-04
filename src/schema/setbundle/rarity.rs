@@ -9,20 +9,18 @@ use crate::schema::corebundle::CoreRarity;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum CardRarity {
     /// The card has no rarity, as it probably is not collectible.
-    #[serde(alias = "")]
-    #[serde(alias = "NONE")]
     None,
+
     /// A common card.
-    #[serde(alias = "COMMON")]
     Common,
+
     /// A rare card.
-    #[serde(alias = "RARE")]
     Rare,
+
     /// An epic card.
-    #[serde(alias = "EPIC")]
     Epic,
+
     /// A champion.
-    #[serde(alias = "CHAMPION")]
     Champion,
 }
 
