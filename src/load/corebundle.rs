@@ -62,3 +62,39 @@ pub fn rarityvec_to_rarityhashmap(v: Vec<CoreRarity>) -> HashMap<CardRarity, Cor
     }
     hm
 }
+
+
+/// Convert a [Vec] of [CoreSet]s into a [HashMap] of [CoreSet]s, indexed by their [CoreSet::set].
+pub fn setvec_to_sethashmap(v: Vec<CoreSet>) -> HashMap<CardSet, CoreSet> {
+    let mut hm = HashMap::<CardSet, CoreSet>::new();
+    for set in v {
+        hm.insert(set.set, set);
+    }
+    hm
+}
+
+
+/// A [CoreGlobals] struct where items are [HashMap]s mapping identifiers to the data they belong to.
+pub struct MappedGlobals {
+    pub vocab_terms: HashMap<String, CoreVocabTerm>,
+    pub keywords: HashMap<CardKeyword, CoreKeyword>,
+    pub regions: HashMap<CardRegion, CoreRegion>,
+    pub spell_speeds: HashMap<SpellSpeed, CoreSpellSpeed>,
+    pub rarities: HashMap<CardRarity, CoreRarity>,
+    pub sets: HashMap<CardSet, CoreSet>,
+}
+
+
+/// Trait allowing easy conversion from [CoreGlobals] to [MappedGlobals].
+impl From<CoreGlobals> for MappedGlobals {
+    fn from(cg: CoreGlobals) -> Self {
+        MappedGlobals {
+            vocab_terms: vocabtermvec_to_vocabtermhashmap(cg.vocab_terms),
+            keywords: keywordvec_to_keywordhashmap(cg.keywords),
+            regions: regionvec_to_regionhashmap(cg.regions),
+            spell_speeds: spellspeedvec_to_spellspeedhashmap(cg.spell_speeds),
+            rarities: rarityvec_to_rarityhashmap(cg.rarities),
+            sets: setvec_to_sethashmap(cg.sets),
+        }
+    }
+}
