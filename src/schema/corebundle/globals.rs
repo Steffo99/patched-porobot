@@ -1,9 +1,8 @@
-use super::vocabterm::CoreVocabTerm;
 use super::keyword::CoreKeyword;
+use super::rarity::CoreRarity;
 use super::region::CoreRegion;
 use super::speed::CoreSpellSpeed;
-use super::rarity::CoreRarity;
-
+use super::vocabterm::CoreVocabTerm;
 
 /// A complete `globals.json` file.
 ///

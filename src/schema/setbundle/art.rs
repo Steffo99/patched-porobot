@@ -1,5 +1,6 @@
 //! Module defining [CardArt].
 
+
 /// An art asset associated with a [super::Card].
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {

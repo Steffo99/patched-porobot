@@ -1,5 +1,6 @@
 //! Module defining [CardRegion].
 
+
 /// A region to which [super::Card]s can belong to.
 ///
 /// Since more regions might be added in the future, especially Origin ones, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).

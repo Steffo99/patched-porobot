@@ -1,10 +1,10 @@
 //! This module provides ways to load official data files from Riot Games' [Core Bundles](https://developer.riotgames.com/docs/lor#data-dragon_core-bundles) into Rust structs.
 
-use std::io::Read;
 use std::collections::HashMap;
+use std::io::Read;
+
 use crate::schema::corebundle::*;
 use crate::schema::setbundle::*;
-
 
 /// Deserialize a `globals.json` file into a [CoreGlobals] struct.
 pub fn globalsjson_to_coreglobals<R>(r: R) -> serde_json::Result<CoreGlobals>

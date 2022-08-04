@@ -1,5 +1,6 @@
 //! Module defining [CardSet].
 
+
 /// The release set a [super::Card] may belong to.
 ///
 /// Since more sets will definitely be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).

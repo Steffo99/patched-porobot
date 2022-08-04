@@ -1,5 +1,6 @@
 //! Module defining [CardKeyword].
 
+
 /// A keyword which cards can have.
 ///
 /// Since more keywords will probably be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
@@ -252,7 +253,7 @@ pub enum CardKeyword {
     /// Quick Attack.
     ///
     /// > While attacking, strikes before its blocker.
-    #[serde(rename="QuickStrike")]
+    #[serde(rename = "QuickStrike")]
     QuickAttack,
 
     /// Tough.
@@ -303,7 +304,7 @@ pub enum CardKeyword {
     /// Lurk.
     ///
     /// > When you attack while I'm on top of your deck, I Lurk, granting Lurker allies everywhere +1|+0. Max once per round.
-    #[serde(rename="Lurker")]
+    #[serde(rename = "Lurker")]
     Lurk,
 
     /// Formidable.

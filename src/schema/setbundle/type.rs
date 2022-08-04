@@ -28,7 +28,7 @@ pub enum CardType {
 #[cfg(test)]
 mod tests {
     use super::CardType;
-    
+
     macro_rules! test_deserialization {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]

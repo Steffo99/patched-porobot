@@ -2,12 +2,11 @@
 
 
 use std::collections::HashMap;
-use crate::schema::corebundle::*;
+
 use super::*;
 
-
 /// A single Legends of Runeterra card.
-/// 
+///
 /// The information is represented in a developer-friendly manner, but it can be serialized and deserialized via [serde] in the exact same format used in Data Dragon.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct Card {
@@ -19,7 +18,7 @@ pub struct Card {
     pub name: String,
 
     /// The [CardType] of the card.
-    /// 
+    ///
     /// The `r#` prefix is required by the Rust syntax, since `type` is a reserved keyword.
     #[serde(rename = "type")]
     pub r#type: CardType,
@@ -38,6 +37,7 @@ pub struct Card {
     /// Regions this card belongs to.
     #[serde(rename = "regionRefs")]
     pub regions: Vec<CardRegion>,
+
     /// Localized names of the regions this card belongs to.
     ///
     /// For serialization purposes only, use the [method with the same name](Card::localized_regions()] instead!
@@ -70,6 +70,7 @@ pub struct Card {
     /// [SpellSpeed] of the card.
     #[serde(rename = "spellSpeedRef")]
     pub spell_speed: SpellSpeed,
+
     /// Localized name of the [SpellSpeed] of the card.
     ///
     /// For serialization purposes only, use the [method with the same name](Card::localized_spell_speed()] instead!
@@ -77,30 +78,33 @@ pub struct Card {
     pub(crate) localized_spell_speed: String,
 
     /// [Vec] of [CardKeyword]s of the card.
-    #[serde(rename="keywordRefs")]
+    #[serde(rename = "keywordRefs")]
     pub keywords: Vec<CardKeyword>,
+
     /// [Vec] of localized names of [CardKeyword]s of the card.
     ///
     /// For serialization purposes only, use the [method with the same name](Card::localized_keywords()] instead!
-    #[serde(rename="keywords")]
+    #[serde(rename = "keywords")]
     pub(crate) localized_keywords: Vec<String>,
 
     /// Localized description of the card, in pseudo-XML.
-    #[serde(rename="description")]
+    #[serde(rename = "description")]
     pub localized_description_xml: String,
+
     /// Localized description of the card, in plain text.
-    #[serde(rename="descriptionRaw")]
+    #[serde(rename = "descriptionRaw")]
     pub localized_description_text: String,
 
     /// Localized level up text of the card, in pseudo-XML.
     ///
     /// If the card has no level up text, contains an empty string.
-    #[serde(rename="levelupDescription")]
+    #[serde(rename = "levelupDescription")]
     pub localized_levelup_xml: String,
+
     /// Localized level up text of the card, in plain text.
     ///
     /// If the card has no level up text, contains an empty string.
-    #[serde(rename="levelupDescriptionRaw")]
+    #[serde(rename = "levelupDescriptionRaw")]
     pub localized_levelup_text: String,
 
     /// [Vec] with [Card::code]s of other cards associated with this one.
@@ -108,6 +112,7 @@ pub struct Card {
     /// To access references to the cards themselves, use [Card::associated_cards].
     #[serde(rename = "associatedCardRefs")]
     pub associated_card_codes: Vec<String>,
+
     /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
     /// Sometimes, it may be missing some references.
@@ -116,19 +121,21 @@ pub struct Card {
 
     /// Flavor text of the card, displayed when its image is inspected.
     pub flavor_text: String,
+
     /// Name of the artist who drew the card.
     pub artist_name: String,
 
     /// The subtypes the card has, such as `"PORO"`.
-    /// 
+    ///
     /// Beware of Riot's inconsistent capitalization!
-    /// 
+    ///
     /// TODO: Make this a enum.
     pub subtypes: Vec<String>,
+
     /// The supertype the card belongs to, such as `"Champion"`.
-    /// 
+    ///
     /// Beware of Riot's inconsistent capitalization!
-    /// 
+    ///
     /// TODO: Make this a enum.
     pub supertype: String,
 }
@@ -156,11 +163,11 @@ impl Card {
 mod tests {
     use super::Card;
     use super::super::art::CardArt;
+    use super::super::r#type::CardType;
     use super::super::rarity::CardRarity;
     use super::super::region::CardRegion;
     use super::super::set::CardSet;
     use super::super::speed::SpellSpeed;
-    use super::super::r#type::CardType;
 
     #[test]
     fn deserialize_card() {

@@ -1,9 +1,9 @@
 //! This module provides ways to load official data files from Riot Games' [Set Bundles](https://developer.riotgames.com/docs/lor#data-dragon_set-bundles) into Rust structs.
 
-use std::io::Read;
 use std::collections::HashMap;
-use crate::schema::setbundle::*;
+use std::io::Read;
 
+use crate::schema::setbundle::*;
 
 /// Deserialize a `set.json` file into a [Vec] of [Card]s.
 pub fn setjson_to_cardvec<R>(r: R) -> serde_json::Result<Vec<Card>>
@@ -27,9 +27,11 @@ pub fn cardvec_to_cardhashmap(v: Vec<Card>) -> HashMap<String, Card> {
 #[allow(deprecated)]
 mod tests {
     use std::collections::HashMap;
-    use super::setjson_to_cardvec;
-    use super::cardvec_to_cardhashmap;
+
     use crate::schema::setbundle::*;
+
+    use super::cardvec_to_cardhashmap;
+    use super::setjson_to_cardvec;
 
     const TEST_SETJSON: &str = r#"
         [
@@ -160,7 +162,7 @@ mod tests {
             flavor_text: r#""Never fear change. It will question you, test your limits. It is our greatest teacher." - Karma"#.to_string(),
             artist_name: "SIXMOREVODKA".to_string(),
             subtypes: vec![],
-            supertype: "".to_string()
+            supertype: "".to_string(),
         }
     }
 
@@ -181,7 +183,7 @@ mod tests {
             art: vec![
                 CardArt {
                     card_png: "http://dd.b.pvp.net/3_11_0/set1/en_us/img/cards/01IO012T2.png".to_string(),
-                    full_png: "http://dd.b.pvp.net/3_11_0/set1/en_us/img/cards/01IO012T2-full.png".to_string()
+                    full_png: "http://dd.b.pvp.net/3_11_0/set1/en_us/img/cards/01IO012T2-full.png".to_string(),
                 }
             ],
             attack: 0,
@@ -204,7 +206,7 @@ mod tests {
             flavor_text: "".to_string(),
             artist_name: "SIXMOREVODKA".to_string(),
             subtypes: vec![],
-            supertype: "".to_string()
+            supertype: "".to_string(),
         }
     }
 

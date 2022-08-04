@@ -1,5 +1,6 @@
 //! This module defines [CoreVocabTerm].
 
+
 /// A Legends of Runeterra vocabulary term, and its associated localization.
 ///
 /// I'm not sure where these are used, other than in in-game tooltips.
