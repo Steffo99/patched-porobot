@@ -159,7 +159,6 @@ impl Card {
 
 
 #[cfg(test)]
-#[allow(deprecated)]
 mod tests {
     use super::Card;
     use super::super::art::CardArt;
