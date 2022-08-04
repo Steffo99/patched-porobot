@@ -21,3 +21,31 @@ pub struct CoreRegion {
     #[serde(rename = "iconAbsolutePath")]
     pub icon_png: String,
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::schema::setbundle::CardRegion;
+
+    use super::CoreRegion;
+
+    #[test]
+    fn deserialize() {
+        assert_eq!(
+            serde_json::de::from_str::<'static, CoreRegion>(r#"
+                {
+                    "abbreviation": "NX",
+                    "iconAbsolutePath": "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png",
+                    "name": "Noxus",
+                    "nameRef": "Noxus"
+                }
+            "#).unwrap(),
+            CoreRegion {
+                region: CardRegion::Noxus,
+                name: "Noxus".to_string(),
+                abbreviation: "NX".to_string(),
+                icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string(),
+            }
+        );
+    }
+}

@@ -20,3 +20,27 @@ pub struct CoreVocabTerm {
     /// The description of the vocabulary term, the text of the in-game tooltip.
     pub description: String,
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::CoreVocabTerm;
+
+    #[test]
+    fn deserialize() {
+        assert_eq!(
+            serde_json::de::from_str::<'static, CoreVocabTerm>(r#"
+                {
+                    "description": "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.",
+                    "name": "Allegiance",
+                    "nameRef": "Allegiance"
+                }
+            "#).unwrap(),
+            CoreVocabTerm {
+                vocabterm: "Allegiance".to_string(),
+                name: "Allegiance".to_string(),
+                description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string(),
+            }
+        );
+    }
+}

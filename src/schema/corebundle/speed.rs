@@ -12,3 +12,27 @@ pub struct CoreSpellSpeed {
     /// The localized name of the spell speed.
     pub name: String,
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::schema::setbundle::SpellSpeed;
+
+    use super::CoreSpellSpeed;
+
+    #[test]
+    fn deserialize() {
+        assert_eq!(
+            serde_json::de::from_str::<'static, CoreSpellSpeed>(r#"
+                {
+                    "name": "Slow",
+                    "nameRef": "Slow"
+                }
+            "#).unwrap(),
+            CoreSpellSpeed {
+                spell_speed: SpellSpeed::Slow,
+                name: "Slow".to_string(),
+            }
+        );
+    }
+}

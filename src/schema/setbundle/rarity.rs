@@ -49,9 +49,9 @@ mod tests {
     }
 
     test_deserialization!(deserialize_none, r#""None""#, CardRarity::None);
-    test_deserialization!(deserialize_common, r#""COMMON""#, CardRarity::Common);
-    test_deserialization!(deserialize_rare, r#""RARE""#, CardRarity::Rare);
-    test_deserialization!(deserialize_epic, r#""EPIC""#, CardRarity::Epic);
+    test_deserialization!(deserialize_common, r#""Common""#, CardRarity::Common);
+    test_deserialization!(deserialize_rare, r#""Rare""#, CardRarity::Rare);
+    test_deserialization!(deserialize_epic, r#""Epic""#, CardRarity::Epic);
     test_deserialization!(deserialize_champion, r#""Champion""#, CardRarity::Champion);
 
     #[test]

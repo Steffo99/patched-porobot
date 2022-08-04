@@ -120,9 +120,11 @@ pub struct Card {
     pub(crate) associated_card_names_localized: Vec<String>,
 
     /// Flavor text of the card, displayed when its image is inspected.
+    #[serde(rename = "flavorText")]
     pub flavor_text: String,
 
     /// Name of the artist who drew the card.
+    #[serde(rename = "artistName")]
     pub artist_name: String,
 
     /// The subtypes the card has, such as `"PORO"`.

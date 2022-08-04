@@ -16,7 +16,7 @@ log = { version = "0.4.17" }
 pretty_env_logger = { version = "0.4.0", optional = true }
 glob = { version = "0.3.0", optional = true }
 # schema
-serde = { version = "1.0.140" }
+serde = { version = "1.0.140", features = ["derive"] }
 serde_json = { version = "1.0.82" }
 # search
 tantivy = { version = "0.18.0", optional = true }
