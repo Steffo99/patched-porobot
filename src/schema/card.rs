@@ -58,12 +58,18 @@ pub struct Card {
     pub art: Vec<CardArt>,
 
     /// Base attack of the card.
+    ///
+    /// Cards with no attack, such as [CardType::Spell]s, have a value of `0` attack.
     pub attack: u64,
 
-    /// Base cost of the card.
+    /// Base mana cost of the card.
+    ///
+    /// Cards with no health, such as [CardType::Ability]s, have a value of `0` cost.
     pub cost: u64,
 
     /// Base health of the card.
+    ///
+    /// Cards with no health, such as [CardType::Spell]s, have a value of `0` health.
     pub health: u64,
 
     /// [SpellSpeed] of the card.

@@ -8,13 +8,13 @@ pub enum CardRarity {
     #[serde(alias = "NONE")]
     None,
     /// A common card.
-    #[serde(rename = "COMMON")]
+    #[serde(alias = "COMMON")]
     Common,
     /// A rare card.
-    #[serde(rename = "RARE")]
+    #[serde(alias = "RARE")]
     Rare,
     /// An epic card.
-    #[serde(rename = "EPIC")]
+    #[serde(alias = "EPIC")]
     Epic,
     /// A champion.
     #[serde(alias = "CHAMPION")]
