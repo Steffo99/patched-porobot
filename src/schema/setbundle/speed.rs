@@ -2,7 +2,7 @@
 
 
 /// A possible spell speed.
-#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum SpellSpeed {
     /// Non-spell cards have this speed.
     #[serde(rename = "")]

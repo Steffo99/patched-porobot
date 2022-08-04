@@ -1,7 +1,7 @@
 //! Module defining [CardArt].
 
 /// An art asset associated with a [super::Card].
-#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
     /// URL to the `.png` image of the rendered card.
     ///

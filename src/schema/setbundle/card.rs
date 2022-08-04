@@ -2,20 +2,14 @@
 
 
 use std::collections::HashMap;
-use super::art::CardArt;
-use super::set::CardSet;
-use super::r#type::CardType;
-use super::region::CardRegion;
-use super::keyword::CardKeyword;
-use super::rarity::CardRarity;
-use super::speed::SpellSpeed;
+use crate::schema::corebundle::*;
+use super::*;
 
 
 /// A single Legends of Runeterra card.
 /// 
 /// The information is represented in a developer-friendly manner, but it can be serialized and deserialized via [serde] in the exact same format used in Data Dragon.
-#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all="camelCase")]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Unique seven-character identifier of the card.
     #[serde(rename = "cardCode")]
@@ -45,9 +39,10 @@ pub struct Card {
     #[serde(rename = "regionRefs")]
     pub regions: Vec<CardRegion>,
     /// Localized names of the regions this card belongs to.
-    #[deprecated = "Only for re-serialization purposes, use regions instead!"]
+    ///
+    /// For serialization purposes only, use the [method with the same name](Card::localized_regions()] instead!
     #[serde(rename = "regions")]
-    pub regions_localized: Vec<String>,
+    pub(crate) localized_regions: Vec<String>,
 
     /// A [Vec] of [CardArt] assets of the card.
     ///
@@ -76,31 +71,37 @@ pub struct Card {
     #[serde(rename = "spellSpeedRef")]
     pub spell_speed: SpellSpeed,
     /// Localized name of the [SpellSpeed] of the card.
-    #[deprecated = "Only for re-serialization purposes, use spell_speed instead!"]
+    ///
+    /// For serialization purposes only, use the [method with the same name](Card::localized_spell_speed()] instead!
     #[serde(rename = "spellSpeed")]
-    pub spell_speed_localized: String,
+    pub(crate) localized_spell_speed: String,
 
     /// [Vec] of [CardKeyword]s of the card.
     #[serde(rename="keywordRefs")]
     pub keywords: Vec<CardKeyword>,
     /// [Vec] of localized names of [CardKeyword]s of the card.
-    #[deprecated = "Only for re-serialization purposes, use keywords instead!"]
+    ///
+    /// For serialization purposes only, use the [method with the same name](Card::localized_keywords()] instead!
     #[serde(rename="keywords")]
-    pub keywords_localized: Vec<String>,
+    pub(crate) localized_keywords: Vec<String>,
 
     /// Localized description of the card, in pseudo-XML.
-    pub description: String,
+    #[serde(rename="description")]
+    pub localized_description_xml: String,
     /// Localized description of the card, in plain text.
-    pub description_raw: String,
+    #[serde(rename="descriptionRaw")]
+    pub localized_description_text: String,
 
     /// Localized level up text of the card, in pseudo-XML.
     ///
     /// If the card has no level up text, contains an empty string.
-    pub levelup_description: String,
+    #[serde(rename="levelupDescription")]
+    pub localized_levelup_xml: String,
     /// Localized level up text of the card, in plain text.
     ///
     /// If the card has no level up text, contains an empty string.
-    pub levelup_description_raw: String,
+    #[serde(rename="levelupDescriptionRaw")]
+    pub localized_levelup_text: String,
 
     /// [Vec] with [Card::code]s of other cards associated with this one.
     ///
@@ -110,9 +111,8 @@ pub struct Card {
     /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
     /// Sometimes, it may be missing some references.
-    #[deprecated = "Only for re-serialization purposes, use associated_card_codes instead!"]
     #[serde(rename = "associatedCards")]
-    pub associated_card_names_localized: Vec<String>,
+    pub(crate) associated_card_names_localized: Vec<String>,
 
     /// Flavor text of the card, displayed when its image is inspected.
     pub flavor_text: String,
@@ -135,7 +135,7 @@ pub struct Card {
 
 
 impl Card {
-    /// Get references to the cards associated with this one, given an hashmap of all cards.
+    /// Get references to the cards associated with this one, given an [HashMap] of cards indexed by code.
     pub fn associated_cards<'c, 'hm: 'c>(&'c self, hashmap: &'hm HashMap<String, Card>) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
         self.associated_card_codes.iter().map(|r| hashmap.get(r))
     }
@@ -219,7 +219,7 @@ mod tests {
                 regions: vec![
                     CardRegion::Runeterra
                 ],
-                regions_localized: vec![
+                localized_regions: vec![
                     String::from("Runeterra")
                 ],
                 art: vec![
@@ -232,13 +232,13 @@ mod tests {
                 cost: 4u64,
                 health: 5u64,
                 spell_speed: SpellSpeed::None,
-                spell_speed_localized: String::from(""),
+                localized_spell_speed: String::from(""),
                 keywords: vec![],
-                keywords_localized: vec![],
-                description: String::from("<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk."),
-                description_raw: String::from("Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk."),
-                levelup_description: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
-                levelup_description_raw: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
+                localized_keywords: vec![],
+                localized_description_xml: String::from("<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk."),
+                localized_description_text: String::from("Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk."),
+                localized_levelup_xml: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
+                localized_levelup_text: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
                 associated_card_codes: vec![
                     String::from("06RU025T14"),
                     String::from("06RU025T6"),
