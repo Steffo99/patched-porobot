@@ -121,7 +121,7 @@ pub struct Card {
 
     /// Flavor text of the card, displayed when its image is inspected.
     #[serde(rename = "flavorText")]
-    pub flavor_text: String,
+    pub localized_flavor_text: String,
 
     /// Name of the artist who drew the card.
     #[serde(rename = "artistName")]
@@ -253,7 +253,7 @@ mod tests {
                     String::from("06RU025T5"),
                 ],
                 associated_card_names_localized: vec![],
-                flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),
+                localized_flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),
                 artist_name: String::from("Kudos Productions"),
                 subtypes: vec![],
                 supertype: String::from("Champion"),

@@ -154,7 +154,7 @@ pub fn card_to_document(schema: &tantivy::schema::Schema, locale: &MappedGlobals
         f_description => card.localized_description_text,
         f_levelup => card.localized_levelup_text,
         f_associated => card.associated_card_codes.join(" "),
-        f_flavor => card.flavor_text,
+        f_flavor => card.localized_flavor_text,
         f_artist => card.artist_name,
         f_subtypes => card.subtypes.join(" "),
         f_supertype => card.supertype,
