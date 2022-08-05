@@ -1,6 +1,6 @@
 [package]
 name = "patched-porobot"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Stefano Pigozzi <me@steffo.eu>"]
 edition = "2021"
 description = "Legends of Runeterra card database utilities and bots"
@@ -34,3 +34,11 @@ search = ["tantivy"]
 telegram = ["search", "teloxide", "reqwest", "tokio"]
 # discord = ["search"]
 # matrix = ["search"]
+
+[lib]
+name = "patched_porobot"
+path = "src/lib.rs"
+
+[[bin]]
+name = "patched_porobot_telegram"
+path = "src/telegram/bin.rs"

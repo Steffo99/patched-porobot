@@ -26,12 +26,12 @@ pub fn cardcode_options() -> tantivy::schema::TextOptions {
 
 
 /// Create a new [tantivy::schema::TextOptions] for card keywords, using the given tokenizer.
-pub fn cardkeyword_options(tokenizer_name: &'static str) -> tantivy::schema::TextOptions {
+pub fn cardkeyword_options() -> tantivy::schema::TextOptions {
     use tantivy::schema::*;
 
     TextOptions::default()
         .set_indexing_options(TextFieldIndexing::default()
-            .set_tokenizer(tokenizer_name)
+            .set_tokenizer("card")
             .set_fieldnorms(false)
             .set_index_option(IndexRecordOption::Basic)
         )
@@ -39,12 +39,12 @@ pub fn cardkeyword_options(tokenizer_name: &'static str) -> tantivy::schema::Tex
 
 
 /// Create a new [tantivy::schema::TextOptions] for card text fields, using the given tokenizer.
-pub fn cardtext_options(tokenizer_name: &'static str) -> tantivy::schema::TextOptions {
+pub fn cardtext_options() -> tantivy::schema::TextOptions {
     use tantivy::schema::*;
 
     TextOptions::default()
         .set_indexing_options(TextFieldIndexing::default()
-            .set_tokenizer(tokenizer_name)
+            .set_tokenizer("card")
             .set_fieldnorms(true)
             .set_index_option(IndexRecordOption::WithFreqsAndPositions)
         )
@@ -52,14 +52,14 @@ pub fn cardtext_options(tokenizer_name: &'static str) -> tantivy::schema::TextOp
 
 
 /// Create a new [tantivy::schema::Schema] using [Card]s as documents.
-pub fn card_schema(tokenizer_name: &'static str) -> tantivy::schema::Schema {
+pub fn card_schema() -> tantivy::schema::Schema {
     use tantivy::schema::*;
 
     let mut schema_builder = Schema::builder();
 
     let cardcode: TextOptions = cardcode_options();
-    let cardkeyword: TextOptions = cardkeyword_options(tokenizer_name);
-    let cardtext: TextOptions = cardtext_options(tokenizer_name);
+    let cardkeyword: TextOptions = cardkeyword_options();
+    let cardtext: TextOptions = cardtext_options();
 
     schema_builder.add_text_field("code", cardcode);
     schema_builder.add_text_field("name", cardtext.clone());
