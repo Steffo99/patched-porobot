@@ -30,6 +30,7 @@ tokio = { version =  "1.20.1", features = ["rt-multi-thread", "macros"], optiona
 
 [features]
 # schema = []  # Always included
+exec = ["pretty_env_logger", "glob"]
 search = ["tantivy"]
 telegram = ["search", "teloxide", "reqwest", "tokio"]
 # discord = ["search"]
