@@ -94,7 +94,6 @@ pub fn card_schema() -> Schema {
 /// Create a new [tantivy::Document] using a [Card] in a specific [locale](MappedGlobals] as base.
 pub fn card_to_document(schema: &Schema, locale: &MappedGlobals, card: Card) -> Document {
     use tantivy::*;
-    use itertools::Itertools;
 
     let f_code = schema.get_field("code").expect("schema to have a 'code' field");
     let f_name = schema.get_field("name").expect("schema to have a 'name' field");
