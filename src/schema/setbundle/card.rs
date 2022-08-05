@@ -2,10 +2,9 @@
 
 
 use std::collections::HashMap;
-
 use super::*;
 
-/// A single Legends of Runeterra card.
+/// A single Legends of Runeterra card as represented in a `set.json` file.
 ///
 /// The information is represented in a developer-friendly manner, but it can be serialized and deserialized via [serde] in the exact same format used in Data Dragon.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -162,13 +161,7 @@ impl Card {
 
 #[cfg(test)]
 mod tests {
-    use super::Card;
-    use super::super::art::CardArt;
-    use super::super::r#type::CardType;
-    use super::super::rarity::CardRarity;
-    use super::super::region::CardRegion;
-    use super::super::set::CardSet;
-    use super::super::speed::SpellSpeed;
+    use super::*;
 
     #[test]
     fn deserialize_card() {
