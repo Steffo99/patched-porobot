@@ -2,3 +2,4 @@
 
 pub mod corebundle;
 pub mod setbundle;
+pub mod anybundle;
