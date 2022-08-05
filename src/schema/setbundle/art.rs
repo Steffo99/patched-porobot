@@ -25,7 +25,7 @@ pub struct CardArt {
 
 
 impl CardArt {
-    /// URL to the `.jpg` image of the rendered card, via `poro.steffo.eu`.
+    /// URL to the `.jpg` image of the `en_us` locale of the rendered card, via `poro.steffo.eu`.
     ///
     /// Please do not overload this endpoint, as it currently does not use a CDN!
     ///
@@ -39,7 +39,7 @@ impl CardArt {
             .replace(".png", ".jpg")
     }
 
-    /// URL to the `.jpg` image of the full card art, via `poro.steffo.eu`.
+    /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via `poro.steffo.eu`.
     ///
     /// Please do not overload this endpoint, as it currently does not use a CDN!
     ///
