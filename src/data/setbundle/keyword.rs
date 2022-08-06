@@ -2,18 +2,18 @@
 
 use crate::data::corebundle::keyword::{LocalizedCardKeyword, LocalizedCardKeywordIndex};
 
-/// A keyword which cards can have.
+/// A keyword which [Card](super::card::Card)s can have.
 ///
 /// Since more keywords will probably be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
 #[non_exhaustive]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum CardKeyword {
-    /// Like [CardKeyword::Overwhelm], but on [super::CardType::Spell]s.
+    /// Like [Overwhelm](CardKeyword::Overwhelm), but on [Spell](super::type::CardType::Spell)s.
     ///
     /// > Inflicts damage beyond what would kill the target(s) to the enemy Nexus.
     SpellOverwhelm,
 
-    /// [super::SpellSpeed::Burst].
+    /// [Burst](super::speed::SpellSpeed::Burst).
     ///
     /// > Can be played whenever you may act. Happens instantly and allows you to continue to play other cards.
     Burst,
@@ -29,7 +29,7 @@ pub enum CardKeyword {
     #[serde(rename = "PlaySkillMark")]
     OnPlay,
 
-    /// [super::CardType::Landmark].
+    /// [Landmark](super::type::CardType::Landmark).
     ///
     /// > Landmarks take up a space on the board. They can't attack, block, or take damage.
     #[serde(rename = "LandmarkVisualOnly")]
@@ -59,7 +59,7 @@ pub enum CardKeyword {
 
     /// Focus.
     ///
-    /// Used to disambiguate between Burst and Focus with [super::SpellSpeed::Burst].
+    /// Used to disambiguate between Burst and Focus with [SpellSpeed::Burst](super::speed::SpellSpeed::Burst).
     ///
     /// > Can be played outside combat or when no other spells or skills are pending. Happens instantly and allows you to continue to play other cards.
     Focus,
@@ -101,7 +101,7 @@ pub enum CardKeyword {
     /// ???
     BandleCity,
 
-    /// [super::SpellSpeed::Fast].
+    /// [Fast](super::speed::SpellSpeed::Fast).
     ///
     /// > Can be played whenever you may act. Happens after your opponent has a chance to react.
     Fast,
@@ -137,7 +137,9 @@ pub enum CardKeyword {
     /// > Completely removed from the game. Doesn't cause Last Breath and can't be revived.
     Obliterate,
 
-    /// Imbue, an unused keyword.
+    /// Imbue.
+    ///
+    /// Currently unused.
     ///
     /// > These abilities trigger when you resolve a spell.
     Imbue,
@@ -181,7 +183,7 @@ pub enum CardKeyword {
     /// > A unit's spell-like effect that allows enemy reactions.
     Skill,
 
-    /// Plunder,
+    /// Plunder.
     ///
     /// > A card triggers its plunder ability when played if you damaged the enemy Nexus this round.
     Plunder,

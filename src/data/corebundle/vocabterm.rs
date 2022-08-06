@@ -1,4 +1,4 @@
-//! This module defines [CoreVocabTerm].
+//! Module defining structs representing localized vocabulary terms.
 
 use std::collections::HashMap;
 use std::hash::Hash;

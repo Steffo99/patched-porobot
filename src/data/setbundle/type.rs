@@ -1,7 +1,7 @@
 //! Module defining [CardType].
 
 
-/// A possible card type.
+/// A possible [Card](super::card::Card) type.
 ///
 /// Since more types might be added in the future, as it happened with landmarks, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
 #[non_exhaustive]
@@ -9,14 +9,21 @@
 pub enum CardType {
     /// A spell.
     Spell,
+
     /// An unit: either a minion, or a champion.
-    /// Champions have their `supertype` set to `Champion`, and their `rarity` set to `Champion` as well.
+    ///
+    /// Champions have their [supertype](super::card::Card::supertype) set to `Champion`, and their [rarity](super::card::Card::rarity) set to [CardRarity::Champion](super::rarity::CardRarity::Champion) as well.
     Unit,
-    /// An ability triggered by an unit.
+
+    /// An ability triggered by an [Unit](CardType::Unit).
     Ability,
+
     /// A landmark.
     Landmark,
-    /// A trap or boon.
+
+    /// An autoplaying card: either a trap or boon.
+    ///
+    /// Disambiguate between the two using [CardKeyword::Trap](super::keyword::CardKeyword::Trap) and [CardKeyword::Boon](super::keyword::CardKeyword::Boon).
     Trap,
 
     /// Unsupported card type.

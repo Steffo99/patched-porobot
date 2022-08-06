@@ -1,8 +1,8 @@
-//! This module defines [LocalizedGlobalsVecs] and [LocalizedGlobalsIndexes], structs representing the data contained in the `globals.json` files.
+//! Module defining structs representing data contained in `globals.json` files.
 
 use std::fs::File;
 use std::path::Path;
-use crate::data::outcomes::{LoadingError, LoadingResult};
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 use super::vocabterm::{LocalizedVocabTermVec, LocalizedVocabTermIndex};
 use super::keyword::{LocalizedCardKeywordVec, LocalizedCardKeywordIndex};
 use super::region::{LocalizedCardRegionVec, LocalizedCardRegionIndex};
@@ -10,41 +10,61 @@ use super::speed::{LocalizedSpellSpeedVec, LocalizedSpellSpeedIndex};
 use super::rarity::{LocalizedCardRarityVec, LocalizedCardRarityIndex};
 use super::set::{LocalizedCardSetVec, LocalizedCardSetIndex};
 
-/// A parsed `globals.json` file from a Legends of Runeterra Core Bundle.
+/// A parsed `globals.json` file from a [Data Dragon] [Core Bundle].
 ///
-/// It contains a list of all vocabulary terms, keywords, regions, spell speeds, and rarities present in Legends of Runeterra.
+/// It contains [Vec]s of all vocabulary terms, keywords, regions, spell speeds, and rarities present in the game.
+///
+/// [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+/// [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct LocalizedGlobalsVecs {
+    /// Vocabulary terms.
     #[serde(rename = "vocabTerms")]
     pub vocab_terms: LocalizedVocabTermVec,
 
+    /// Card keywords.
     pub keywords: LocalizedCardKeywordVec,
 
+    /// Card regions.
     pub regions: LocalizedCardRegionVec,
 
+    /// Spell speeds.
     #[serde(rename = "spellSpeeds")]
     pub spell_speeds: LocalizedSpellSpeedVec,
 
+    /// Card rarities.
     pub rarities: LocalizedCardRarityVec,
 
+    /// Card sets.
     pub sets: LocalizedCardSetVec,
 }
 
-/// An instance of [LocalizedGlobalsVecs] which had its own fields indexed in [HashMap]s, using the respective identifiers as map keys.
+/// A parsed and indexed `globals.json` file from a [Data Dragon] [Core Bundle].
 ///
-/// It contains a indexed list of all vocabulary terms, keywords, regions, spell speeds, and rarities present in Legends of Runeterra.
+/// It is an instance of [LocalizedGlobalsVecs] which had its own fields indexed in [std::collections::HashMap]s, using the respective identifiers as map keys.
+///
+/// It contains indexes of all vocabulary terms, keywords, regions, spell speeds, and rarities present in the game.
+///
+/// [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+/// [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LocalizedGlobalsIndexes {
+    /// Vocabulary terms.
     pub vocab_terms: LocalizedVocabTermIndex,
 
+    /// Card keywords.
     pub keywords: LocalizedCardKeywordIndex,
 
+    /// Card regions.
     pub regions: LocalizedCardRegionIndex,
 
+    /// Spell speeds.
     pub spell_speeds: LocalizedSpellSpeedIndex,
 
+    /// Card rarities.
     pub rarities: LocalizedCardRarityIndex,
 
+    /// Card sets.
     pub sets: LocalizedCardSetIndex,
 }
 
@@ -53,9 +73,9 @@ impl LocalizedGlobalsVecs {
     /// Load a `globals.json` file to create a [LocalizedGlobalsVecs] instance.
     pub fn load(path: &Path) -> LoadingResult<Self> {
         let file = File::open(path)
-            .map_err(LoadingError::Loading)?;
+            .map_err(LoadingError::OpeningFile)?;
         let data = serde_json::de::from_reader::<File, Self>(file)
-            .map_err(LoadingError::Parsing)?;
+            .map_err(LoadingError::Deserializing)?;
         Ok(data)
     }
 }
@@ -113,7 +133,13 @@ impl From<LocalizedGlobalsVecs> for LocalizedGlobalsIndexes {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::LocalizedGlobalsVecs;
+    use crate::data::corebundle::keyword::LocalizedCardKeyword;
+    use crate::data::corebundle::rarity::LocalizedCardRarity;
+    use crate::data::corebundle::region::LocalizedCardRegion;
+    use crate::data::corebundle::set::LocalizedCardSet;
+    use crate::data::corebundle::speed::LocalizedSpellSpeed;
+    use crate::data::corebundle::vocabterm::LocalizedVocabTerm;
     use crate::data::setbundle::keyword::CardKeyword;
     use crate::data::setbundle::rarity::CardRarity;
     use crate::data::setbundle::region::CardRegion;
@@ -170,21 +196,21 @@ mod tests {
             "#).unwrap(),
             LocalizedGlobalsVecs {
                 vocab_terms: vec![
-                    vocabterm::LocalizedVocabTerm {
+                    LocalizedVocabTerm {
                         vocabterm: "Allegiance".to_string(),
                         name: "Allegiance".to_string(),
                         description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string(),
                     }
                 ],
                 keywords: vec![
-                    keyword::LocalizedCardKeyword {
+                    LocalizedCardKeyword {
                         keyword: CardKeyword::SpellOverwhelm,
                         name: "Overwhelm".to_string(),
                         description: "Inflicts damage beyond what would kill the target(s) to the enemy Nexus.".to_string(),
                     }
                 ],
                 regions: vec![
-                    region::LocalizedCardRegion {
+                    LocalizedCardRegion {
                         region: CardRegion::Noxus,
                         name: "Noxus".to_string(),
                         abbreviation: "NX".to_string(),
@@ -192,19 +218,19 @@ mod tests {
                     }
                 ],
                 spell_speeds: vec![
-                    speed::LocalizedSpellSpeed {
+                    LocalizedSpellSpeed {
                         spell_speed: SpellSpeed::Slow,
                         name: "Slow".to_string(),
                     }
                 ],
                 rarities: vec![
-                    rarity::LocalizedCardRarity {
+                    LocalizedCardRarity {
                         rarity: CardRarity::Common,
                         name: "COMMON".to_string(),
                     }
                 ],
                 sets: vec![
-                    set::LocalizedCardSet {
+                    LocalizedCardSet {
                         set: CardSet::CallOfTheMountain,
                         name: "Call of the Mountain".to_string(),
                         icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string(),

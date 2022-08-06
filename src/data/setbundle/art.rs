@@ -1,23 +1,27 @@
 //! Module defining [CardArt].
 
 
-/// An art asset associated with a [super::Card].
+/// The illustration of a [Card](super::card::Card), also referred to as an *art asset*.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
     /// URL to the `.png` image of the rendered card.
     ///
-    /// # Example
+    /// ## Example
     ///
-    /// `https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png`
+    /// ```text
+    /// https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png
+    /// ```
     ///
     #[serde(rename = "gameAbsolutePath")]
     pub card_png: String,
 
     /// URL to the `.png` image of the full card art.
     ///
-    /// # Example
+    /// ## Example
     ///
-    /// `https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png`
+    /// ```text
+    /// https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png
+    /// ```
     ///
     #[serde(rename = "fullAbsolutePath")]
     pub full_png: String,
@@ -31,7 +35,9 @@ impl CardArt {
     ///
     /// # Example
     ///
-    /// `https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg`
+    /// ```text
+    /// https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg
+    /// ```
     ///
     pub fn card_jpg(&self) -> String {
         self.card_png
@@ -45,7 +51,9 @@ impl CardArt {
     ///
     /// # Example
     ///
-    /// `https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg`
+    /// ```text
+    /// https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg
+    /// ```
     ///
     pub fn full_jpg(&self) -> String {
         self.full_png

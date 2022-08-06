@@ -2,7 +2,7 @@
 
 use crate::data::corebundle::speed::{LocalizedSpellSpeed, LocalizedSpellSpeedIndex};
 
-/// A possible spell speed.
+/// A possible [Spell](super::type::CardType::Spell) speed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum SpellSpeed {
     /// Non-spell cards have this speed.

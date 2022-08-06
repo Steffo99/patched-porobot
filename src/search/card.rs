@@ -6,7 +6,7 @@ use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
 use itertools::Itertools;
-use crate::data::corebundle::CoreBundle;
+use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::setbundle::r#type::CardType;
 use crate::data::setbundle::card::Card;
 
@@ -93,7 +93,7 @@ pub fn card_schema() -> Schema {
 
 
 /// Create a new [tantivy::Document] using a [Card] in a specific [locale](MappedGlobals] as base.
-pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Document {
+pub fn card_to_document(schema: &Schema, globals: &LocalizedGlobalsIndexes, card: Card) -> Document {
     use tantivy::*;
 
     let f_code = schema.get_field("code").expect("schema to have a 'code' field");
@@ -122,7 +122,7 @@ pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Documen
         CardType::Ability => "Ability",
         CardType::Landmark => "Landmark",
         CardType::Trap => "Trap",
-        CardType::Unsupported => ""
+        CardType::Unsupported => "Unknown",
     };
 
     doc!(
@@ -130,17 +130,17 @@ pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Documen
         f_name => card.name,
         f_type => c_type,
         f_set => card.set
-            .localized(&cb.globals.sets)
+            .localized(&globals.sets)
             .map(|cs| cs.name.to_owned())
             .unwrap_or_else(String::new),
         f_rarity => card.rarity
-            .localized(&cb.globals.rarities)
+            .localized(&globals.rarities)
             .map(|cr| cr.name.to_owned())
             .unwrap_or_else(String::new),
         f_collectible => if card.collectible {1u64} else {0u64},
         f_regions => card.regions.iter()
             .map(|region| region
-                .localized(&cb.globals.regions)
+                .localized(&globals.regions)
                 .map(|cr| cr.name.to_owned())
                 .unwrap_or_else(String::new)
             ).join(" "),
@@ -148,12 +148,12 @@ pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Documen
         f_cost => card.cost,
         f_health => card.health,
         f_spellspeed => card.spell_speed
-            .localized(&cb.globals.spell_speeds)
+            .localized(&globals.spell_speeds)
             .map(|ss| ss.name.to_owned())
             .unwrap_or_else(String::new),
         f_keywords => card.keywords.iter()
             .map(|keyword| keyword
-                .localized(&cb.globals.keywords)
+                .localized(&globals.keywords)
                 .map(|ck| ck.name.to_owned())
                 .unwrap_or_else(String::new))
             .join(" "),
@@ -169,9 +169,9 @@ pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Documen
 
 
 /// Stage all [tantivy::Document]s generated from [Card]s contained in the passed [Vec] for write on a [tantivy::Index] via the given [tantivy::IndexWriter].
-pub fn cards_to_index(writer: IndexWriter, schema: Schema, locale: MappedGlobals, cards: Vec<Card>) -> tantivy::Result<()> {
+pub fn cards_to_index(writer: IndexWriter, schema: Schema, globals: &LocalizedGlobalsIndexes, cards: Vec<Card>) -> tantivy::Result<()> {
     for card in cards {
-        writer.add_document(card_to_document(&schema, &locale, card))?;
+        writer.add_document(card_to_document(&schema, &globals, card))?;
     };
     Ok(())
 }

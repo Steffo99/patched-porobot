@@ -1,8 +1,11 @@
-//! This module defines the types used in Data Dragon [Core Bundles](https://developer.riotgames.com/docs/lor#data-dragon_core-bundles).
+//! Module defining the types used in [Data Dragon] [Core Bundle]s.
+//!
+//! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+//! [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 
 use std::path::Path;
 use super::anybundle::metadata::BundleMetadata;
-use super::outcomes::{LoadingError, LoadingResult};
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 
 pub mod globals;
 pub mod vocabterm;
@@ -13,8 +16,15 @@ pub mod rarity;
 pub mod set;
 
 
-/// A parsed [Core Bundle](https://developer.riotgames.com/docs/lor#data-dragon_core-bundles).
+/// A parsed [Data Dragon] [Core Bundle].
+///
+/// [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+/// [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CoreBundle {
+    /// The name of the root directory of the bundle.
+    pub name: String,
+
     /// The contents of the `metadata.json` file.
     pub metadata: BundleMetadata,
 
@@ -31,15 +41,22 @@ impl CoreBundle {
                 .join("metadata.json")
         )?;
 
-        let locale = metadata.locale().ok_or(LoadingError::Using)?;
+        let name = bundle_path.file_name()
+            .ok_or(LoadingError::GettingBundleName)?
+            .to_str()
+            .ok_or(LoadingError::ConvertingBundleName)?
+            .to_string();
 
-        let globals = globals::LocalizedGlobalsVecs::load(
-            &bundle_path
-                .join(&locale)
-                .join("data")
-                .join(format!("globals-{}.json", &locale))
-        )?;
+        let locale = metadata.locale()
+            .ok_or(LoadingError::GettingLocale)?;
 
-        Ok(CoreBundle {metadata, globals})
+        let globals_path = &bundle_path
+            .join(&locale)
+            .join("data")
+            .join(format!("globals-{}.json", &locale));
+
+        let globals = globals::LocalizedGlobalsVecs::load(globals_path)?;
+
+        Ok(CoreBundle {name, metadata, globals})
     }
 }

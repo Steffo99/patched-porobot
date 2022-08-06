@@ -1,4 +1,4 @@
-//! This module defines [CoreKeyword].
+//! Module defining structs representing localized card keywords.
 
 use std::collections::HashMap;
 use crate::data::setbundle::keyword::CardKeyword;

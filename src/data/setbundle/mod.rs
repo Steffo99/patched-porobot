@@ -1,9 +1,12 @@
-//! This module defines the types used in Data Dragon [Set Bundles](https://developer.riotgames.com/docs/lor#data-dragon_set-bundles).
+//! Module defining the types used in [Data Dragon] [Set Bundle]s.
+//!
+//! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+//! [Set Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_set-bundles
 
 use std::fs::File;
 use std::path::Path;
 use super::anybundle::metadata::BundleMetadata;
-use super::outcomes::{LoadingError, LoadingResult};
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 
 pub mod card;
 pub mod art;
@@ -13,15 +16,23 @@ pub mod region;
 pub mod set;
 pub mod speed;
 pub mod keyword;
+pub mod subtype;
+pub mod supertype;
 
 
-/// A parsed [Set Bundle](https://developer.riotgames.com/docs/lor#data-dragon_set-bundles).
+/// A parsed [Data Dragon] [Set Bundle].
+///
+/// [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
+/// [Set Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_set-bundles
 pub struct SetBundle {
     /// The contents of the `metadata.json` file.
     pub metadata: BundleMetadata,
 
     /// The contents of the `[locale]/data/globals-[locale].json` file.
     pub cards: Vec<card::Card>,
+
+    /// The name of the root directory of the bundle.
+    pub name: String,
 }
 
 
@@ -33,21 +44,32 @@ impl SetBundle {
                 .join("metadata.json")
         )?;
 
-        let locale = metadata.locale().ok_or(LoadingError::Using)?;
+        let locale = metadata.locale()
+            .ok_or(LoadingError::GettingLocale)?;
 
-        let mut filename = bundle_path.file_name().ok_or(LoadingError::Checking)?.to_os_string();
-        filename.push(".json");
+        let name = bundle_path.file_name()
+            .ok_or(LoadingError::GettingBundleName)?;
 
-        let cards = File::open(
+        let data_path = {
+            let mut json_filename = name.to_os_string();
+            json_filename.push(".json");
+
             &bundle_path
                 .join(&locale)
                 .join("data")
-                .join(filename)
-        ).map_err(LoadingError::Loading)?;
+                .join(&json_filename)
+        };
+
+        let name = name.to_str()
+            .ok_or(LoadingError::ConvertingBundleName)?
+            .to_string();
+
+        let cards = File::open(data_path)
+            .map_err(LoadingError::OpeningFile)?;
 
         let cards = serde_json::de::from_reader::<File, Vec<card::Card>>(cards)
-            .map_err(LoadingError::Parsing)?;
+            .map_err(LoadingError::Deserializing)?;
 
-        Ok(SetBundle {metadata, cards})
+        Ok(SetBundle {metadata, cards, name})
     }
 }

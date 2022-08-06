@@ -1,12 +1,14 @@
-//! This module defines [BundleMetadata], the contents of `metadata.json`.
+//! Module defining [BundleMetadata], the contents of the `metadata.json` present in all [Data Dragon] Bundles.
+//!
+//! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 
 use std::fs::File;
 use std::path::Path;
-use crate::data::outcomes::{LoadingError, LoadingResult};
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 
 /// A parsed `metadata.json` file from a Data Dragon Bundle.
 ///
-/// The specification defines more fields, but they are missing from the output files.
+/// The specification defines more fields, but they are missing from the output files:
 ///
 /// > ```json
 /// > {
@@ -27,17 +29,41 @@ pub struct BundleMetadata {
 
 
 impl BundleMetadata {
-    /// Load a `metadata.json` file to create a [LocalizedGlobalsVecs] instance.
+    /// Load a `metadata.json` file to create a [BundleMetadata] instance.
     pub fn load(path: &Path) -> LoadingResult<Self> {
         let file = File::open(path)
-            .map_err(LoadingError::Loading)?;
+            .map_err(LoadingError::OpeningFile)?;
         let data = serde_json::de::from_reader::<File, Self>(file)
-            .map_err(LoadingError::Parsing)?;
+            .map_err(LoadingError::Deserializing)?;
         Ok(data)
     }
 
     /// Get a reference to the first (and probably only) locale defined in BundleMetadata.
+    ///
+    /// Equivalent to calling [BundleMetadata].[locales](BundleMetadata::locales).[get(0)]([T]::get).
     pub fn locale(&self) -> Option<&String> {
         self.locales.get(0)
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn deserialize() {
+        assert_eq!(
+            serde_json::de::from_str::<'static, BundleMetadata>(r#"
+                {
+                    "locales": [
+                        "en_us"
+                    ]
+                }
+            "#).unwrap(),
+            BundleMetadata {
+                locales: vec!["en_us".to_string()]
+            }
+        );
     }
 }

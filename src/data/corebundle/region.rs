@@ -1,4 +1,4 @@
-//! This module defines [CoreRegion].
+//! Module defining structs representing localized card regions.
 
 use std::collections::HashMap;
 use crate::data::setbundle::region::CardRegion;

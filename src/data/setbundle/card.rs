@@ -1,6 +1,8 @@
 //! Module defining [Card].
 
 use std::collections::HashMap;
+use crate::data::setbundle::subtype::CardSubtype;
+use crate::data::setbundle::supertype::CardSupertype;
 use super::r#type::CardType;
 use super::art::CardArt;
 use super::keyword::CardKeyword;
@@ -9,9 +11,9 @@ use super::region::CardRegion;
 use super::speed::SpellSpeed;
 use super::set::CardSet;
 
-/// A single Legends of Runeterra card as represented in a `set.json` file.
+/// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
-/// The information is represented in a developer-friendly manner, but it can be serialized and deserialized via [serde] in the exact same format used in Data Dragon.
+/// The data is available in a developer-friendly interface, but nevertheless it can be serialized and deserialized via [serde] in the exact same format used in the `set*.json` files.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Unique seven-character identifier of the card.
@@ -21,21 +23,23 @@ pub struct Card {
     /// Localized name of the card.
     pub name: String,
 
-    /// The [CardType] of the card.
+    /// The type of the card.
     ///
-    /// The `r#` prefix is required by the Rust syntax, since `type` is a reserved keyword.
+    /// Since `type` in Rust is a reserved keyword, accessing this field requires [prefixing it with `r#`](https://doc.rust-lang.org/rust-by-example/compatibility/raw_identifiers.html).
     #[serde(rename = "type")]
     pub r#type: CardType,
 
-    /// The [CardSet] the card belongs to.
+    /// The release set the card belongs to.
     pub set: CardSet,
 
-    /// [CardRarity] of the card.
+    /// The rarity of the card.
     #[serde(rename = "rarityRef")]
     pub rarity: CardRarity,
 
+    /// Whether the card is collectible or not.
+    ///
     /// If `true`, the card can be found in chests, crafted, or used in decks.
-    /// If `false`, the card is not available for direct use, as it is probably created by another card.
+    /// If `false`, the card is not available for direct use, and is probably created by another card, or available only in special occasions, such as Lab matches.
     pub collectible: bool,
 
     /// Regions this card belongs to.
@@ -77,17 +81,17 @@ pub struct Card {
 
     /// Localized name of the [SpellSpeed] of the card.
     ///
-    /// For serialization purposes only, use the [method with the same name](Card::localized_spell_speed()] instead!
+    /// **For serialization purposes only**, use the [SpellSpeed::localized] instead!
     #[serde(rename = "spellSpeed")]
     pub(crate) localized_spell_speed: String,
 
-    /// [Vec] of [CardKeyword]s of the card.
+    /// [Vec] of [CardKeyword]s of the card, such as [*Overwhelm*](CardKeyword::Overwhelm) or [*Focus*](CardKeyword::Focus).
     #[serde(rename = "keywordRefs")]
     pub keywords: Vec<CardKeyword>,
 
     /// [Vec] of localized names of [CardKeyword]s of the card.
     ///
-    /// For serialization purposes only, use the [method with the same name](Card::localized_keywords()] instead!
+    /// **For serialization purposes only**, use the [CardKeyword::localized] instead!
     #[serde(rename = "keywords")]
     pub(crate) localized_keywords: Vec<String>,
 
@@ -120,6 +124,8 @@ pub struct Card {
     /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
     /// Sometimes, it may be missing some references.
+    ///
+    /// **For serialization purposes only**, use [Card::associated_cards] instead!
     #[serde(rename = "associatedCards")]
     pub(crate) associated_card_names_localized: Vec<String>,
 
@@ -131,36 +137,31 @@ pub struct Card {
     #[serde(rename = "artistName")]
     pub artist_name: String,
 
-    /// The subtypes the card has, such as `"PORO"`.
-    ///
-    /// Beware of Riot's inconsistent capitalization!
-    ///
-    /// TODO: Make this a enum.
-    pub subtypes: Vec<String>,
+    /// The subtypes the card belongs to, such as *Poro* or *Yordle*.
+    pub subtypes: Vec<CardSubtype>,
 
-    /// The supertype the card belongs to, such as `"Champion"`.
-    ///
-    /// Beware of Riot's inconsistent capitalization!
-    ///
-    /// TODO: Make this a enum.
-    pub supertype: String,
+    /// The supertype the card belongs to, such as *Champion*.
+    pub supertype: CardSupertype,
 }
+
 
 impl Card {
     /// Get references to the cards associated with this one, given an [HashMap] of cards indexed by code.
-    pub fn associated_cards<'c, 'hm: 'c>(&'c self, hashmap: &'hm HashMap<String, Card>) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
-        self.associated_card_codes.iter().map(|r| hashmap.get(r))
+    pub fn associated_cards<'c, 'hm: 'c>(&'c self, index: &'hm CardIndex) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
+        self.associated_card_codes.iter().map(|r| index.get(r))
     }
 
     /// Get a reference to the first [CardArt] of the card.
     ///
-    /// # Panics
-    ///
-    /// If the card has no associated [CardArt].
-    pub fn main_art(&self) -> &CardArt {
-        self.art.get(0).expect("card to have at least one art asset")
+    /// Equivalent to calling [CardArt].[art](super::art::CardArt::art).[get(0)]([T]::get).
+    pub fn main_art(&self) -> Option<&CardArt> {
+        self.art.get(0)
     }
 }
+
+
+/// An index of [Card]s, with [Card::code]s as keys.
+pub type CardIndex = HashMap<String, Card>;
 
 
 #[cfg(test)]

@@ -2,7 +2,7 @@
 
 use crate::data::corebundle::set::{LocalizedCardSet, LocalizedCardSetIndex};
 
-/// The release set a [super::Card] may belong to.
+/// The release set a [Card](super::card::Card) may belong to.
 ///
 /// Since more sets will definitely be added in the future, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
 #[non_exhaustive]
@@ -32,7 +32,7 @@ pub enum CardSet {
     #[serde(rename = "Set6")]
     Worldwalker,
 
-    /// Events, with cards released "outside" a set.
+    /// Events, cards released "outside" a set.
     #[serde(rename = "SetEvent")]
     Events,
 

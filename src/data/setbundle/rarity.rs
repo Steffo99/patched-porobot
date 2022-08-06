@@ -2,22 +2,22 @@
 
 use crate::data::corebundle::rarity::{LocalizedCardRarity, LocalizedCardRarityIndex};
 
-/// A possible [super::Card] rarity.
+/// A possible [Card](super::card::Card) rarity.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum CardRarity {
-    /// The card has no rarity, as it probably is not collectible.
+    /// The card has no rarity, as it probably is not [collectible](super::card::Card::collectible).
     None,
 
-    /// A common card.
+    /// A common (green triangle) card.
     Common,
 
-    /// A rare card.
+    /// A rare (blue square) card.
     Rare,
 
-    /// An epic card.
+    /// An epic (purple pentagon) card.
     Epic,
 
-    /// A champion.
+    /// A champion (orange hexagon) card, sometimes referred to as *Legendary*.
     Champion,
 }
 

@@ -7,10 +7,11 @@
 use std::collections::HashMap;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
+use crate::data::setbundle::card::Card;
 
 
 /// Render a [Card] to a [String] formatted with [Telegram Bot HTML](https://core.telegram.org/bots/api#html-style).
-pub fn display_card(card: &, mg: &MappedGlobals) -> String {
+pub fn display_card(card: &Card, mg: &MappedGlobals) -> String {
     let title = format!(r#"<a href="{}"><b><i>{}</b></i></a>"#, &card.main_art().card_png, escape(&card.name));
 
     let stats = match &card.r#type {

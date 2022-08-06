@@ -1,4 +1,4 @@
-//! This module defines [CoreSet].
+//! Module defining structs representing localized card sets.
 
 use std::collections::HashMap;
 use crate::data::setbundle::set::CardSet;

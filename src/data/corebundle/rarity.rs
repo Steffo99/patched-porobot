@@ -1,4 +1,4 @@
-//! This module defines [CoreRarity].
+//! Module defining structs representing localized card rarities.
 
 use std::collections::HashMap;
 use crate::data::setbundle::rarity::CardRarity;

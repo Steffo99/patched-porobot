@@ -1,4 +1,4 @@
-//! This module defines [CoreSpellSpeed].
+//! Module defining structs representing localized spell speeds.
 
 use std::collections::HashMap;
 use crate::data::setbundle::speed::SpellSpeed;
