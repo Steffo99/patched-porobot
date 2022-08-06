@@ -1,4 +1,4 @@
-//! Definitions of structs common to all [Data Dragon] Bundles.
+//! Module defining of structs common to all [Data Dragon] Bundles.
 //!
 //! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 
