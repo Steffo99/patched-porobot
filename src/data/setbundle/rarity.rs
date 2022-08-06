@@ -1,9 +1,6 @@
 //! Module defining [CardRarity].
 
-
-use std::collections::HashMap;
-
-use crate::schema::corebundle::CoreRarity;
+use crate::data::corebundle::rarity::{LocalizedCardRarity, LocalizedCardRarityIndex};
 
 /// A possible [super::Card] rarity.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -24,12 +21,13 @@ pub enum CardRarity {
     Champion,
 }
 
-
 impl CardRarity {
-    /// Get localized text about the rarity from [crate::schema::corebundle] data.
+    /// Get the [LocalizedCardRarity] associated with this [CardRarity].
     ///
-    /// Returns `None` if no matching [CoreRarity] was found, for example if the hashmap is incomplete.
-    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardRarity, CoreRarity>) -> Option<&'hm CoreRarity> {
+    /// Returns [Option::None] if no matching [LocalizedCardRarity] was found, for example rarities missing from the index.
+    ///
+    /// Equivalent to calling [LocalizedCardRarityIndex::get].
+    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRarityIndex) -> Option<&'hm LocalizedCardRarity> {
         hm.get(&self)
     }
 }

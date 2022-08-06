@@ -6,8 +6,9 @@ use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
 use itertools::Itertools;
-use crate::load::corebundle::MappedGlobals;
-use crate::schema::setbundle::{Card, CardType};
+use crate::data::corebundle::CoreBundle;
+use crate::data::setbundle::r#type::CardType;
+use crate::data::setbundle::card::Card;
 
 
 /// Create a new [tantivy::tokenizer::TextAnalyzer] for card text.
@@ -92,7 +93,7 @@ pub fn card_schema() -> Schema {
 
 
 /// Create a new [tantivy::Document] using a [Card] in a specific [locale](MappedGlobals] as base.
-pub fn card_to_document(schema: &Schema, locale: &MappedGlobals, card: Card) -> Document {
+pub fn card_to_document(schema: &Schema, cb: &CoreBundle, card: Card) -> Document {
     use tantivy::*;
 
     let f_code = schema.get_field("code").expect("schema to have a 'code' field");
@@ -129,17 +130,17 @@ pub fn card_to_document(schema: &Schema, locale: &MappedGlobals, card: Card) -> 
         f_name => card.name,
         f_type => c_type,
         f_set => card.set
-            .localized(&locale.sets)
+            .localized(&cb.globals.sets)
             .map(|cs| cs.name.to_owned())
             .unwrap_or_else(String::new),
         f_rarity => card.rarity
-            .localized(&locale.rarities)
+            .localized(&cb.globals.rarities)
             .map(|cr| cr.name.to_owned())
             .unwrap_or_else(String::new),
         f_collectible => if card.collectible {1u64} else {0u64},
         f_regions => card.regions.iter()
             .map(|region| region
-                .localized(&locale.regions)
+                .localized(&cb.globals.regions)
                 .map(|cr| cr.name.to_owned())
                 .unwrap_or_else(String::new)
             ).join(" "),
@@ -147,12 +148,12 @@ pub fn card_to_document(schema: &Schema, locale: &MappedGlobals, card: Card) -> 
         f_cost => card.cost,
         f_health => card.health,
         f_spellspeed => card.spell_speed
-            .localized(&locale.spell_speeds)
+            .localized(&cb.globals.spell_speeds)
             .map(|ss| ss.name.to_owned())
             .unwrap_or_else(String::new),
         f_keywords => card.keywords.iter()
             .map(|keyword| keyword
-                .localized(&locale.keywords)
+                .localized(&cb.globals.keywords)
                 .map(|ck| ck.name.to_owned())
                 .unwrap_or_else(String::new))
             .join(" "),

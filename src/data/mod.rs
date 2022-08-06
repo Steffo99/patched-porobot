@@ -3,3 +3,4 @@
 pub mod corebundle;
 pub mod setbundle;
 pub mod anybundle;
+pub mod outcomes;

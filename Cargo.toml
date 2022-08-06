@@ -16,7 +16,7 @@ itertools = { version = "0.10.3" }  # Not using this yet
 # exec
 pretty_env_logger = { version = "0.4.0", optional = true }
 glob = { version = "0.3.0", optional = true }
-# schema
+# data
 serde = { version = "1.0.140", features = ["derive"] }
 serde_json = { version = "1.0.82" }
 # search
@@ -29,7 +29,7 @@ tokio = { version =  "1.20.1", features = ["rt-multi-thread", "macros"], optiona
 # matrix
 
 [features]
-# schema = []  # Always included
+# data = []  # Always included
 exec = ["pretty_env_logger", "glob"]
 search = ["tantivy"]
 telegram = ["search", "teloxide", "reqwest", "tokio"]
@@ -39,7 +39,3 @@ telegram = ["search", "teloxide", "reqwest", "tokio"]
 [lib]
 name = "patched_porobot"
 path = "src/lib.rs"
-
-[[bin]]
-name = "patched_porobot_telegram"
-path = "src/telegram/bin.rs"

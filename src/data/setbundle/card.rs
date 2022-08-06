@@ -1,8 +1,13 @@
 //! Module defining [Card].
 
-
 use std::collections::HashMap;
-use super::*;
+use super::r#type::CardType;
+use super::art::CardArt;
+use super::keyword::CardKeyword;
+use super::rarity::CardRarity;
+use super::region::CardRegion;
+use super::speed::SpellSpeed;
+use super::set::CardSet;
 
 /// A single Legends of Runeterra card as represented in a `set.json` file.
 ///
@@ -140,7 +145,6 @@ pub struct Card {
     /// TODO: Make this a enum.
     pub supertype: String,
 }
-
 
 impl Card {
     /// Get references to the cards associated with this one, given an [HashMap] of cards indexed by code.

@@ -1,10 +1,11 @@
 //! This module defines [CoreRarity].
 
-use crate::schema::setbundle::CardRarity;
+use std::collections::HashMap;
+use crate::data::setbundle::rarity::CardRarity;
 
 /// A Legends of Runeterra [CardRarity], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
-pub struct CoreRarity {
+pub struct LocalizedCardRarity {
     /// The [CardRarity] these strings refer to.
     #[serde(rename = "nameRef")]
     pub rarity: CardRarity,
@@ -13,23 +14,26 @@ pub struct CoreRarity {
     pub name: String,
 }
 
+/// How [LocalizedCardRarity]s appear in `global.json` files.
+pub type LocalizedCardRarityVec = Vec<LocalizedCardRarity>;
+/// An index of [LocalizedCardRarity]s, with [LocalizedCardRarity::rarity]s as keys.
+pub type LocalizedCardRarityIndex = HashMap<CardRarity, LocalizedCardRarity>;
+
 
 #[cfg(test)]
 mod tests {
-    use crate::schema::setbundle::CardRarity;
-
-    use super::CoreRarity;
+    use super::*;
 
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, CoreRarity>(r#"
+            serde_json::de::from_str::<'static, LocalizedCardRarity>(r#"
                 {
                     "name": "COMMON",
                     "nameRef": "Common"
                 }
             "#).unwrap(),
-            CoreRarity {
+            LocalizedCardRarity {
                 rarity: CardRarity::Common,
                 name: "COMMON".to_string(),
             }

@@ -1,9 +1,6 @@
 //! Module defining [CardSet].
 
-
-use std::collections::HashMap;
-
-use crate::schema::corebundle::CoreSet;
+use crate::data::corebundle::set::{LocalizedCardSet, LocalizedCardSetIndex};
 
 /// The release set a [super::Card] may belong to.
 ///
@@ -44,12 +41,13 @@ pub enum CardSet {
     Unsupported,
 }
 
-
 impl CardSet {
-    /// Get localized text about the set from [crate::schema::corebundle] data.
+    /// Get the [LocalizedCardSet] associated with this [CardSet].
     ///
-    /// Returns `None` if no matching [CoreSet] was found, for example for [CardSet::Unsupported] sets.
-    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardSet, CoreSet>) -> Option<&'hm CoreSet> {
+    /// Returns [Option::None] if no matching [LocalizedCardSet] was found, for example for [CardSet::Unsupported] sets.
+    ///
+    /// Equivalent to calling [LocalizedCardSetIndex::get].
+    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardSetIndex) -> Option<&'hm LocalizedCardSet> {
         hm.get(&self)
     }
 }

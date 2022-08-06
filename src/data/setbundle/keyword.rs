@@ -1,9 +1,6 @@
 //! Module defining [CardKeyword].
 
-
-use std::collections::HashMap;
-
-use crate::schema::corebundle::CoreKeyword;
+use crate::data::corebundle::keyword::{LocalizedCardKeyword, LocalizedCardKeywordIndex};
 
 /// A keyword which cards can have.
 ///
@@ -337,12 +334,13 @@ pub enum CardKeyword {
     Unsupported,
 }
 
-
 impl CardKeyword {
-    /// Get localized text about the keyword from [crate::schema::corebundle] data.
+    /// Get the [LocalizedCardKeyword] associated with this [CardKeyword].
     ///
-    /// Returns `None` if no matching [CoreKeyword] was found, for example for [CardKeyword::Unsupported] keywords.
-    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardKeyword, CoreKeyword>) -> Option<&'hm CoreKeyword> {
+    /// Returns [Option::None] if no matching [LocalizedCardKeyword] was found, for example for [CardKeyword::Unsupported] keywords.
+    ///
+    /// Equivalent to calling [LocalizedCardKeywordIndex::get].
+    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardKeywordIndex) -> Option<&'hm LocalizedCardKeyword> {
         hm.get(&self)
     }
 }

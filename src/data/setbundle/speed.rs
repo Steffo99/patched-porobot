@@ -1,9 +1,6 @@
 //! Module defining [SpellSpeed].
 
-
-use std::collections::HashMap;
-
-use crate::schema::corebundle::CoreSpellSpeed;
+use crate::data::corebundle::speed::{LocalizedSpellSpeed, LocalizedSpellSpeedIndex};
 
 /// A possible spell speed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -19,12 +16,13 @@ pub enum SpellSpeed {
     Burst,
 }
 
-
 impl SpellSpeed {
-    /// Get localized text about the speed from [crate::schema::corebundle] data.
+    /// Get the [LocalizedSpellSpeed] associated with this [SpellSpeed].
     ///
-    /// Returns `None` if no matching [CoreSpellSpeed] was found, for example if the hashmap is incomplete.
-    pub fn localized<'hm>(&self, hm: &'hm HashMap<SpellSpeed, CoreSpellSpeed>) -> Option<&'hm CoreSpellSpeed> {
+    /// Returns [Option::None] if no matching [LocalizedSpellSpeed] was found, for example spell speeds missing from the index.
+    ///
+    /// Equivalent to calling [LocalizedSpellSpeedIndex::get].
+    pub fn localized<'hm>(&self, hm: &'hm LocalizedSpellSpeedIndex) -> Option<&'hm LocalizedSpellSpeed> {
         hm.get(&self)
     }
 }

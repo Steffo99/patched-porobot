@@ -1,9 +1,6 @@
 //! Module defining [CardRegion].
 
-
-use std::collections::HashMap;
-
-use crate::schema::corebundle::CoreRegion;
+use crate::data::corebundle::region::{LocalizedCardRegion, LocalizedCardRegionIndex};
 
 /// A region to which [super::Card]s can belong to.
 ///
@@ -45,12 +42,13 @@ pub enum CardRegion {
     Unsupported,
 }
 
-
 impl CardRegion {
-    /// Get localized text about the region from [crate::schema::corebundle] data.
+    /// Get the [LocalizedCardRegion] associated with this [CardRegion].
     ///
-    /// Returns `None` if no matching [CoreRegion] was found, for example for [CardRegion::Unsupported] regions.
-    pub fn localized<'hm>(&self, hm: &'hm HashMap<CardRegion, CoreRegion>) -> Option<&'hm CoreRegion> {
+    /// Returns [Option::None] if no matching [LocalizedCardRegion] was found, for example for [CardRegion::Unsupported] regions.
+    ///
+    /// Equivalent to calling [LocalizedCardRegionIndex::get].
+    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRegionIndex) -> Option<&'hm LocalizedCardRegion> {
         hm.get(&self)
     }
 }
