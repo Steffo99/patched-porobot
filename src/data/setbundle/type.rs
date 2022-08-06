@@ -32,6 +32,20 @@ pub enum CardType {
 }
 
 
+impl From<CardType> for String {
+    fn from(r#type: CardType) -> Self {
+        match r#type {
+            CardType::Spell => String::from("Spell"),
+            CardType::Unit => String::from("Unit"),
+            CardType::Ability => String::from("Ability"),
+            CardType::Landmark => String::from("Landmark"),
+            CardType::Trap => String::from("Trap"),
+            CardType::Unsupported => String::from("Unknown"),
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::CardType;
