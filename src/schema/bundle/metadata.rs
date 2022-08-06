@@ -1,6 +1,8 @@
-/// The contents of the `anybundle.json` file of a bundle.
+//! This module defines [BundleMetadata].
+
+/// The contents of the `metadata.json` file of a bundle.
 ///
-/// Both Core Bundles and Set Bundles are bundles, and both have anybundle.
+/// Both Core Bundles and Set Bundles are bundles, and both have `metadata.json` files.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct BundleMetadata {
     /// The locales included in the bundle.
