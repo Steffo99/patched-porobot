@@ -211,7 +211,7 @@ impl CardSearchEngine {
         doc!(
             fields.code => card.code,
             fields.name => card.name,
-            fields.r#type => String::from(card.r#type),
+            fields.r#type => String::from(&card.r#type),
             fields.set => card.set
                 .localized(&globals.sets)
                 .map(|cs| cs.name.to_owned())
