@@ -1,4 +1,4 @@
-//! This module defines a [tantivy] search engine to find [Card]s.
+//! Module defining a search engine to find [Card]s.
 
 use tantivy::{Document, Index, IndexReader, IndexWriter};
 use tantivy::collector::TopDocs;

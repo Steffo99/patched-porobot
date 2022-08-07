@@ -1,3 +1,3 @@
-//! This module implements full-text search on Legends of Runeterra data.
+//! Module implementing full-text search on Legends of Runeterra data, using [tantivy].
 
 pub mod cardsearch;
