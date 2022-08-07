@@ -308,7 +308,7 @@ impl CardSearchEngine {
 /// Struct containing all retrieved [CardSearchEngine] [Field]s.
 ///
 /// This makes it easier to pass them around without having to re-fetch them every time they are used.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct CardSchemaFields {
     /// [Card::code].
     pub code: Field,
