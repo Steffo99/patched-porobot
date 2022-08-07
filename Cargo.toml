@@ -35,7 +35,3 @@ search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio"]
 # discord = ["exec", "search"]
 # matrix = ["exec", "search"]
-
-[lib]
-name = "patched_porobot"
-path = "src/lib.rs"
