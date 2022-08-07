@@ -2,7 +2,6 @@
 //!
 //! [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 
-use std::collections::HashMap;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
 use crate::data::setbundle::card::Card;
@@ -24,7 +23,7 @@ use crate::data::setbundle::supertype::CardSupertype;
 pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
     let title = format!(
         r#"<a href="{}"><b><i>{}</b></i></a>"#,
-        &card.main_art().card_png,
+        &card.main_art().expect("Card to have at least one illustration").card_png,
         escape(&card.name),
     );
 
@@ -52,6 +51,8 @@ pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
 
     let breadcrumbs = format!("{} › {} › {}", &set, &regions, &r#type);
 
+    let keywords = display_keywords(&card.keywords, &globals.keywords);
+
     let description = escape(&card.localized_description_text);
 
     let flavor = format!(
@@ -61,7 +62,7 @@ pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
 
     let artist = format!(
         r#"<a href="{}">Illustration by {}</a>"#,
-        &card.main_art().full_png,
+        &card.main_art().expect("Card to have at least one illustration").full_png,
         escape(&card.artist_name)
     );
 
@@ -70,6 +71,7 @@ pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
         title=title,
         stats=stats,
         breadcrumbs=breadcrumbs,
+        keywords=keywords,
         description=description,
         flavor=flavor,
         artist=artist,
@@ -121,7 +123,7 @@ fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardS
 
     result.push_str(&*format!(
         "<i>{}</i>",
-        escape(&String::from(r#type)),
+        escape(&*String::from(r#type)),
     ));
 
     if subtypes.len() > 0 {
@@ -129,10 +131,7 @@ fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardS
             &*format!(
                 " › {}",
                 subtypes.iter()
-                    .map(|subtype| subtype
-                        .map(|o| format!("<i>{}</i>", escape(&o)))
-                        .unwrap_or_else(|| "Unknown".to_string())
-                    )
+                    .map(|subtype| format!("<i>{}</i>", escape(&subtype)))
                     .join(", ")
             )
         )
