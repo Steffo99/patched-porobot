@@ -15,6 +15,7 @@ use crate::data::setbundle::card::{Card, CardIndex};
 /// To create a new engine, use [CardSearchEngine::new].
 ///
 /// A separate search engine should be created for every locale.
+#[derive(Debug)]
 pub struct CardSearchEngine {
     /// The index of the search engine.
     index: Index,
@@ -307,6 +308,7 @@ impl CardSearchEngine {
 /// Struct containing all retrieved [CardSearchEngine] [Field]s.
 ///
 /// This makes it easier to pass them around without having to re-fetch them every time they are used.
+#[derive(Debug)]
 struct CardSchemaFields {
     /// [Card::code].
     pub code: Field,
