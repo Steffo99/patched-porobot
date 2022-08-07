@@ -15,7 +15,6 @@ use crate::data::setbundle::card::{Card, CardIndex};
 /// To create a new engine, use [CardSearchEngine::new].
 ///
 /// A separate search engine should be created for every locale.
-#[derive(Debug)]
 pub struct CardSearchEngine {
     /// The index of the search engine.
     index: Index,
