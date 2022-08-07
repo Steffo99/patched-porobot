@@ -20,7 +20,7 @@ use crate::data::setbundle::supertype::CardSupertype;
 /// Render a [Card] in [Telegram Bot HTML].
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
-pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
+pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     let title = format!(
         r#"<a href="{}"><b><i>{}</b></i></a>"#,
         &card.main_art().expect("Card to have at least one illustration").card_png,
