@@ -1,1 +1,1 @@
-pub(crate) mod display;
+pub mod display;
