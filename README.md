@@ -1,4 +1,4 @@
-# ![](icon.jpg) patched-porobot
+# ![](icon.png) patched-porobot
 WIP: Legends of Runeterra card bot
 
 ## Legal
