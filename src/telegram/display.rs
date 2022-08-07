@@ -31,7 +31,7 @@ pub fn display_card(card: &Card, mg: &MappedGlobals) -> String {
 
     let description = card.localized_description_text.clone();
     let flavor = format!("<i>{}</i>", &card.localized_flavor_text);
-    let artist = format!(r#"<a href="{}">Art by {}</a>"#, &card.main_art().full_png, &card.artist_name);
+    let artist = format!(r#"<a href="{}">Illustration by {}</a>"#, &card.main_art().full_png, &card.artist_name);
 
     format!(
         "{title} {stats}\n{breadcrumbs}\n\n{description}\n\n-----\n{flavor}\n\n{artist}",
