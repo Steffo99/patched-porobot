@@ -32,8 +32,8 @@ pub enum CardType {
 }
 
 
-impl From<CardType> for String {
-    fn from(r#type: CardType) -> Self {
+impl From<&CardType> for String {
+    fn from(r#type: &CardType) -> Self {
         match r#type {
             CardType::Spell => String::from("Spell"),
             CardType::Unit => String::from("Unit"),
