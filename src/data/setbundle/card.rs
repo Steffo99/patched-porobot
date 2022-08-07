@@ -153,7 +153,7 @@ impl Card {
 
     /// Get a reference to the first [CardArt] of the card.
     ///
-    /// Equivalent to calling [CardArt].[art](super::art::CardArt::art).[get(0)]([T]::get).
+    /// Equivalent to calling [Card].[art](Card::art).[get(0)]([T]::get).
     pub fn main_art(&self) -> Option<&CardArt> {
         self.art.get(0)
     }

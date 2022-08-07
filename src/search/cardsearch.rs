@@ -249,7 +249,7 @@ impl CardSearchEngine {
         )
     }
 
-    /// Build the [tantivy::QueryParser] of the search engine.
+    /// Build the [QueryParser] of the search engine.
     fn parser(index: &Index, fields: CardSchemaFields) -> QueryParser {
         QueryParser::for_index(
             &index,
