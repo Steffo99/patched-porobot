@@ -1,40 +1,72 @@
-//! This module defines functions to convert [patched-porobot] structs to [String]s formatted with [Telegram Bot HTML](https://core.telegram.org/bots/api#html-style).
+//! Module defining functions to format Legends of Runeterra data in [Telegram Bot HTML].
 //!
-//! TODO: Add support for non-latin languages.
-//!
-//! TODO: Preferably refactor everything in here, as the code is poor quality.
+//! [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 
 use std::collections::HashMap;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
 use crate::data::setbundle::card::Card;
+use crate::data::setbundle::r#type::CardType;
+use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
+use crate::data::corebundle::keyword::LocalizedCardKeywordIndex;
+use crate::data::corebundle::region::LocalizedCardRegionIndex;
+use crate::data::corebundle::set::LocalizedCardSetIndex;
+use crate::data::setbundle::keyword::CardKeyword;
+use crate::data::setbundle::region::CardRegion;
+use crate::data::setbundle::set::CardSet;
+use crate::data::setbundle::subtype::CardSubtype;
+use crate::data::setbundle::supertype::CardSupertype;
 
 
-/// Render a [Card] to a [String] formatted with [Telegram Bot HTML](https://core.telegram.org/bots/api#html-style).
-pub fn display_card(card: &Card, mg: &MappedGlobals) -> String {
-    let title = format!(r#"<a href="{}"><b><i>{}</b></i></a>"#, &card.main_art().card_png, escape(&card.name));
+/// Render a [Card] in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+pub fn display_card(card: &Card, globals: &LocalizedGlobalsIndexes) -> String {
+    let title = format!(
+        r#"<a href="{}"><b><i>{}</b></i></a>"#,
+        &card.main_art().card_png,
+        escape(&card.name),
+    );
 
     let stats = match &card.r#type {
-        CardType::Spell => format!("{} mana", escape(&card.cost.to_string())),
-        CardType::Unit => format!("{} mana {}|{}", escape(&card.cost.to_string()), escape(&card.attack.to_string()), escape(&card.health.to_string())),
-        CardType::Ability => "".to_string(),
-        CardType::Landmark => format!("{} mana", &card.cost),
-        CardType::Trap => "".to_string(),
-        CardType::Unsupported => "".to_string(),
+        CardType::Spell => format!(
+            "{} mana",
+            escape(&card.cost.to_string()),
+        ),
+        CardType::Unit => format!(
+            "{} mana {}|{}",
+            escape(&card.cost.to_string()),
+            escape(&card.attack.to_string()),
+            escape(&card.health.to_string()),
+        ),
+        CardType::Landmark => format!(
+            "{} mana",
+            &card.cost
+        ),
+        _ => "".to_string(),
     };
 
-    let set = format!("<i>{}</i>", escape(&display_set(card.set, &mg.sets)));
-    let regions = format!("<i>{}</i>", escape(&display_regions(&card.regions, &mg.regions)));
-    let r#type = format!("<i>{}</i>", escape(&display_type(card.r#type)));
+    let set = display_set(&card.set, &globals.sets);
+    let regions = display_regions(&card.regions, &globals.regions);
+    let r#type = display_types(&card.r#type, &card.supertype, &card.subtypes);
 
     let breadcrumbs = format!("{} › {} › {}", &set, &regions, &r#type);
 
-    let description = card.localized_description_text.clone();
-    let flavor = format!("<i>{}</i>", &card.localized_flavor_text);
-    let artist = format!(r#"<a href="{}">Illustration by {}</a>"#, &card.main_art().full_png, &card.artist_name);
+    let description = escape(&card.localized_description_text);
+
+    let flavor = format!(
+        "<i>{}</i>",
+        escape(&card.localized_flavor_text)
+    );
+
+    let artist = format!(
+        r#"<a href="{}">Illustration by {}</a>"#,
+        &card.main_art().full_png,
+        escape(&card.artist_name)
+    );
 
     format!(
-        "{title} {stats}\n{breadcrumbs}\n\n{description}\n\n-----\n{flavor}\n\n{artist}",
+        "{title} {stats}\n{breadcrumbs}\n\n{keywords}\n{description}\n\n-----\n{flavor}\n\n{artist}",
         title=title,
         stats=stats,
         breadcrumbs=breadcrumbs,
@@ -45,36 +77,81 @@ pub fn display_card(card: &Card, mg: &MappedGlobals) -> String {
 }
 
 
-/// Render a [CardSet] to a [String].
-fn display_set(set: CardSet, hm: &HashMap<CardSet, CoreSet>) -> String {
-    set
-        .localized(&hm)
-        .map(|o| o.name.clone())
-        .unwrap_or_else(|| "Unknown".to_string())
+/// Render a [CardSet] in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+fn display_set(set: &CardSet, hm: &LocalizedCardSetIndex) -> String {
+    format!(
+        "<i>{}</i>",
+        set
+            .localized(hm)
+            .map(|o| format!("<i>{}</i>", escape(&o.name)))
+            .unwrap_or_else(|| "Unknown".to_string())
+    )
 }
 
 
-/// Render a slice of [CardRegion]s to a [String].
-fn display_regions(regions: &[CardRegion], hm: &HashMap<CardRegion, CoreRegion>) -> String {
+/// Render a slice of [CardRegion]s in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+fn display_regions(regions: &[CardRegion], hm: &LocalizedCardRegionIndex) -> String {
     regions
         .iter()
         .map(|region| region
-            .localized(&hm)
-            .map(|o| o.name.clone())
+            .localized(hm)
+            .map(|o| format!("<i>{}</i>", escape(&o.name)))
             .unwrap_or_else(|| "Unknown".to_string())
         )
         .join(", ")
 }
 
 
-/// Render a [CardType] to a [String].
-fn display_type(r#type: CardType) -> String {
-    match r#type {
-        CardType::Spell => "Spell",
-        CardType::Unit => "Unit",
-        CardType::Ability => "Ability",
-        CardType::Landmark => "Landmark",
-        CardType::Trap => "Trap",
-        CardType::Unsupported => "Unknown",
-    }.to_string()
+/// Render the [CardType], the [CardSupertype] and the [CardSubtype]s in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardSubtype]) -> String {
+    let mut result = String::new();
+
+    if supertype != "" {
+        result.push_str(&*format!(
+            "<i>{}</i> › ",
+            escape(&supertype),
+        ));
+    };
+
+    result.push_str(&*format!(
+        "<i>{}</i>",
+        escape(&String::from(r#type)),
+    ));
+
+    if subtypes.len() > 0 {
+        result.push_str(
+            &*format!(
+                " › {}",
+                subtypes.iter()
+                    .map(|subtype| subtype
+                        .map(|o| format!("<i>{}</i>", escape(&o)))
+                        .unwrap_or_else(|| "Unknown".to_string())
+                    )
+                    .join(", ")
+            )
+        )
+    }
+
+    result
+}
+
+
+/// Render a slice of [CardKeyword]s in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) -> String {
+    keywords
+        .iter()
+        .map(|keyword| keyword
+            .localized(hm)
+            .map(|o| format!("[<b>{}</b>]", escape(&o.name)))
+            .unwrap_or_else(|| "Unknown".to_string())
+        )
+        .join(" ")
 }
