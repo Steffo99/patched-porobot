@@ -28,7 +28,7 @@ impl CardRarity {
     ///
     /// Equivalent to calling [LocalizedCardRarityIndex::get].
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRarityIndex) -> Option<&'hm LocalizedCardRarity> {
-        hm.get(&self)
+        hm.get(self)
     }
 }
 

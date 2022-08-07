@@ -48,7 +48,7 @@ impl CardSet {
     ///
     /// Equivalent to calling [LocalizedCardSetIndex::get].
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardSetIndex) -> Option<&'hm LocalizedCardSet> {
-        hm.get(&self)
+        hm.get(self)
     }
 }
 

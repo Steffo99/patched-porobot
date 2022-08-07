@@ -49,7 +49,7 @@ impl CardRegion {
     ///
     /// Equivalent to calling [LocalizedCardRegionIndex::get].
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRegionIndex) -> Option<&'hm LocalizedCardRegion> {
-        hm.get(&self)
+        hm.get(self)
     }
 }
 

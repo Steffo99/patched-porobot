@@ -23,7 +23,7 @@ impl SpellSpeed {
     ///
     /// Equivalent to calling [LocalizedSpellSpeedIndex::get].
     pub fn localized<'hm>(&self, hm: &'hm LocalizedSpellSpeedIndex) -> Option<&'hm LocalizedSpellSpeed> {
-        hm.get(&self)
+        hm.get(self)
     }
 }
 

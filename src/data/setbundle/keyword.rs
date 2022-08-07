@@ -343,7 +343,7 @@ impl CardKeyword {
     ///
     /// Equivalent to calling [LocalizedCardKeywordIndex::get].
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardKeywordIndex) -> Option<&'hm LocalizedCardKeyword> {
-        hm.get(&self)
+        hm.get(self)
     }
 }
 
