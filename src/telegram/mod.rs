@@ -4,3 +4,4 @@
 
 pub mod display;
 pub mod inline;
+pub mod handler;

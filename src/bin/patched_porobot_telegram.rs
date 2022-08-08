@@ -14,6 +14,7 @@ async fn main() {
     use patched_porobot::data::corebundle::globals::LocalizedGlobalsIndexes;
     use patched_porobot::search::cardsearch::CardSearchEngine;
     use patched_porobot::telegram::inline::card_to_inlinequeryresult;
+    use patched_porobot::telegram::handler::{inline_query_handler, message_handler};
     use teloxide::payloads::{AnswerInlineQuery, SendMessage};
     use teloxide::requests::JsonRequest;
     use teloxide::types::{Recipient, ParseMode};
@@ -63,117 +64,11 @@ async fn main() {
     let me = bot.get_me().send().await.expect("Telegram bot parameters to be valid");
     debug!("Created Telegram bot!");
 
-    debug!("Creating message handler...");
-    let message_handler = Update::filter_message().chain(dptree::endpoint(move |message: Message, bot: Bot| {
-        info!("Handling private message: `{:?}`", &message.text());
-
-        let payload = SendMessage {
-            chat_id: Recipient::Id(message.chat.id.clone()),
-            // TODO: Add a proper message here.
-            text: "TODO: Introduction message!".to_string(),
-            parse_mode: Some(ParseMode::Html),
-            entities: None,
-            disable_web_page_preview: Some(true),
-            disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
-            allow_sending_without_reply: None,
-            reply_markup: None
-        };
-
-        async move {
-            let telegram_reply = JsonRequest::new(bot.clone(), payload).send().await;
-
-            if let Err(e) = telegram_reply {
-                error!("{:?}", &e);
-            }
-
-            respond(())
-        }
-    }));
-    debug!("Created message handler!");
-
-    debug!("Creating inline query handler...");
-    let inline_query_handler = Update::filter_inline_query().chain(dptree::endpoint(move |query: InlineQuery, bot: Bot| {
-        info!("Handling inline query: `{}`", &query.query);
-
-        // It's not a real loop, it's just to make the code flow more tolerable.
-        let payload: AnswerInlineQuery = loop {
-            if query.query.len() == 0 {
-                break AnswerInlineQuery {
-                    inline_query_id: query.id.clone(),
-                    results: vec![],
-                    cache_time: None,
-                    is_personal: Some(false),
-                    next_offset: None,
-                    switch_pm_text: Some("Open help message".to_string()),
-                    switch_pm_parameter: Some("err-no-query".to_string()),
-                }
-            }
-
-            debug!("Querying the search engine...");
-            let results = engine.query(&query.query, 50);
-
-            if let Err(_) = results {
-                debug!("Invalid query syntax.");
-                break AnswerInlineQuery {
-                    inline_query_id: query.id.clone(),
-                    results: vec![],
-                    cache_time: None,
-                    is_personal: Some(false),
-                    next_offset: None,
-                    switch_pm_text: Some("Invalid query syntax".to_string()),
-                    switch_pm_parameter: Some("err-invalid-query".to_string()),
-                }
-            }
-            let results = results.unwrap();
-
-            let len = results.len();
-            if len == 0 {
-                debug!("No cards found.");
-                break AnswerInlineQuery {
-                    inline_query_id: query.id.clone(),
-                    results: vec![],
-                    cache_time: None,
-                    is_personal: Some(false),
-                    next_offset: None,
-                    switch_pm_text: Some("No cards found".to_string()),
-                    switch_pm_parameter: Some("err-no-results".to_string()),
-                }
-            }
-
-            debug!("Found {} cards.", &len);
-            break AnswerInlineQuery {
-                inline_query_id: query.id.clone(),
-                results: results
-                    .iter()
-                    .map(|card| card_to_inlinequeryresult(&engine.globals, card))
-                    .collect_vec(),
-                cache_time: Some(300),
-                is_personal: Some(false),
-                next_offset: None,
-                switch_pm_text: None,
-                switch_pm_parameter: None,
-            }
-        };
-
-        async move {
-            let telegram_reply = JsonRequest::new(bot.clone(), payload).send().await;
-
-            if let Err(e) = telegram_reply {
-                error!("{:?}", &e);
-            }
-
-            respond(())
-        }
-    }));
-    debug!("Create inline query handler!");
-
-    debug!("Merging handlers...");
+    debug!("Creating handlers...");
     let handler = dptree::entry()
-        .branch(inline_query_handler)
-        .branch(message_handler);
-    debug!("Merged handlers!");
+        .branch(inline_query_handler(&engine))
+        .branch(message_handler());
+    debug!("Created handlers!");
 
     info!("@{} is ready!", &me.username.as_ref().expect("bot to have an username"));
     Dispatcher::builder(bot, handler)
