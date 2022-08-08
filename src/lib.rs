@@ -7,8 +7,8 @@
 //! If you are looking for the documentation of its implementations, please visit one of the following pages:
 //!
 //! - [Usage of the Telegram bot](../patched_porobot_telegram)
-//! - [Usage of the Discord bot](../patched_porobot_discord)
-//! - [Usage of the Matrix bot](../patched_porobot_matrix)
+//! - ~~[Usage of the Discord bot](../patched_porobot_discord)~~
+//! - ~~[Usage of the Matrix bot](../patched_porobot_matrix)~~
 //!
 //! # Features
 //!
@@ -21,8 +21,8 @@
 //! Additionally, every one of the following features enables the compilation of an additional binary target:
 //!
 //! - [`telegram`] enables the compilation of `patched_porobot_telegram`, a [Telegram inline bot](https://core.telegram.org/bots/api) allowing users to search and send cards in any Telegram chat;
-//! - [`discord`] enables the compilation of `patched_porobot_discord`, a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) allowing Discord servers the bot is added to to search and send cards in their channels;
-//! - [`matrix`] enables the compilation of `patched_porobot_matrix`, a Matrix bot parsing messages in the rooms where it is added to to send details about the cards mentioned in messages.
+//! - ~~[`discord`] enables the compilation of `patched_porobot_discord`, a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) allowing Discord servers the bot is added to to search and send cards in their channels~~;
+//! - ~~[`matrix`] enables the compilation of `patched_porobot_matrix`, a Matrix bot parsing messages in the rooms where it is added to to send details about the cards mentioned in messages~~.
 //!
 //! # Legal
 //!
