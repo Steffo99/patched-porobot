@@ -1,6 +1,9 @@
 //! Module defining [CardArt].
 
 
+use lazy_static::lazy_static;
+use regex::Regex;
+
 /// The illustration of a [Card](super::card::Card), also referred to as an *art asset*.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
@@ -40,9 +43,13 @@ impl CardArt {
     /// ```
     ///
     pub fn card_jpg(&self) -> String {
-        self.card_png
-            .replace("https://dd.b.pvp.net/latest/set1", "https://poro.steffo.eu/set1-en_us")
-            .replace(".png", ".jpg")
+        lazy_static! {
+            static ref GET_JPG: Regex = Regex::new(
+                r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
+            ).unwrap();
+        }
+
+        GET_JPG.replace_all(&self.card_png, "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg").to_string()
     }
 
     /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via `poro.steffo.eu`.
@@ -56,9 +63,13 @@ impl CardArt {
     /// ```
     ///
     pub fn full_jpg(&self) -> String {
-        self.full_png
-            .replace("https://dd.b.pvp.net/latest/set1", "https://poro.steffo.eu/set1-en_us")
-            .replace(".png", ".jpg")
+        lazy_static! {
+            static ref GET_JPG: Regex = Regex::new(
+                r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
+            ).unwrap();
+        }
+
+        GET_JPG.replace_all(&self.full_png, "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg").to_string()
     }
 }
 

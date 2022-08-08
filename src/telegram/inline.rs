@@ -2,7 +2,7 @@
 //!
 //! [inline mode]: https://core.telegram.org/bots/api#inline-mode
 
-use teloxide::types::{InlineQueryResult, InlineQueryResultPhoto, InputMessageContent, InputMessageContentText, ParseMode};
+use teloxide::types::{InlineQueryResult, InlineQueryResultPhoto, ParseMode};
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::setbundle::card::Card;
 use crate::telegram::display::display_card;
@@ -13,6 +13,8 @@ pub fn card_to_inlinequeryresult(globals: &LocalizedGlobalsIndexes, card: &Card)
     InlineQueryResult::Photo(InlineQueryResultPhoto {
         id: card.code.to_owned(),
         title: Some(card.name.to_owned()),
+        caption: Some(display_card(&globals, &card)),
+        parse_mode: Some(ParseMode::Html),
         photo_url: card
             .main_art()
             .expect("Card to have at least one illustration")
@@ -26,17 +28,9 @@ pub fn card_to_inlinequeryresult(globals: &LocalizedGlobalsIndexes, card: &Card)
         photo_width: Some(680),
         photo_height: Some(1024),
 
-        input_message_content: Some(InputMessageContent::Text(InputMessageContentText {
-            message_text: display_card(&globals, &card),
-            parse_mode: Some(ParseMode::Html),
-            entities: None,
-            disable_web_page_preview: Some(true)
-        })),
-
         description: None,
-        caption: None,
-        parse_mode: None,
         caption_entities: None,
         reply_markup: None,
+        input_message_content: None,
     })
 }

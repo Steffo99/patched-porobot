@@ -47,12 +47,17 @@ impl CardSearchEngine {
     /// Create the [tantivy::schema::TextOptions] for card codes.
     ///
     /// Card codes should:
-    /// - never be tokenized;
+    /// - TODO: be tokenized without alterations;
+    /// - ignore positioning;
     /// - be retrievable (what [tantivy] calls "stored").
     fn options_code() -> TextOptions {
         use tantivy::schema::*;
 
         TextOptions::default()
+            .set_indexing_options(TextFieldIndexing::default()
+                .set_tokenizer("card")
+                .set_index_option(IndexRecordOption::Basic)
+            )
             .set_stored()
             .set_fast()
     }
@@ -253,7 +258,14 @@ impl CardSearchEngine {
     fn parser(index: &Index, fields: CardSchemaFields) -> QueryParser {
         QueryParser::for_index(
             &index,
-            Vec::from(fields)
+            vec![
+                fields.code,
+                fields.name,
+                fields.description,
+                fields.flavor,
+                fields.subtypes,
+                fields.supertype,
+            ]
         )
     }
 
@@ -345,29 +357,4 @@ struct CardSchemaFields {
     pub subtypes: Field,
     /// [Card::supertype].
     pub supertype: Field,
-}
-
-impl From<CardSchemaFields> for Vec<Field> {
-    fn from(fields: CardSchemaFields) -> Self {
-        vec![
-            fields.code,
-            fields.name,
-            fields.r#type,
-            fields.set,
-            fields.rarity,
-            fields.collectible,
-            fields.regions,
-            fields.attack,
-            fields.cost,
-            fields.health,
-            fields.spellspeed,
-            fields.keywords,
-            fields.description,
-            fields.levelup,
-            fields.flavor,
-            fields.artist,
-            fields.subtypes,
-            fields.supertype,
-        ]
-    }
 }

@@ -22,24 +22,23 @@ use crate::data::setbundle::supertype::CardSupertype;
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     let title = format!(
-        r#"<a href="{}"><b><i>{}</b></i></a>"#,
-        &card.main_art().expect("Card to have at least one illustration").card_png,
+        "<b><u>{}</u></b>\n",
         escape(&card.name),
     );
 
     let stats = match &card.r#type {
         CardType::Spell => format!(
-            "{} mana",
+            "{} mana\n",
             escape(&card.cost.to_string()),
         ),
         CardType::Unit => format!(
-            "{} mana {}|{}",
+            "{} mana {}|{}\n",
             escape(&card.cost.to_string()),
             escape(&card.attack.to_string()),
             escape(&card.health.to_string()),
         ),
         CardType::Landmark => format!(
-            "{} mana",
+            "{} mana\n",
             &card.cost
         ),
         _ => "".to_string(),
@@ -49,32 +48,25 @@ pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     let regions = display_regions(&card.regions, &globals.regions);
     let r#type = display_types(&card.r#type, &card.supertype, &card.subtypes);
 
-    let breadcrumbs = format!("{} › {} › {}", &set, &regions, &r#type);
+    let breadcrumbs = format!("{} › {} › {}\n", &set, &regions, &r#type);
 
     let keywords = display_keywords(&card.keywords, &globals.keywords);
 
-    let description = escape(&card.localized_description_text);
+    let description = format!("{}\n", escape(&card.localized_description_text));
 
     let flavor = format!(
-        "<i>{}</i>",
+        "<i>{}</i>\n",
         escape(&card.localized_flavor_text)
     );
 
     let artist = format!(
-        r#"<a href="{}">Illustration by {}</a>"#,
+        r#"<a href="{}">Illustration</a> by {}"#,
         &card.main_art().expect("Card to have at least one illustration").full_png,
         escape(&card.artist_name)
     );
 
     format!(
-        "{title} {stats}\n{breadcrumbs}\n\n{keywords}\n{description}\n\n-----\n{flavor}\n\n{artist}",
-        title=title,
-        stats=stats,
-        breadcrumbs=breadcrumbs,
-        keywords=keywords,
-        description=description,
-        flavor=flavor,
-        artist=artist,
+        "{title}{breadcrumbs}\n{keywords}{stats}{description}\n-----\n{flavor}{artist}",
     )
 }
 
@@ -145,12 +137,16 @@ fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardS
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) -> String {
-    keywords
-        .iter()
-        .map(|keyword| keyword
-            .localized(hm)
-            .map(|o| format!("[<b>{}</b>]", escape(&o.name)))
-            .unwrap_or_else(|| "Unknown".to_string())
-        )
-        .join(" ")
+    format!(
+        "{}\n",
+        keywords
+            .iter()
+            .map(|keyword| keyword
+                .localized(hm)
+                .map(|o| format!("[<b>{}</b>]", escape(&o.name)))
+                .unwrap_or_else(|| "Unknown".to_string())
+            )
+            .join(" ")
+    )
+
 }

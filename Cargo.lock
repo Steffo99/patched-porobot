@@ -1036,8 +1036,10 @@ version = "0.3.0"
 dependencies = [
  "glob",
  "itertools 0.10.3",
+ "lazy_static",
  "log",
  "pretty_env_logger",
+ "regex",
  "reqwest",
  "serde",
  "serde_json",
