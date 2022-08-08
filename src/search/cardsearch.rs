@@ -1,6 +1,6 @@
 //! Module defining a search engine to find [Card]s.
 
-use tantivy::{Document, Index, IndexReader, IndexWriter};
+use tantivy::{Document, Index, IndexReader, IndexWriter, Score};
 use tantivy::collector::TopDocs;
 use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
@@ -271,7 +271,9 @@ impl CardSearchEngine {
             ]
         );
         parser.set_conjunction_by_default();
-        // parser.set_field_boost();
+        parser.set_field_boost(fields.code, 3.0);
+        parser.set_field_boost(fields.name, 3.0);
+        parser.set_field_boost(fields.flavor, 0.7);
         parser
     }
 
