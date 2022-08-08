@@ -2,7 +2,7 @@
 
 Legends of Runeterra card library and bots
 
-\[ [**Telegram**] | [Documentation] \]
+\[ **[Telegram]** | [Documentation] \]
 
 [Telegram]: https://t.me/patchedporobot
 [Documentation]: https://docs.rs/crate/patched_porobot/latest
