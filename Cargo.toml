@@ -35,5 +35,5 @@ tokio = { version =  "1.20.1", features = ["rt-multi-thread", "macros"], optiona
 exec = ["pretty_env_logger", "glob"]
 search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio"]
-# discord = ["exec", "search"]
+discord = ["exec", "search"]
 # matrix = ["exec", "search"]
