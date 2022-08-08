@@ -107,24 +107,24 @@ impl CardSearchEngine {
     ///
     /// It will contain [Field]s with the following names:
     ///
-    /// | Name          | Type                             |
-    /// |---------------|----------------------------------|
-    /// | `code`        | [code](Self::options_code)       |
-    /// | `name`        | [text](Self::options_text)       |
-    /// | `type`        | [keyword](Self::options_keyword) |
-    /// | `set`         | [keyword](Self::options_keyword) |
-    /// | `rarity`      | [keyword](Self::options_keyword) |
-    /// | `collectible` | [number](Self::options_number)   |
-    /// | `regions`     | [keyword](Self::options_keyword) |
-    /// | `attack`      | [number](Self::options_number)   |
-    /// | `cost`        | [number](Self::options_number)   |
-    /// | `health`      | [number](Self::options_number)   |
-    /// | `spellspeed`  | [keyword](Self::options_keyword) |
-    /// | `keywords`    | [keyword](Self::options_keyword) |
-    /// | `description` | [text](Self::options_text)       |
-    /// | `levelup`     | [text](Self::options_text)       |
-    /// | `flavor`      | [text](Self::options_text)       |
-    /// | `artist`      | [text](Self::options_text)       |
+    /// | Name          | Type                             | Description |
+    /// |---------------|----------------------------------|-------------|
+    /// | `code`        | [code](Self::options_code)       | The internal [card code](Card::code), such as `01IO012`. |
+    /// | `name`        | [text](Self::options_text)       | The [name of the card](Card::name). |
+    /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::type), such as `Unit`. |
+    /// | `set`         | [keyword](Self::options_keyword) | The [set the card belongs to](Card::set), such as `Beyond the Bandlewood`. |
+    /// | `rarity`      | [keyword](Self::options_keyword) | The [rarity of the card](patched_porobot::data::setbundle::card::Card::rarity), such as `Rare`, or `Champion`. |
+    /// | `collectible` | [number](Self::options_number)   | `1` if the [card is collectible](Card::collectible), `0` otherwise. |
+    /// | `regions`     | [keyword](Self::options_keyword) | The [regions of the card](Card::regions), separated by spaces. |
+    /// | `attack`      | [number](Self::options_number)   | The [attack of the unit](Card::attack); always `0` for non-units. |
+    /// | `cost`        | [number](Self::options_number)   | The [mana cost of the card](Card::cost); always `0` for non-playable cards. |
+    /// | `health`      | [number](Self::options_number)   | The [health of the unit](Card::health); always `0` for non-units. |
+    /// | `spellspeed`  | [keyword](Self::options_keyword) | The [speed of the spell](Card::spell_speed), or an empty string for non-spells. Note that [`Focus`](crate::data::setbundle::keyword::CardKeyword::Focus) is a keyword, and not a spell speed. |
+    /// | `keywords`    | [keyword](Self::options_keyword) | The [keywords of the card](Card::keywords), separated by spaces. |
+    /// | `description` | [text](Self::options_text)       | The [description of the card](Card::localized_description_text). |
+    /// | `levelup`     | [text](Self::options_text)       | The [level up text of the champion](Card::localized_levelup_text). |
+    /// | `flavor`      | [text](Self::options_text)       | The [flavor text of the card](Card::localized_flavor_text). |
+    /// | `artist`      | [text](Self::options_text)       | The [artist(s) of the card's illustration](Card::artist_name). |
     ///
     /// Use [Self::schema_fields] to create the [CardSchemaFields] object containing all of them.
     ///
