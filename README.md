@@ -15,7 +15,7 @@ patched-porobot isn't endorsed by Riot Games and doesn't reflect the views or op
 
 ![The inline query "poro" being performed by @patchedporobot on Telegram Desktop. A list of poros is being displayed.](media/telegram-desktop.png)
 
-![The same inline query performed on Telegram Android. More poros are being displayed.](media/telegram-android.png)
+![The same inline query performed on Telegram Android. More poros are being displayed.](media/telegram-android.jpg)
 
 
 ## Discord Emoji Codes
