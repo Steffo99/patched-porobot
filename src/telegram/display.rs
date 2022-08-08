@@ -153,6 +153,9 @@ fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) ->
 }
 
 
+/// Render a [Card::localized_description_text] in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 fn display_description(description: &String) -> String {
     if description == "" {
         "".to_string()
@@ -163,6 +166,9 @@ fn display_description(description: &String) -> String {
 }
 
 
+/// Render a [Card::localized_levelup_text] in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 fn display_levelup(levelup: &String) -> String {
     if levelup == "" {
         "".to_string()
