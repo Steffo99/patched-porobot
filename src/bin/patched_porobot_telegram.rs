@@ -1,26 +1,44 @@
-#[cfg(not(feature = "telegram"))]
-fn main() {
-    println!("The `telegram` feature was not included on compilation, therefore this binary is not available.")
-}
+//! # [@patchedporobot]
+//!
+//! Inline bot for searching and sending Legends of Runeterra cards in Telegram chats
+//!
+//! ## Usage
+//!
+//! [@patchedporobot] is a inline bot: this means that you can use it everywhere, without having to add it to chats.
+//!
+//! You can search for a card by entering in the "Write a message..." bot the username of the bot, followed by the card you want to search for:
+//! ```text
+//! @patchedporobot braum
+//! ```
+//! ```text
+//! @patchedporobot poro
+//! ```
+//! ```text
+//! @patchedporobot noxus
+//! ```
+//!
+//!
+//! [@patchedporobot]: https://t.me/patchedporobot
 
-#[cfg(feature = "telegram")]
+use std::path::PathBuf;
+use log::*;
+use patched_porobot::data::setbundle::card::{Card, CardIndex};
+use patched_porobot::data::corebundle::CoreBundle;
+use patched_porobot::data::setbundle::SetBundle;
+use patched_porobot::data::corebundle::globals::LocalizedGlobalsIndexes;
+use patched_porobot::search::cardsearch::CardSearchEngine;
+use patched_porobot::telegram::inline::card_to_inlinequeryresult;
+use patched_porobot::telegram::handler::{inline_query_handler, message_handler};
+use teloxide::payloads::{AnswerInlineQuery, SendMessage};
+use teloxide::requests::JsonRequest;
+use teloxide::types::{Recipient, ParseMode};
+use teloxide::prelude::*;
+use itertools::Itertools;
+
+
+#[doc(hidden)]
 #[tokio::main]
 async fn main() {
-    use std::path::PathBuf;
-    use log::*;
-    use patched_porobot::data::setbundle::card::{Card, CardIndex};
-    use patched_porobot::data::corebundle::CoreBundle;
-    use patched_porobot::data::setbundle::SetBundle;
-    use patched_porobot::data::corebundle::globals::LocalizedGlobalsIndexes;
-    use patched_porobot::search::cardsearch::CardSearchEngine;
-    use patched_porobot::telegram::inline::card_to_inlinequeryresult;
-    use patched_porobot::telegram::handler::{inline_query_handler, message_handler};
-    use teloxide::payloads::{AnswerInlineQuery, SendMessage};
-    use teloxide::requests::JsonRequest;
-    use teloxide::types::{Recipient, ParseMode};
-    use teloxide::prelude::*;
-    use itertools::Itertools;
-
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");
 
