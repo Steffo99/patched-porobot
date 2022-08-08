@@ -75,6 +75,8 @@
 //!
 //! [@patchedporobot]: https://t.me/patchedporobot
 
+#![doc(html_logo_url = "https://raw.githubusercontent.com/Steffo99/patched-porobot/main/icon.png")]
+
 use std::path::PathBuf;
 use log::*;
 use patched_porobot::data::setbundle::card::{Card, CardIndex};
