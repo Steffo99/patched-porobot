@@ -256,17 +256,23 @@ impl CardSearchEngine {
 
     /// Build the [QueryParser] of the search engine.
     fn parser(index: &Index, fields: CardSchemaFields) -> QueryParser {
-        QueryParser::for_index(
+        let mut parser = QueryParser::for_index(
             &index,
             vec![
                 fields.code,
                 fields.name,
                 fields.description,
+                fields.set,
+                fields.regions,
                 fields.flavor,
+                fields.artist,
                 fields.subtypes,
                 fields.supertype,
             ]
-        )
+        );
+        parser.set_conjunction_by_default();
+        // parser.set_field_boost();
+        parser
     }
 
     /// Create a new [CardSearchEngine].
