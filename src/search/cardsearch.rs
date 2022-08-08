@@ -1,6 +1,6 @@
 //! Module defining a search engine to find [Card]s.
 
-use tantivy::{Document, Index, IndexReader, IndexWriter, Score};
+use tantivy::{Document, Index, IndexReader, IndexWriter};
 use tantivy::collector::TopDocs;
 use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
@@ -113,7 +113,7 @@ impl CardSearchEngine {
     /// | `name`        | [text](Self::options_text)       | The [name of the card](Card::name). |
     /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::type), such as `Unit`. |
     /// | `set`         | [keyword](Self::options_keyword) | The [set the card belongs to](Card::set), such as `Beyond the Bandlewood`. |
-    /// | `rarity`      | [keyword](Self::options_keyword) | The [rarity of the card](patched_porobot::data::setbundle::card::Card::rarity), such as `Rare`, or `Champion`. |
+    /// | `rarity`      | [keyword](Self::options_keyword) | The [rarity of the card](Card::rarity), such as `Rare`, or `Champion`. |
     /// | `collectible` | [number](Self::options_number)   | `1` if the [card is collectible](Card::collectible), `0` otherwise. |
     /// | `regions`     | [keyword](Self::options_keyword) | The [regions of the card](Card::regions), separated by spaces. |
     /// | `attack`      | [number](Self::options_number)   | The [attack of the unit](Card::attack); always `0` for non-units. |

@@ -84,13 +84,8 @@ use patched_porobot::data::corebundle::CoreBundle;
 use patched_porobot::data::setbundle::SetBundle;
 use patched_porobot::data::corebundle::globals::LocalizedGlobalsIndexes;
 use patched_porobot::search::cardsearch::CardSearchEngine;
-use patched_porobot::telegram::inline::card_to_inlinequeryresult;
 use patched_porobot::telegram::handler::{inline_query_handler, message_handler};
-use teloxide::payloads::{AnswerInlineQuery, SendMessage};
-use teloxide::requests::JsonRequest;
-use teloxide::types::{Recipient, ParseMode};
 use teloxide::prelude::*;
-use itertools::Itertools;
 
 
 #[doc(hidden)]
