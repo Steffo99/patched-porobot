@@ -66,7 +66,7 @@ async fn main() {
 
     debug!("Creating handlers...");
     let handler = dptree::entry()
-        .branch(inline_query_handler(&engine))
+        .branch(inline_query_handler(engine))
         .branch(message_handler());
     debug!("Created handlers!");
 

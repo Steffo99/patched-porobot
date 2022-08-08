@@ -12,7 +12,7 @@ use crate::telegram::inline::card_to_inlinequeryresult;
 
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
-pub fn inline_query_handler(engine: &CardSearchEngine) -> Handler<DependencyMap, ResponseResult<()>, DpHandlerDescription> {
+pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
     Update::filter_inline_query().chain(dptree::endpoint(move |query: InlineQuery, bot: Bot| {
         info!("Handling inline query: `{}`", &query.query);
 
