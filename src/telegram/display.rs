@@ -28,17 +28,17 @@ pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
 
     let stats = match &card.r#type {
         CardType::Spell => format!(
-            "{} mana\n",
+            "{} mana\n\n",
             escape(&card.cost.to_string()),
         ),
         CardType::Unit => format!(
-            "{} mana {}|{}\n",
+            "{} mana {}|{}\n\n",
             escape(&card.cost.to_string()),
             escape(&card.attack.to_string()),
             escape(&card.health.to_string()),
         ),
         CardType::Landmark => format!(
-            "{} mana\n",
+            "{} mana\n\n",
             &card.cost
         ),
         _ => "".to_string(),
@@ -48,11 +48,12 @@ pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     let regions = display_regions(&card.regions, &globals.regions);
     let r#type = display_types(&card.r#type, &card.supertype, &card.subtypes);
 
-    let breadcrumbs = format!("{} › {} › {}\n", &set, &regions, &r#type);
+    let breadcrumbs = format!("{} › {} › {}\n\n", &set, &regions, &r#type);
 
     let keywords = display_keywords(&card.keywords, &globals.keywords);
 
-    let description = format!("{}\n", escape(&card.localized_description_text));
+    let description = display_description(&card.localized_description_text);
+    let levelup = display_levelup(&card.localized_levelup_text);
 
     let flavor = format!(
         "<i>{}</i>\n",
@@ -66,7 +67,7 @@ pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     );
 
     format!(
-        "{title}{breadcrumbs}\n{keywords}{stats}{description}\n-----\n{flavor}{artist}",
+        "{title}{breadcrumbs}{keywords}{stats}{description}{levelup}-----\n{flavor}{artist}",
     )
 }
 
@@ -149,4 +150,24 @@ fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) ->
             .join(" ")
     )
 
+}
+
+
+fn display_description(description: &String) -> String {
+    if description == "" {
+        "".to_string()
+    }
+    else {
+        format!("{}\n\n", escape(&description))
+    }
+}
+
+
+fn display_levelup(levelup: &String) -> String {
+    if levelup == "" {
+        "".to_string()
+    }
+    else {
+        format!("<u>Level up</u>: {}\n\n", escape(&levelup))
+    }
 }
