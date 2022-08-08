@@ -25,7 +25,7 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
                     cache_time: None,
                     is_personal: Some(false),
                     next_offset: None,
-                    switch_pm_text: Some("Open help message".to_string()),
+                    switch_pm_text: Some("How to search cards".to_string()),
                     switch_pm_parameter: Some("err-no-query".to_string()),
                 }
             }
@@ -89,6 +89,25 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
 }
 
 
+const WELCOME_MESSAGE: &'static str = r#"
+👋 Hi! I'm a robotic poro who can search for Legends of Runeterra cards to send them in chats!
+
+To use my features, enter <b>my username</b> in any chat, followed by <b>your search query</b>, like this:
+<pre>@patchedporobot braum</pre>
+
+After a while, you'll see the list of cards I found, and you'll be able to tap one of them to send it!
+
+You can also perform more <b>complex queries</b>, such as this one:
+<pre>@patchedporobot cost:4 AND attack:7 AND health:7</pre>
+
+To read all details on the queries you can ask me to perform, visit the <a href="https://docs.rs/crate/patched_porobot/latest">documentation</a>!
+
+Have a fun time searching!
+
+<i>@patchedporobot isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</i>
+"#;
+
+
 /// Handle all messages by replying with the help text.
 pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
     Update::filter_message().chain(dptree::endpoint(move |message: Message, bot: Bot| {
@@ -96,8 +115,7 @@ pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, 
 
         let payload = SendMessage {
             chat_id: Recipient::Id(message.chat.id.clone()),
-            // TODO: Add a proper message here.
-            text: "TODO: Introduction message!".to_string(),
+            text: WELCOME_MESSAGE.to_string(),
             parse_mode: Some(ParseMode::Html),
             entities: None,
             disable_web_page_preview: Some(true),
