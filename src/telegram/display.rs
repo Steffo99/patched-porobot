@@ -67,7 +67,15 @@ pub fn display_card(globals: &LocalizedGlobalsIndexes, card: &Card) -> String {
     );
 
     format!(
-        "{title}{breadcrumbs}{keywords}{stats}{description}{levelup}-----\n{flavor}{artist}",
+        "{}{}{}{}{}{}-----\n{}{}",
+        &title,
+        &breadcrumbs,
+        &keywords,
+        &stats,
+        &description,
+        &levelup,
+        &flavor,
+        &artist,
     )
 }
 
