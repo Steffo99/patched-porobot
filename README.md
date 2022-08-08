@@ -1,5 +1,11 @@
 # ![](icon.png) patched-porobot
-WIP: Legends of Runeterra card bot
+
+Legends of Runeterra card library and bots
+
+\[ [**Telegram**] | [Documentation] \]
+
+[Telegram]: https://t.me/patchedporobot
+[Documentation]: https://docs.rs/crate/patched_porobot/latest
 
 ## Legal
 
