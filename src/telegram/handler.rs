@@ -100,7 +100,7 @@ After a while, you'll see the list of cards I found, and you'll be able to tap o
 You can also perform more <b>complex queries</b>, such as this one:
 <pre>@patchedporobot cost:4 AND attack:7 AND health:7</pre>
 
-To read all details on the queries you can ask me to perform, visit the <a href="https://docs.rs/crate/patched_porobot/latest">documentation</a>!
+To read all details on the queries you can ask me to perform, visit the <a href="https://docs.rs/patched_porobot/latest/patched_porobot_telegram/">documentation</a>!
 
 Have a fun time searching!
 
