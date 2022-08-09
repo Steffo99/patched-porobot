@@ -95,13 +95,13 @@ async fn main() {
     debug!("Logger initialized successfully!");
 
     debug!("Loading bundles...");
-    let core = CoreBundle::load(&*PathBuf::from("./card-data/core-en_us")).expect("to be able to load `core-en_us` bundle");
-    let set1 =  SetBundle::load(&*PathBuf::from("./card-data/set1-en_us")).expect("to be able to load `set1-en_us` bundle");
-    let set2 =  SetBundle::load(&*PathBuf::from("./card-data/set2-en_us")).expect("to be able to load `set2-en_us` bundle");
-    let set3 =  SetBundle::load(&*PathBuf::from("./card-data/set3-en_us")).expect("to be able to load `set3-en_us` bundle");
-    let set4 =  SetBundle::load(&*PathBuf::from("./card-data/set4-en_us")).expect("to be able to load `set4-en_us` bundle");
-    let set5 =  SetBundle::load(&*PathBuf::from("./card-data/set5-en_us")).expect("to be able to load `set5-en_us` bundle");
-    let set6 =  SetBundle::load(&*PathBuf::from("./card-data/set6-en_us")).expect("to be able to load `set6-en_us` bundle");
+    let core = CoreBundle::load(&*PathBuf::from("./data/core-en_us")).expect("to be able to load `core-en_us` bundle");
+    let set1 =  SetBundle::load(&*PathBuf::from("./data/set1-en_us")).expect("to be able to load `set1-en_us` bundle");
+    let set2 =  SetBundle::load(&*PathBuf::from("./data/set2-en_us")).expect("to be able to load `set2-en_us` bundle");
+    let set3 =  SetBundle::load(&*PathBuf::from("./data/set3-en_us")).expect("to be able to load `set3-en_us` bundle");
+    let set4 =  SetBundle::load(&*PathBuf::from("./data/set4-en_us")).expect("to be able to load `set4-en_us` bundle");
+    let set5 =  SetBundle::load(&*PathBuf::from("./data/set5-en_us")).expect("to be able to load `set5-en_us` bundle");
+    let set6 =  SetBundle::load(&*PathBuf::from("./data/set6-en_us")).expect("to be able to load `set6-en_us` bundle");
     debug!("Loaded all bundles!");
 
     debug!("Indexing globals...");
