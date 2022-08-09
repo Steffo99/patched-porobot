@@ -38,7 +38,6 @@ jobs:
       - name: "🏗 Build and push the Docker image"
         uses: docker/build-push-action@v3
         with:
-          target: "telegram"
           tags: >-
             ghcr.io/${{ steps.reponame.outputs.lowercase }}:${{ steps.semver.outputs.precedence }},
             ghcr.io/${{ steps.reponame.outputs.lowercase }}:${{ steps.semver.outputs.core }},
