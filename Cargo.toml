@@ -10,8 +10,8 @@ keywords = ["game", "deserialization", "legends-of-runeterra", "bot", "search"]
 categories = ["games", "parser-implementations"]
 
 [package.metadata.docs.rs]
-features = ["search", "telegram", "discord", "matrix"]
-targets = ["patched_porobot", "patched_porobot_telegram", "patched_porobot_discord", "patched_porobot_matrix"]
+all-features = true
+cargo-args = ["--bins", "--lib"]
 rustdoc-args = ["--document-private-items"]
 
 
