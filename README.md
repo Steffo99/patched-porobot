@@ -13,6 +13,8 @@ patched-porobot isn't endorsed by Riot Games and doesn't reflect the views or op
 
 ## Screenshots
 
+> Click on a caption to view the related screenshot!
+
 ### Telegram bot
 
 <details>
