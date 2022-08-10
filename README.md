@@ -18,7 +18,7 @@ patched-porobot isn't endorsed by Riot Games and doesn't reflect the views or op
 ### Telegram bot
 
 <details>
-<summary>The bot's profile, seen when a chat with @patchedporobot is opened.</summary>
+<summary>The bot's profile, seen when a chat with @patchedporobot is opened. The legal boilerplate has been shortened to fit the 120 characters limit of the Description field.</summary>
 
 ![](media/td-profile.png)
 
