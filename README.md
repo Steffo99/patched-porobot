@@ -15,27 +15,37 @@ patched-porobot isn't endorsed by Riot Games and doesn't reflect the views or op
 
 ### Telegram bot
 
-*The bot's profile, seen when a chat with @patchedporobot is opened.*
+<details>
+<summary>The bot's profile, seen when a chat with @patchedporobot is opened.</summary>
+
 ![](media/td-profile.png)
 
------
+</details>
 
-*The message the bot sends when it detects an interaction from the user, such as the default /start command.*
+<details>
+<summary>The message the bot sends when it detects an interaction from the user, such as the default /start command.</summary>
+
 ![](media/td-start.png)
 
------
+</details>
 
-*The card search prompt that appears when attempting to use the bot in a chat.*
+<details>
+<summary>The card search prompt that appears when attempting to use the bot in a chat.</summary>
+
 ![](media/td-prompt.png)
 
------
+</details>
 
-*A search for "poro". Many poros are displayed, and also Braum Level 2, since it contains "poro" in its description.*
+<details>
+<summary>A search for "poro". Many poros are displayed, and also Braum Level 2, since it contains "poro" in its description.</summary>
+
 ![](media/td-poro.png)
 
------
+</details>
 
-*The message sent when a card is clicked from the menu. It contains both the card image and a plain text render of the card (for accessibility). Additionally, the flavor text, the artist name, and a link to the full illustration are provided.*
+<details>
+<summary>The message sent when a card is clicked from the menu. It contains both the card image and a plain text render of the card (for accessibility). Additionally, the flavor text, the artist name, and a link to the full illustration are provided.</summary>
+
 ![](media/td-message.png)
 
------
+</details>
