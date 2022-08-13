@@ -51,6 +51,26 @@ impl CardRegion {
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRegionIndex) -> Option<&'hm LocalizedCardRegion> {
         hm.get(self)
     }
+    
+    /// Get the [`CardRegion`] from its short code.
+    /// 
+    /// If no region is matched, will return [Option::None].
+    fn from_code(value: &[char; 2]) -> Option<Self> {
+        match value {
+            ['D', 'E'] => Some(Self::Demacia),
+            ['F', 'R'] => Some(Self::Freljord),
+            ['I', 'O'] => Some(Self::Ionia),
+            ['N', 'X'] => Some(Self::Noxus),
+            ['P', 'Z'] => Some(Self::PiltoverZaun),
+            ['S', 'I'] => Some(Self::ShadowIsles),
+            ['B', 'W'] => Some(Self::Bilgewater),
+            ['S', 'H'] => Some(Self::Shurima),
+            ['M', 'T'] => Some(Self::Targon),
+            ['B', 'C'] => Some(Self::BandleCity),
+            ['R', 'U'] => Some(Self::Runeterra),
+            _ => None,
+        }
+    }
 }
 
 
