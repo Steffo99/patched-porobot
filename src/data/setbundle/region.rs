@@ -76,7 +76,7 @@ mod tests {
     test_deserialization!(deserialize_shadowisles, r#""ShadowIsles""#, CardRegion::ShadowIsles);
     test_deserialization!(deserialize_targon, r#""Targon""#, CardRegion::Targon);
     test_deserialization!(deserialize_ionia, r#""Ionia""#, CardRegion::Ionia);
-    test_deserialization!(deserialize_bandlecity, r#""Bilgewater""#, CardRegion::Bilgewater);
+    test_deserialization!(deserialize_bilgewater, r#""Bilgewater""#, CardRegion::Bilgewater);
     test_deserialization!(deserialize_shurima, r#""Shurima""#, CardRegion::Shurima);
     test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardRegion::PiltoverZaun);
     test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardRegion::BandleCity);
