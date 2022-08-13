@@ -1,14 +1,13 @@
 //! Module defining a search engine to find [Card]s.
 
-use tantivy::{Document, Index, IndexReader, IndexWriter};
+use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
+use crate::data::setbundle::card::{Card, CardIndex};
+use itertools::Itertools;
 use tantivy::collector::TopDocs;
 use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
-use itertools::Itertools;
-use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
-use crate::data::setbundle::card::{Card, CardIndex};
-
+use tantivy::{Document, Index, IndexReader, IndexWriter};
 
 /// The search engine.
 ///
@@ -29,9 +28,8 @@ pub struct CardSearchEngine {
     pub globals: LocalizedGlobalsIndexes,
 
     /// Cards searchable in the search engine.
-    pub cards: CardIndex
+    pub cards: CardIndex,
 }
-
 
 impl CardSearchEngine {
     /// Create the [tantivy::tokenizer::TextAnalyzer] for card text.
@@ -40,8 +38,7 @@ impl CardSearchEngine {
     fn tokenizer() -> TextAnalyzer {
         use tantivy::tokenizer::*;
 
-        TextAnalyzer::from(SimpleTokenizer)
-            .filter(LowerCaser)
+        TextAnalyzer::from(SimpleTokenizer).filter(LowerCaser)
     }
 
     /// Create the [tantivy::schema::TextOptions] for card codes.
@@ -54,9 +51,10 @@ impl CardSearchEngine {
         use tantivy::schema::*;
 
         TextOptions::default()
-            .set_indexing_options(TextFieldIndexing::default()
-                .set_tokenizer("card")
-                .set_index_option(IndexRecordOption::Basic)
+            .set_indexing_options(
+                TextFieldIndexing::default()
+                    .set_tokenizer("card")
+                    .set_index_option(IndexRecordOption::Basic),
             )
             .set_stored()
             .set_fast()
@@ -70,11 +68,11 @@ impl CardSearchEngine {
     fn options_keyword() -> TextOptions {
         use tantivy::schema::*;
 
-        TextOptions::default()
-            .set_indexing_options(TextFieldIndexing::default()
+        TextOptions::default().set_indexing_options(
+            TextFieldIndexing::default()
                 .set_tokenizer("card")
-                .set_index_option(IndexRecordOption::Basic)
-            )
+                .set_index_option(IndexRecordOption::Basic),
+        )
     }
 
     /// Create the [tantivy::schema::TextOptions] for card text fields.
@@ -85,11 +83,11 @@ impl CardSearchEngine {
     fn options_text() -> TextOptions {
         use tantivy::schema::*;
 
-        TextOptions::default()
-            .set_indexing_options(TextFieldIndexing::default()
+        TextOptions::default().set_indexing_options(
+            TextFieldIndexing::default()
                 .set_tokenizer("card")
-                .set_index_option(IndexRecordOption::WithFreqsAndPositions)
-            )
+                .set_index_option(IndexRecordOption::WithFreqsAndPositions),
+        )
     }
 
     /// Create the [tantivy::schema::NumericOptions] for card numeric fields.
@@ -99,8 +97,7 @@ impl CardSearchEngine {
     fn options_number() -> NumericOptions {
         use tantivy::schema::*;
 
-        NumericOptions::default()
-            .set_indexed()
+        NumericOptions::default().set_indexed()
     }
 
     /// Create the [Schema] for the search engine.
@@ -163,32 +160,66 @@ impl CardSearchEngine {
     /// Create a [CardSchemaFields] object from the given schema.
     fn schema_fields(schema: &Schema) -> CardSchemaFields {
         CardSchemaFields {
-            code: schema.get_field("code").expect("schema to have a 'code' field"),
-            name: schema.get_field("name").expect("schema to have a 'name' field"),
-            r#type: schema.get_field("type").expect("schema to have a 'type' field"),
-            set: schema.get_field("set").expect("schema to have a 'set' field"),
-            rarity: schema.get_field("rarity").expect("schema to have a 'rarity' field"),
-            collectible: schema.get_field("collectible").expect("schema to have a 'collectible' field"),
-            regions: schema.get_field("regions").expect("schema to have a 'regions' field"),
-            attack: schema.get_field("attack").expect("schema to have a 'attack' field"),
-            cost: schema.get_field("cost").expect("schema to have a 'cost' field"),
-            health: schema.get_field("health").expect("schema to have a 'health' field"),
-            spellspeed: schema.get_field("spellspeed").expect("schema to have a 'spellspeed' field"),
-            keywords: schema.get_field("keywords").expect("schema to have a 'keywords' field"),
-            description: schema.get_field("description").expect("schema to have a 'description' field"),
-            levelup: schema.get_field("levelup").expect("schema to have a 'levelup' field"),
-            flavor: schema.get_field("flavor").expect("schema to have a 'flavor' field"),
-            artist: schema.get_field("artist").expect("schema to have a 'artist' field"),
-            subtypes: schema.get_field("subtypes").expect("schema to have a 'subtypes' field"),
-            supertype: schema.get_field("supertype").expect("schema to have a 'supertype' field"),
+            code: schema
+                .get_field("code")
+                .expect("schema to have a 'code' field"),
+            name: schema
+                .get_field("name")
+                .expect("schema to have a 'name' field"),
+            r#type: schema
+                .get_field("type")
+                .expect("schema to have a 'type' field"),
+            set: schema
+                .get_field("set")
+                .expect("schema to have a 'set' field"),
+            rarity: schema
+                .get_field("rarity")
+                .expect("schema to have a 'rarity' field"),
+            collectible: schema
+                .get_field("collectible")
+                .expect("schema to have a 'collectible' field"),
+            regions: schema
+                .get_field("regions")
+                .expect("schema to have a 'regions' field"),
+            attack: schema
+                .get_field("attack")
+                .expect("schema to have a 'attack' field"),
+            cost: schema
+                .get_field("cost")
+                .expect("schema to have a 'cost' field"),
+            health: schema
+                .get_field("health")
+                .expect("schema to have a 'health' field"),
+            spellspeed: schema
+                .get_field("spellspeed")
+                .expect("schema to have a 'spellspeed' field"),
+            keywords: schema
+                .get_field("keywords")
+                .expect("schema to have a 'keywords' field"),
+            description: schema
+                .get_field("description")
+                .expect("schema to have a 'description' field"),
+            levelup: schema
+                .get_field("levelup")
+                .expect("schema to have a 'levelup' field"),
+            flavor: schema
+                .get_field("flavor")
+                .expect("schema to have a 'flavor' field"),
+            artist: schema
+                .get_field("artist")
+                .expect("schema to have a 'artist' field"),
+            subtypes: schema
+                .get_field("subtypes")
+                .expect("schema to have a 'subtypes' field"),
+            supertype: schema
+                .get_field("supertype")
+                .expect("schema to have a 'supertype' field"),
         }
     }
 
     /// Build [in RAM](Index::create_in_ram) the [Index] of the search engine.
     fn index() -> Index {
-        Index::create_in_ram(
-            Self::schema()
-        )
+        Index::create_in_ram(Self::schema())
     }
 
     /// Build a [IndexWriter] with the optimal configuration for the search engine.
@@ -210,7 +241,11 @@ impl CardSearchEngine {
     }
 
     /// Create a [Document] from a [Card].
-    fn document(fields: &CardSchemaFields, globals: &LocalizedGlobalsIndexes, card: Card) -> Document {
+    fn document(
+        fields: &CardSchemaFields,
+        globals: &LocalizedGlobalsIndexes,
+        card: Card,
+    ) -> Document {
         use tantivy::doc;
 
         doc!(
@@ -268,7 +303,7 @@ impl CardSearchEngine {
                 fields.artist,
                 fields.subtypes,
                 fields.supertype,
-            ]
+            ],
         );
         parser.set_conjunction_by_default();
         parser.set_field_boost(fields.code, 3.0);
@@ -288,16 +323,24 @@ impl CardSearchEngine {
         let mut writer = Self::writer(&index);
         for card in cards.values() {
             let document = Self::document(&fields, &globals, card.clone());
-            writer.add_document(document)
+            writer
+                .add_document(document)
                 .expect("IndexWriter threads to not panic or die before adding a document");
-        };
-        writer.commit()
+        }
+        writer
+            .commit()
             .expect("IndexWriter threads to not panic or die before commit");
 
         let parser = Self::parser(&index, fields);
         let reader = Self::reader(&index);
 
-        Self {index, reader, parser, globals, cards}
+        Self {
+            index,
+            reader,
+            parser,
+            globals,
+            cards,
+        }
     }
 
     /// Perform a query on the search engine.
@@ -306,13 +349,18 @@ impl CardSearchEngine {
 
         let query = self.parser.parse_query(input)?;
 
-        let search = searcher.search(&*query, &TopDocs::with_limit(top))
+        let search = searcher
+            .search(&*query, &TopDocs::with_limit(top))
             .expect("Searcher::search to never fail");
 
-        let f_code = self.index.schema().get_field("code")
+        let f_code = self
+            .index
+            .schema()
+            .get_field("code")
             .expect("schema to have a 'code' field");
 
-        let results = search.iter()
+        let results = search
+            .iter()
             .filter_map(|(_score, address)| searcher.doc(address.to_owned()).ok())
             .filter_map(|doc| doc.get_first(f_code).cloned())
             .filter_map(|field| field.as_text().map(String::from))
@@ -322,7 +370,6 @@ impl CardSearchEngine {
         Ok(results)
     }
 }
-
 
 /// Struct containing all retrieved [CardSearchEngine] [Field]s.
 ///

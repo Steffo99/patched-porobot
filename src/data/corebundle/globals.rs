@@ -1,14 +1,14 @@
 //! Module defining structs representing data contained in `globals.json` files.
 
+use super::keyword::{LocalizedCardKeywordIndex, LocalizedCardKeywordVec};
+use super::rarity::{LocalizedCardRarityIndex, LocalizedCardRarityVec};
+use super::region::{LocalizedCardRegionIndex, LocalizedCardRegionVec};
+use super::set::{LocalizedCardSetIndex, LocalizedCardSetVec};
+use super::speed::{LocalizedSpellSpeedIndex, LocalizedSpellSpeedVec};
+use super::vocabterm::{LocalizedVocabTermIndex, LocalizedVocabTermVec};
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 use std::fs::File;
 use std::path::Path;
-use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
-use super::vocabterm::{LocalizedVocabTermVec, LocalizedVocabTermIndex};
-use super::keyword::{LocalizedCardKeywordVec, LocalizedCardKeywordIndex};
-use super::region::{LocalizedCardRegionVec, LocalizedCardRegionIndex};
-use super::speed::{LocalizedSpellSpeedVec, LocalizedSpellSpeedIndex};
-use super::rarity::{LocalizedCardRarityVec, LocalizedCardRarityIndex};
-use super::set::{LocalizedCardSetVec, LocalizedCardSetIndex};
 
 /// A parsed `globals.json` file from a [Data Dragon] [Core Bundle].
 ///
@@ -68,18 +68,15 @@ pub struct LocalizedGlobalsIndexes {
     pub sets: LocalizedCardSetIndex,
 }
 
-
 impl LocalizedGlobalsVecs {
     /// Load a `globals.json` file to create a [LocalizedGlobalsVecs] instance.
     pub fn load(path: &Path) -> LoadingResult<Self> {
-        let file = File::open(path)
-            .map_err(LoadingError::OpeningFile)?;
-        let data = serde_json::de::from_reader::<File, Self>(file)
-            .map_err(LoadingError::Deserializing)?;
+        let file = File::open(path).map_err(LoadingError::OpeningFile)?;
+        let data =
+            serde_json::de::from_reader::<File, Self>(file).map_err(LoadingError::Deserializing)?;
         Ok(data)
     }
 }
-
 
 impl From<LocalizedGlobalsVecs> for LocalizedGlobalsIndexes {
     fn from(o: LocalizedGlobalsVecs) -> Self {
@@ -130,7 +127,6 @@ impl From<LocalizedGlobalsVecs> for LocalizedGlobalsIndexes {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::LocalizedGlobalsVecs;
@@ -149,7 +145,8 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, LocalizedGlobalsVecs>(r#"
+            serde_json::de::from_str::<'static, LocalizedGlobalsVecs>(
+                r#"
                 {
                     "vocabTerms": [
                         {
@@ -193,50 +190,10 @@ mod tests {
                         }
                     ]
                 }
-            "#).unwrap(),
-            LocalizedGlobalsVecs {
-                vocab_terms: vec![
-                    LocalizedVocabTerm {
-                        vocabterm: "Allegiance".to_string(),
-                        name: "Allegiance".to_string(),
-                        description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string(),
-                    }
-                ],
-                keywords: vec![
-                    LocalizedCardKeyword {
-                        keyword: CardKeyword::SpellOverwhelm,
-                        name: "Overwhelm".to_string(),
-                        description: "Inflicts damage beyond what would kill the target(s) to the enemy Nexus.".to_string(),
-                    }
-                ],
-                regions: vec![
-                    LocalizedCardRegion {
-                        region: CardRegion::Noxus,
-                        name: "Noxus".to_string(),
-                        abbreviation: "NX".to_string(),
-                        icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string(),
-                    }
-                ],
-                spell_speeds: vec![
-                    LocalizedSpellSpeed {
-                        spell_speed: SpellSpeed::Slow,
-                        name: "Slow".to_string(),
-                    }
-                ],
-                rarities: vec![
-                    LocalizedCardRarity {
-                        rarity: CardRarity::Common,
-                        name: "COMMON".to_string(),
-                    }
-                ],
-                sets: vec![
-                    LocalizedCardSet {
-                        set: CardSet::CallOfTheMountain,
-                        name: "Call of the Mountain".to_string(),
-                        icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string(),
-                    }
-                ]
-            }
+            "#
+            )
+            .unwrap(),
+            LocalizedGlobalsVecs { vocab_terms: vec![LocalizedVocabTerm { vocabterm: "Allegiance".to_string(), name: "Allegiance".to_string(), description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string() }], keywords: vec![LocalizedCardKeyword { keyword: CardKeyword::SpellOverwhelm, name: "Overwhelm".to_string(), description: "Inflicts damage beyond what would kill the target(s) to the enemy Nexus.".to_string() }], regions: vec![LocalizedCardRegion { region: CardRegion::Noxus, name: "Noxus".to_string(), abbreviation: "NX".to_string(), icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string() }], spell_speeds: vec![LocalizedSpellSpeed { spell_speed: SpellSpeed::Slow, name: "Slow".to_string() }], rarities: vec![LocalizedCardRarity { rarity: CardRarity::Common, name: "COMMON".to_string() }], sets: vec![LocalizedCardSet { set: CardSet::CallOfTheMountain, name: "Call of the Mountain".to_string(), icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string() }] }
         )
     }
 }

@@ -1,6 +1,5 @@
 //! Module defining [CardArt].
 
-
 use lazy_static::lazy_static;
 use regex::Regex;
 
@@ -30,7 +29,6 @@ pub struct CardArt {
     pub full_png: String,
 }
 
-
 impl CardArt {
     /// URL to the `.jpg` image of the `en_us` locale of the rendered card, via `poro.steffo.eu`.
     ///
@@ -46,10 +44,16 @@ impl CardArt {
         lazy_static! {
             static ref GET_JPG: Regex = Regex::new(
                 r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
-            ).unwrap();
+            )
+            .unwrap();
         }
 
-        GET_JPG.replace_all(&self.card_png, "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg").to_string()
+        GET_JPG
+            .replace_all(
+                &self.card_png,
+                "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg",
+            )
+            .to_string()
     }
 
     /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via `poro.steffo.eu`.
@@ -66,13 +70,18 @@ impl CardArt {
         lazy_static! {
             static ref GET_JPG: Regex = Regex::new(
                 r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
-            ).unwrap();
+            )
+            .unwrap();
         }
 
-        GET_JPG.replace_all(&self.full_png, "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg").to_string()
+        GET_JPG
+            .replace_all(
+                &self.full_png,
+                "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg",
+            )
+            .to_string()
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -80,23 +89,25 @@ mod tests {
 
     #[test]
     fn deserialize() {
-        assert_eq!(
-            serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png", "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(),
-            CardArt {
-                card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
-                full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"),
-            }
-        );
+        assert_eq!(serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png", "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(), CardArt { card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"), full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png") });
     }
 
     #[test]
     fn png_to_jpg() {
         let art = CardArt {
             card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
-            full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"),
+            full_png: String::from(
+                "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
+            ),
         };
 
-        assert_eq!(art.card_jpg(), "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg");
-        assert_eq!(art.full_jpg(), "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg");
+        assert_eq!(
+            art.card_jpg(),
+            "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg"
+        );
+        assert_eq!(
+            art.full_jpg(),
+            "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg"
+        );
     }
 }

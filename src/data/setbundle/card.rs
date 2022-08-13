@@ -169,6 +169,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[rustfmt::skip]
     fn deserialize_card() {
         assert_eq!(
             serde_json::de::from_str::<'static, Card>(r#"

@@ -3,18 +3,17 @@
 //! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 //! [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 
-use std::path::Path;
 use super::anybundle::metadata::BundleMetadata;
 use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
+use std::path::Path;
 
 pub mod globals;
-pub mod vocabterm;
 pub mod keyword;
-pub mod region;
-pub mod speed;
 pub mod rarity;
+pub mod region;
 pub mod set;
-
+pub mod speed;
+pub mod vocabterm;
 
 /// A parsed [Data Dragon] [Core Bundle].
 ///
@@ -32,23 +31,19 @@ pub struct CoreBundle {
     pub globals: globals::LocalizedGlobalsVecs,
 }
 
-
 impl CoreBundle {
     /// Load a Core Bundle directory to create a [CoreBundle] instance.
     pub fn load(bundle_path: &Path) -> LoadingResult<Self> {
-        let metadata = BundleMetadata::load(
-            &bundle_path
-                .join("metadata.json")
-        )?;
+        let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
 
-        let name = bundle_path.file_name()
+        let name = bundle_path
+            .file_name()
             .ok_or(LoadingError::GettingBundleName)?
             .to_str()
             .ok_or(LoadingError::ConvertingBundleName)?
             .to_string();
 
-        let locale = metadata.locale()
-            .ok_or(LoadingError::GettingLocale)?;
+        let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
         let globals_path = &bundle_path
             .join(&locale)
@@ -57,6 +52,10 @@ impl CoreBundle {
 
         let globals = globals::LocalizedGlobalsVecs::load(globals_path)?;
 
-        Ok(CoreBundle {name, metadata, globals})
+        Ok(CoreBundle {
+            name,
+            metadata,
+            globals,
+        })
     }
 }

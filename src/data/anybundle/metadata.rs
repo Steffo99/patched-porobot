@@ -2,9 +2,9 @@
 //!
 //! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 
+use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 use std::fs::File;
 use std::path::Path;
-use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 
 /// A parsed `metadata.json` file from a Data Dragon Bundle.
 ///
@@ -24,17 +24,15 @@ pub struct BundleMetadata {
     /// [Vec] of locales included in the bundle.
     ///
     /// The specification defines that there can be multiple, but currently I've never seen more (or less) than one.
-    pub locales: Vec<String>
+    pub locales: Vec<String>,
 }
-
 
 impl BundleMetadata {
     /// Load a `metadata.json` file to create a [BundleMetadata] instance.
     pub fn load(path: &Path) -> LoadingResult<Self> {
-        let file = File::open(path)
-            .map_err(LoadingError::OpeningFile)?;
-        let data = serde_json::de::from_reader::<File, Self>(file)
-            .map_err(LoadingError::Deserializing)?;
+        let file = File::open(path).map_err(LoadingError::OpeningFile)?;
+        let data =
+            serde_json::de::from_reader::<File, Self>(file).map_err(LoadingError::Deserializing)?;
         Ok(data)
     }
 
@@ -46,7 +44,6 @@ impl BundleMetadata {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -54,13 +51,16 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, BundleMetadata>(r#"
+            serde_json::de::from_str::<'static, BundleMetadata>(
+                r#"
                 {
                     "locales": [
                         "en_us"
                     ]
                 }
-            "#).unwrap(),
+            "#
+            )
+            .unwrap(),
             BundleMetadata {
                 locales: vec!["en_us".to_string()]
             }

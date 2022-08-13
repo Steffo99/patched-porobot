@@ -1,7 +1,7 @@
 //! Module defining structs representing localized card regions.
 
-use std::collections::HashMap;
 use crate::data::setbundle::region::CardRegion;
+use std::collections::HashMap;
 
 /// A Legends of Runeterra [CardRegion], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -28,7 +28,6 @@ pub type LocalizedCardRegionVec = Vec<LocalizedCardRegion>;
 /// An index of [LocalizedCardRegion]s, with [LocalizedCardRegion::region]s as keys.
 pub type LocalizedCardRegionIndex = HashMap<CardRegion, LocalizedCardRegion>;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -36,19 +35,22 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, LocalizedCardRegion>(r#"
+            serde_json::de::from_str::<'static, LocalizedCardRegion>(
+                r#"
                 {
                     "abbreviation": "NX",
                     "iconAbsolutePath": "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png",
                     "name": "Noxus",
                     "nameRef": "Noxus"
                 }
-            "#).unwrap(),
+            "#
+            )
+            .unwrap(),
             LocalizedCardRegion {
                 region: CardRegion::Noxus,
                 name: "Noxus".to_string(),
                 abbreviation: "NX".to_string(),
-                icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string(),
+                icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string()
             }
         );
     }

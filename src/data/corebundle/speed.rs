@@ -1,7 +1,7 @@
 //! Module defining structs representing localized spell speeds.
 
-use std::collections::HashMap;
 use crate::data::setbundle::speed::SpellSpeed;
+use std::collections::HashMap;
 
 /// A Legends of Runeterra [SpellSpeed], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -19,7 +19,6 @@ pub type LocalizedSpellSpeedVec = Vec<LocalizedSpellSpeed>;
 /// An index of [LocalizedSpellSpeed]s, with [LocalizedSpellSpeed::spell_speed]s as keys.
 pub type LocalizedSpellSpeedIndex = HashMap<SpellSpeed, LocalizedSpellSpeed>;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -27,15 +26,18 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(
-            serde_json::de::from_str::<'static, LocalizedSpellSpeed>(r#"
+            serde_json::de::from_str::<'static, LocalizedSpellSpeed>(
+                r#"
                 {
                     "name": "Slow",
                     "nameRef": "Slow"
                 }
-            "#).unwrap(),
+            "#
+            )
+            .unwrap(),
             LocalizedSpellSpeed {
                 spell_speed: SpellSpeed::Slow,
-                name: "Slow".to_string(),
+                name: "Slow".to_string()
             }
         );
     }

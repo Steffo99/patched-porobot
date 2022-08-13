@@ -55,6 +55,7 @@ impl CardRegion {
 
 
 #[cfg(test)]
+#[rustfmt::skip]
 mod tests {
     use super::CardRegion;
 

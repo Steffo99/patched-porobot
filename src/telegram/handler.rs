@@ -1,18 +1,19 @@
 //! Module providing handlers for @patchedporobot on Telegram.
 
+use crate::search::cardsearch::CardSearchEngine;
+use crate::telegram::inline::card_to_inlinequeryresult;
 use itertools::Itertools;
 use log::*;
 use teloxide::dispatching::DpHandlerDescription;
 use teloxide::payloads::{AnswerInlineQuery, SendMessage};
-use teloxide::requests::{JsonRequest, ResponseResult};
 use teloxide::prelude::*;
+use teloxide::requests::{JsonRequest, ResponseResult};
 use teloxide::types::{ParseMode, Recipient};
-use crate::search::cardsearch::CardSearchEngine;
-use crate::telegram::inline::card_to_inlinequeryresult;
-
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
-pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
+pub fn inline_query_handler(
+    engine: CardSearchEngine,
+) -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
     Update::filter_inline_query().chain(dptree::endpoint(move |query: InlineQuery, bot: Bot| {
         info!("Handling inline query: `{}`", &query.query);
 
@@ -27,7 +28,7 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
                     next_offset: None,
                     switch_pm_text: Some("How to search cards".to_string()),
                     switch_pm_parameter: Some("err-no-query".to_string()),
-                }
+                };
             }
 
             debug!("Querying the search engine...");
@@ -43,7 +44,7 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
                     next_offset: None,
                     switch_pm_text: Some("Invalid query syntax".to_string()),
                     switch_pm_parameter: Some("err-invalid-query".to_string()),
-                }
+                };
             }
             let results = results.unwrap();
 
@@ -58,7 +59,7 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
                     next_offset: None,
                     switch_pm_text: Some("No cards found".to_string()),
                     switch_pm_parameter: Some("err-no-results".to_string()),
-                }
+                };
             }
 
             debug!("Found {} cards.", &len);
@@ -73,7 +74,7 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
                 next_offset: None,
                 switch_pm_text: None,
                 switch_pm_parameter: None,
-            }
+            };
         };
 
         async move {
@@ -87,7 +88,6 @@ pub fn inline_query_handler(engine: CardSearchEngine) -> Handler<'static, Depend
         }
     }))
 }
-
 
 const WELCOME_MESSAGE: &'static str = r#"
 👋 Hi! I'm a robotic poro who can search for Legends of Runeterra cards to send them in chats!
@@ -107,9 +107,9 @@ Have a fun time searching!
 <i>@patchedporobot isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</i>
 "#;
 
-
 /// Handle all messages by replying with the help text.
-pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
+pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription>
+{
     Update::filter_message().chain(dptree::endpoint(move |message: Message, bot: Bot| {
         info!("Handling private message: `{:?}`", &message.text());
 
@@ -123,7 +123,7 @@ pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, 
             protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
-            reply_markup: None
+            reply_markup: None,
         };
 
         async move {

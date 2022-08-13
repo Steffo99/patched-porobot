@@ -52,7 +52,6 @@ impl CardSet {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::CardSet;
@@ -61,9 +60,12 @@ mod tests {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]
             fn $id() {
-                assert_eq!(serde_json::de::from_str::<'static, CardSet>($src).unwrap(), $res);
+                assert_eq!(
+                    serde_json::de::from_str::<'static, CardSet>($src).unwrap(),
+                    $res
+                );
             }
-        }
+        };
     }
 
     test_deserialization!(deserialize_set1, r#""Set1""#, CardSet::Foundations);

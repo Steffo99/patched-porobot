@@ -22,11 +22,13 @@ impl SpellSpeed {
     /// Returns [Option::None] if no matching [LocalizedSpellSpeed] was found, for example spell speeds missing from the index.
     ///
     /// Equivalent to calling [LocalizedSpellSpeedIndex::get].
-    pub fn localized<'hm>(&self, hm: &'hm LocalizedSpellSpeedIndex) -> Option<&'hm LocalizedSpellSpeed> {
+    pub fn localized<'hm>(
+        &self,
+        hm: &'hm LocalizedSpellSpeedIndex,
+    ) -> Option<&'hm LocalizedSpellSpeed> {
         hm.get(self)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -36,9 +38,12 @@ mod tests {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]
             fn $id() {
-                assert_eq!(serde_json::de::from_str::<'static, SpellSpeed>($src).unwrap(), $res);
+                assert_eq!(
+                    serde_json::de::from_str::<'static, SpellSpeed>($src).unwrap(),
+                    $res
+                );
             }
-        }
+        };
     }
 
     test_deserialization!(deserialize_none, r#""""#, SpellSpeed::None);

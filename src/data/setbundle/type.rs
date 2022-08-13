@@ -1,6 +1,5 @@
 //! Module defining [CardType].
 
-
 /// A possible [Card](super::card::Card) type.
 ///
 /// Since more types might be added in the future, as it happened with landmarks, this enum is [non_exaustive](https://doc.rust-lang.org/reference/attributes/type_system.html#the-non_exhaustive-attribute).
@@ -31,7 +30,6 @@ pub enum CardType {
     Unsupported,
 }
 
-
 impl From<&CardType> for String {
     fn from(r#type: &CardType) -> Self {
         match r#type {
@@ -45,7 +43,6 @@ impl From<&CardType> for String {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::CardType;
@@ -54,9 +51,12 @@ mod tests {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]
             fn $id() {
-                assert_eq!(serde_json::de::from_str::<'static, CardType>($src).unwrap(), $res);
+                assert_eq!(
+                    serde_json::de::from_str::<'static, CardType>($src).unwrap(),
+                    $res
+                );
             }
-        }
+        };
     }
 
     test_deserialization!(deserialize_spell, r#""Spell""#, CardType::Spell);

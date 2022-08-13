@@ -342,11 +342,13 @@ impl CardKeyword {
     /// Returns [Option::None] if no matching [LocalizedCardKeyword] was found, for example for [CardKeyword::Unsupported] keywords.
     ///
     /// Equivalent to calling [LocalizedCardKeywordIndex::get].
-    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardKeywordIndex) -> Option<&'hm LocalizedCardKeyword> {
+    pub fn localized<'hm>(
+        &self,
+        hm: &'hm LocalizedCardKeywordIndex,
+    ) -> Option<&'hm LocalizedCardKeyword> {
         hm.get(self)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -356,79 +358,202 @@ mod tests {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]
             fn $id() {
-                assert_eq!(serde_json::de::from_str::<'static, CardKeyword>($src).unwrap(), $res);
+                assert_eq!(
+                    serde_json::de::from_str::<'static, CardKeyword>($src).unwrap(),
+                    $res
+                );
             }
-        }
+        };
     }
 
-    test_deserialization!(deserialize_spelloverwhelm, r#""SpellOverwhelm""#, CardKeyword::SpellOverwhelm);
+    test_deserialization!(
+        deserialize_spelloverwhelm,
+        r#""SpellOverwhelm""#,
+        CardKeyword::SpellOverwhelm
+    );
     test_deserialization!(deserialize_burst, r#""Burst""#, CardKeyword::Burst);
-    test_deserialization!(deserialize_countdown, r#""Countdown""#, CardKeyword::Countdown);
-    test_deserialization!(deserialize_onplay, r#""PlaySkillMark""#, CardKeyword::OnPlay);
-    test_deserialization!(deserialize_landmark, r#""LandmarkVisualOnly""#, CardKeyword::Landmark);
+    test_deserialization!(
+        deserialize_countdown,
+        r#""Countdown""#,
+        CardKeyword::Countdown
+    );
+    test_deserialization!(
+        deserialize_onplay,
+        r#""PlaySkillMark""#,
+        CardKeyword::OnPlay
+    );
+    test_deserialization!(
+        deserialize_landmark,
+        r#""LandmarkVisualOnly""#,
+        CardKeyword::Landmark
+    );
     test_deserialization!(deserialize_shurima, r#""Shurima""#, CardKeyword::Shurima);
     test_deserialization!(deserialize_attach, r#""Attach""#, CardKeyword::Attach);
     test_deserialization!(deserialize_noxus, r#""Noxus""#, CardKeyword::Noxus);
     test_deserialization!(deserialize_fleeting, r#""Fleeting""#, CardKeyword::Fleeting);
-    test_deserialization!(deserialize_clobbernoemptyslotrequirement, r#""ClobberNoEmptySlotRequirement""#, CardKeyword::ClobberNoEmptySlotRequirement);
+    test_deserialization!(
+        deserialize_clobbernoemptyslotrequirement,
+        r#""ClobberNoEmptySlotRequirement""#,
+        CardKeyword::ClobberNoEmptySlotRequirement
+    );
     test_deserialization!(deserialize_nab, r#""Nab""#, CardKeyword::Nab);
     test_deserialization!(deserialize_focus, r#""Focus""#, CardKeyword::Focus);
-    test_deserialization!(deserialize_enlightened, r#""Enlightened""#, CardKeyword::Enlightened);
+    test_deserialization!(
+        deserialize_enlightened,
+        r#""Enlightened""#,
+        CardKeyword::Enlightened
+    );
     test_deserialization!(deserialize_invoke, r#""Invoke""#, CardKeyword::Invoke);
     test_deserialization!(deserialize_boon, r#""Boon""#, CardKeyword::Boon);
     test_deserialization!(deserialize_trap, r#""Autoplay""#, CardKeyword::Trap);
     test_deserialization!(deserialize_drain, r#""Drain""#, CardKeyword::Drain);
-    test_deserialization!(deserialize_lastbreath, r#""LastBreath""#, CardKeyword::LastBreath);
+    test_deserialization!(
+        deserialize_lastbreath,
+        r#""LastBreath""#,
+        CardKeyword::LastBreath
+    );
     test_deserialization!(deserialize_demacia, r#""Demacia""#, CardKeyword::Demacia);
-    test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardKeyword::BandleCity);
+    test_deserialization!(
+        deserialize_bandlecity,
+        r#""BandleCity""#,
+        CardKeyword::BandleCity
+    );
     test_deserialization!(deserialize_fast, r#""Fast""#, CardKeyword::Fast);
-    test_deserialization!(deserialize_bilgewater, r#""Bilgewater""#, CardKeyword::Bilgewater);
-    test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardKeyword::Runeterra);
+    test_deserialization!(
+        deserialize_bilgewater,
+        r#""Bilgewater""#,
+        CardKeyword::Bilgewater
+    );
+    test_deserialization!(
+        deserialize_runeterra,
+        r#""Runeterra""#,
+        CardKeyword::Runeterra
+    );
     test_deserialization!(deserialize_recall, r#""Recall""#, CardKeyword::Recall);
     test_deserialization!(deserialize_weakest, r#""Weakest""#, CardKeyword::Weakest);
     test_deserialization!(deserialize_support, r#""Support""#, CardKeyword::Support);
     test_deserialization!(deserialize_slow, r#""Slow""#, CardKeyword::Slow);
-    test_deserialization!(deserialize_obliterate, r#""Obliterate""#, CardKeyword::Obliterate);
+    test_deserialization!(
+        deserialize_obliterate,
+        r#""Obliterate""#,
+        CardKeyword::Obliterate
+    );
     test_deserialization!(deserialize_imbue, r#""Imbue""#, CardKeyword::Imbue);
     test_deserialization!(deserialize_targon, r#""MtTargon""#, CardKeyword::Targon);
-    test_deserialization!(deserialize_shadowisles, r#""ShadowIsles""#, CardKeyword::ShadowIsles);
-    test_deserialization!(deserialize_auravisualfakekeyword, r#""AuraVisualFakeKeyword""#, CardKeyword::AuraVisualFakeKeyword);
+    test_deserialization!(
+        deserialize_shadowisles,
+        r#""ShadowIsles""#,
+        CardKeyword::ShadowIsles
+    );
+    test_deserialization!(
+        deserialize_auravisualfakekeyword,
+        r#""AuraVisualFakeKeyword""#,
+        CardKeyword::AuraVisualFakeKeyword
+    );
     test_deserialization!(deserialize_ionia, r#""Ionia""#, CardKeyword::Ionia);
-    test_deserialization!(deserialize_nightfall, r#""Nightfall""#, CardKeyword::Nightfall);
-    test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardKeyword::PiltoverZaun);
+    test_deserialization!(
+        deserialize_nightfall,
+        r#""Nightfall""#,
+        CardKeyword::Nightfall
+    );
+    test_deserialization!(
+        deserialize_piltoverzaun,
+        r#""PiltoverZaun""#,
+        CardKeyword::PiltoverZaun
+    );
     test_deserialization!(deserialize_attune, r#""Attune""#, CardKeyword::Attune);
     test_deserialization!(deserialize_daybreak, r#""Daybreak""#, CardKeyword::Daybreak);
-    test_deserialization!(deserialize_silenceindividualkeyword, r#""SilenceIndividualKeyword""#, CardKeyword::SilenceIndividualKeyword);
+    test_deserialization!(
+        deserialize_silenceindividualkeyword,
+        r#""SilenceIndividualKeyword""#,
+        CardKeyword::SilenceIndividualKeyword
+    );
     test_deserialization!(deserialize_skill, r#""Skill""#, CardKeyword::Skill);
     test_deserialization!(deserialize_plunder, r#""Plunder""#, CardKeyword::Plunder);
-    test_deserialization!(deserialize_doubleattack, r#""DoubleAttack""#, CardKeyword::DoubleAttack);
-    test_deserialization!(deserialize_vulnerable, r#""Vulnerable""#, CardKeyword::Vulnerable);
+    test_deserialization!(
+        deserialize_doubleattack,
+        r#""DoubleAttack""#,
+        CardKeyword::DoubleAttack
+    );
+    test_deserialization!(
+        deserialize_vulnerable,
+        r#""Vulnerable""#,
+        CardKeyword::Vulnerable
+    );
     test_deserialization!(deserialize_elusive, r#""Elusive""#, CardKeyword::Elusive);
     test_deserialization!(deserialize_stun, r#""Stun""#, CardKeyword::Stun);
     test_deserialization!(deserialize_fated, r#""Fated""#, CardKeyword::Fated);
-    test_deserialization!(deserialize_blockelusive, r#""BlockElusive""#, CardKeyword::BlockElusive);
+    test_deserialization!(
+        deserialize_blockelusive,
+        r#""BlockElusive""#,
+        CardKeyword::BlockElusive
+    );
     test_deserialization!(deserialize_fury, r#""Fury""#, CardKeyword::Fury);
     test_deserialization!(deserialize_barrier, r#""Barrier""#, CardKeyword::Barrier);
     test_deserialization!(deserialize_immobile, r#""Immobile""#, CardKeyword::Immobile);
     test_deserialization!(deserialize_hallowed, r#""Hallowed""#, CardKeyword::Hallowed);
     test_deserialization!(deserialize_evolve, r#""Evolve""#, CardKeyword::Evolve);
-    test_deserialization!(deserialize_frostbite, r#""Frostbite""#, CardKeyword::Frostbite);
-    test_deserialization!(deserialize_overwhelm, r#""Overwhelm""#, CardKeyword::Overwhelm);
-    test_deserialization!(deserialize_quickattack, r#""QuickStrike""#, CardKeyword::QuickAttack);
+    test_deserialization!(
+        deserialize_frostbite,
+        r#""Frostbite""#,
+        CardKeyword::Frostbite
+    );
+    test_deserialization!(
+        deserialize_overwhelm,
+        r#""Overwhelm""#,
+        CardKeyword::Overwhelm
+    );
+    test_deserialization!(
+        deserialize_quickattack,
+        r#""QuickStrike""#,
+        CardKeyword::QuickAttack
+    );
     test_deserialization!(deserialize_tough, r#""Tough""#, CardKeyword::Tough);
-    test_deserialization!(deserialize_regeneration, r#""Regeneration""#, CardKeyword::Regeneration);
+    test_deserialization!(
+        deserialize_regeneration,
+        r#""Regeneration""#,
+        CardKeyword::Regeneration
+    );
     test_deserialization!(deserialize_silenced, r#""Silenced""#, CardKeyword::Silenced);
-    test_deserialization!(deserialize_spellshield, r#""SpellShield""#, CardKeyword::SpellShield);
-    test_deserialization!(deserialize_lifesteal, r#""Lifesteal""#, CardKeyword::Lifesteal);
+    test_deserialization!(
+        deserialize_spellshield,
+        r#""SpellShield""#,
+        CardKeyword::SpellShield
+    );
+    test_deserialization!(
+        deserialize_lifesteal,
+        r#""Lifesteal""#,
+        CardKeyword::Lifesteal
+    );
     test_deserialization!(deserialize_augment, r#""Augment""#, CardKeyword::Augment);
     test_deserialization!(deserialize_impact, r#""Impact""#, CardKeyword::Impact);
     test_deserialization!(deserialize_scout, r#""Scout""#, CardKeyword::Scout);
-    test_deserialization!(deserialize_ephemeral, r#""Ephemeral""#, CardKeyword::Ephemeral);
+    test_deserialization!(
+        deserialize_ephemeral,
+        r#""Ephemeral""#,
+        CardKeyword::Ephemeral
+    );
     test_deserialization!(deserialize_lurk, r#""Lurker""#, CardKeyword::Lurk);
-    test_deserialization!(deserialize_formidable, r#""Formidable""#, CardKeyword::Formidable);
-    test_deserialization!(deserialize_challenger, r#""Challenger""#, CardKeyword::Challenger);
+    test_deserialization!(
+        deserialize_formidable,
+        r#""Formidable""#,
+        CardKeyword::Formidable
+    );
+    test_deserialization!(
+        deserialize_challenger,
+        r#""Challenger""#,
+        CardKeyword::Challenger
+    );
     test_deserialization!(deserialize_fearsome, r#""Fearsome""#, CardKeyword::Fearsome);
-    test_deserialization!(deserialize_cantblock, r#""CantBlock""#, CardKeyword::CantBlock);
+    test_deserialization!(
+        deserialize_cantblock,
+        r#""CantBlock""#,
+        CardKeyword::CantBlock
+    );
     test_deserialization!(deserialize_deep, r#""Deep""#, CardKeyword::Deep);
-    test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
+    test_deserialization!(
+        deserialize_unsupported,
+        r#""Xyzzy""#,
+        CardKeyword::Unsupported
+    );
 }

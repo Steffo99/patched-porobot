@@ -30,6 +30,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[rustfmt::skip]
     fn deserialize() {
         assert_eq!(
             serde_json::de::from_str::<'static, LocalizedVocabTerm>(r#"

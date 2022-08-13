@@ -2,6 +2,6 @@
 //!
 //! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 
+pub mod anybundle;
 pub mod corebundle;
 pub mod setbundle;
-pub mod anybundle;

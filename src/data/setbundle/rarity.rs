@@ -27,11 +27,13 @@ impl CardRarity {
     /// Returns [Option::None] if no matching [LocalizedCardRarity] was found, for example rarities missing from the index.
     ///
     /// Equivalent to calling [LocalizedCardRarityIndex::get].
-    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRarityIndex) -> Option<&'hm LocalizedCardRarity> {
+    pub fn localized<'hm>(
+        &self,
+        hm: &'hm LocalizedCardRarityIndex,
+    ) -> Option<&'hm LocalizedCardRarity> {
         hm.get(self)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -41,9 +43,12 @@ mod tests {
         ( $id:ident, $src:literal, $res:expr ) => {
             #[test]
             fn $id() {
-                assert_eq!(serde_json::de::from_str::<'static, CardRarity>($src).unwrap(), $res);
+                assert_eq!(
+                    serde_json::de::from_str::<'static, CardRarity>($src).unwrap(),
+                    $res
+                );
             }
-        }
+        };
     }
 
     test_deserialization!(deserialize_none, r#""None""#, CardRarity::None);

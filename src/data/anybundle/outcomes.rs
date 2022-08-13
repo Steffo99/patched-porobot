@@ -2,7 +2,6 @@
 //!
 //! [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 
-
 /// An error that occoured while loading a Data Dragon Bundle.
 #[derive(Debug)]
 pub enum LoadingError {
