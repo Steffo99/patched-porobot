@@ -57,7 +57,7 @@ impl CardRegion {
     /// Get the [`CardRegion`] from its short code.
     /// 
     /// If no region is matched, will return [Option::None].
-    fn from_code(value: &[char; 2]) -> Option<Self> {
+    pub fn from_code(value: &[char; 2]) -> Option<Self> {
         match value {
             ['D', 'E'] => Some(Self::Demacia),
             ['F', 'R'] => Some(Self::Freljord),
