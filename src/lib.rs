@@ -6,9 +6,9 @@
 //!
 //! If you are looking for the documentation of its implementations, please visit one of the following pages:
 //!
-//! - [Usage of the Telegram bot](../patched_porobot_telegram)
-//! - ~~[Usage of the Discord bot](../patched_porobot_discord)~~
-//! - ~~[Usage of the Matrix bot](../patched_porobot_matrix)~~
+//! - [Usage of the Telegram bot](../patched_porobot_telegram/index.html)
+//! - ~~[Usage of the Discord bot](../patched_porobot_discord/index.html)~~
+//! - ~~[Usage of the Matrix bot](../patched_porobot_matrix/index.html)~~
 //!
 //! # Features
 //!
