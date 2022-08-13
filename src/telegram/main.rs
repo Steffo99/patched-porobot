@@ -1,4 +1,4 @@
-//! This module defines the [`main`] function for [`patched_porobot_telegram`].
+//! This module defines the [`main`] function for `patched_porobot_telegram`.
 
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::corebundle::CoreBundle;
