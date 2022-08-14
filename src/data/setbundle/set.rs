@@ -50,6 +50,21 @@ impl CardSet {
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardSetIndex) -> Option<&'hm LocalizedCardSet> {
         hm.get(self)
     }
+
+    /// Get the [`CardSet`] from its short code.
+    /// 
+    /// If no set is matched, will return [Option::None].
+    pub fn from_code(value: &[char; 2]) -> Option<Self> {
+        match value {
+            ['0', '1'] => Some(Self::Demacia),
+            ['0', '2'] => Some(Self::Freljord),
+            ['0', '3'] => Some(Self::Ionia),
+            ['0', '4'] => Some(Self::Noxus),
+            ['0', '5'] => Some(Self::PiltoverZaun),
+            ['0', '6'] => Some(Self::ShadowIsles),
+            _ => None,
+        }
+    }
 }
 
 #[cfg(test)]

@@ -18,6 +18,7 @@ pub mod speed;
 pub mod subtype;
 pub mod supertype;
 pub mod r#type;
+pub mod code;
 
 /// A parsed [Data Dragon] [Set Bundle].
 ///

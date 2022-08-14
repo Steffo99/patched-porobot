@@ -10,6 +10,7 @@ use super::rarity::CardRarity;
 use super::region::CardRegion;
 use super::speed::SpellSpeed;
 use super::set::CardSet;
+use super::code::CardCode;
 
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
@@ -18,7 +19,7 @@ use super::set::CardSet;
 pub struct Card {
     /// Unique seven-character identifier of the card.
     #[serde(rename = "cardCode")]
-    pub code: String,
+    pub code: CardCode,
 
     /// Localized name of the card.
     pub name: String,
