@@ -218,7 +218,7 @@ mod tests {
             }
             "#).unwrap(),
             Card {
-                code: String::from("06RU025"),
+                code: CardCode::from("06RU025".to_string()),
                 name: String::from("Evelynn"),
                 r#type: CardType::Unit,
                 set: CardSet::Worldwalker,
