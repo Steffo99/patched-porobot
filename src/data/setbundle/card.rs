@@ -120,7 +120,7 @@ pub struct Card {
     ///
     /// To access references to the cards themselves, use [Card::associated_cards].
     #[serde(rename = "associatedCardRefs")]
-    pub associated_card_codes: Vec<String>,
+    pub associated_card_codes: Vec<CardCode>,
 
     /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
@@ -161,8 +161,8 @@ impl Card {
 }
 
 
-/// An index of [Card]s, with [Card::code]s as keys.
-pub type CardIndex = HashMap<String, Card>;
+/// An index of [Card]s, with [CardCode]s as keys.
+pub type CardIndex = HashMap<CardCode, Card>;
 
 
 #[cfg(test)]

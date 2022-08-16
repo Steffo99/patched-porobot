@@ -13,7 +13,7 @@ pub fn card_to_inlinequeryresult(
     card: &Card,
 ) -> InlineQueryResult {
     InlineQueryResult::Photo(InlineQueryResultPhoto {
-        id: card.code.to_owned(),
+        id: card.code.full.to_owned(),
         title: Some(card.name.to_owned()),
         caption: Some(display_card(&globals, &card)),
         parse_mode: Some(ParseMode::Html),
