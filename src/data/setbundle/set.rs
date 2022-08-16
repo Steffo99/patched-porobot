@@ -50,6 +50,40 @@ impl CardSet {
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardSetIndex) -> Option<&'hm LocalizedCardSet> {
         hm.get(self)
     }
+
+    /// Get the [`CardSet`] from its short code, **assuming it is not an [`CardSet::Event`] card**.
+    ///
+    /// [`CardSet::Event`] cards have the short code of the set they were released in, so it is impossible to determine if a card belongs to that set from its short code.
+    pub fn from_code(value: &str) -> Self {
+        match value {
+            "01" => Self::Foundations,
+            "02" => Self::RisingTides,
+            "03" => Self::CallOfTheMountain,
+            "04" => Self::EmpiresOfTheAscended,
+            "05" => Self::BeyondTheBandlewood,
+            "06" => Self::Worldwalker,
+
+            _ => Self::Unsupported,
+        }
+    }
+
+    /// Get the short code of this [`CardSet`].
+    ///
+    /// [`CardSet::Event`] cards have the short code of the set they were released in, so this method will return [`Option::None`] for them.
+    ///
+    /// If the set has no short code, it will also return [`Option::None`].
+    pub fn to_code(&self) -> Option<String> {
+        match self {
+            Self::Foundations => Some("01".to_string()),
+            Self::RisingTides => Some("02".to_string()),
+            Self::CallOfTheMountain => Some("03".to_string()),
+            Self::EmpiresOfTheAscended => Some("04".to_string()),
+            Self::BeyondTheBandlewood => Some("05".to_string()),
+            Self::Worldwalker => Some("06".to_string()),
+
+            _ => None,
+        }
+    }
 }
 
 #[cfg(test)]

@@ -12,9 +12,10 @@
 /// # Examples
 /// 
 /// - Evelynn: `06RU025`
-#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(transparent)]
 pub struct CardCode {
+    /// The card code as a [`String`].
     pub full: String
 }
 
