@@ -1,42 +1,41 @@
 //! Module defining the types used to deserialize deck codes.
 //! 
-//! Adapted from [RiotGames/LoRDeckCodes](https://github.com/RiotGames/LoRDeckCodes) and from [iulianR/lordeckcodes-rs](https://github.com/iulianR/lordeckcodes-rs/blob/master/src/lib.rs).
+//! Adapted from [RiotGames/LoRDeckCodes](https://github.com/RiotGames/LoRDeckCodes) and from [iulianR/lordeckcodes-rs](https://github.com/iulianR/lordeckcodes-rs/).
 
-use crate::data::setbundle::card::Card;
+use std::cmp::{Ord, Ordering};
+use std::collections::HashMap;
+use crate::data::setbundle::code::CardCode;
 
 
-/// A deck code, as defined in the [deck codes specification](https://github.com/RiotGames/LoRDeckCodes).
-#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
-#[serde(transparent)]
-pub struct DeckCode {
-    /// The deck code as a string.
-    pub full: String
+pub struct Deck {
+    pub contents: Vec<(CardCode, usize)>,
 }
 
 
-impl From<String> for DeckCode {
-    fn from(full: String) -> Self {
-        Self { full }
+impl Deck {
+    /// Compare two deck cards for ordering the [contents](Deck::contents) [Vec].
+    fn compare_tuples(a: (CardCode, usize), b: (CardCode, usize)) -> Ordering {
+        // Why isn't partial_eq public...?
+        let ord = a.1.cmp(&b.1);
+        if ord != Ordering::Equal { return ord; };
+        let ord = a.0.set().cmp(b.0.set());
+        if ord != Ordering::Equal { return ord; };
+        let ord = a.0.region().cmp(b.0.region());
+        if ord != Ordering::Equal { return ord; };
+        let ord = a.0.card().cmp(b.0.card());
+        if ord != Ordering::Equal { return ord; };
+        a.0.token().cmp(b.0.token())
     }
-}
 
-
-impl From<DeckCode> for String {
-    fn from(dc: DeckCode) -> Self {
-        dc.full
-    }
-}
-
-
-impl From<Vec<(Card, usize)>> for DeckCode {
-    fn from(_: Vec<(Card, usize)>) -> Self {
+    pub fn from_code(code: String) -> Self {
         todo!()
     }
-}
 
+    pub fn to_code(&self) -> String {
+        let hm: HashMap<usize, HashMap<String, HashMap<String, &CardCode>>> = HashMap::new();
 
-impl From<DeckCode> for Vec<(Card, usize)> {
-    fn from(_: DeckCode) -> Self {
+        // self.contents.binary_search_by(compare_tuples)
+
         todo!()
     }
 }
