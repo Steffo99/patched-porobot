@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 use std::io::{Cursor, Read, Write};
-use varint_rs::VarintReader;
+use varint_rs::{VarintReader, VarintWriter};
 use crate::data::deckcode::version::{DeckCodeVersion, DeckCodeVersioned};
 use crate::data::setbundle::card::Card;
 use crate::data::setbundle::code::CardCode;
@@ -33,8 +33,8 @@ impl Deck {
             .encode(&bytes)
     }
 
-    /// Read the format and version bytes from a readable stream of bytes.
-    fn read_format_version<R: Read>(reader: &mut R) -> DeckDecodingResult<(DeckCodeFormat, DeckCodeVersion)> {
+    /// Read the format and version byte from a readable stream of bytes.
+    fn read_header<R: Read>(reader: &mut R) -> DeckDecodingResult<(DeckCodeFormat, DeckCodeVersion)> {
         let mut format_version: [u8; 1] = [0; 1];
         reader.read_exact(&mut format_version).map_err(DeckDecodingError::Read)?;
 
@@ -45,7 +45,7 @@ impl Deck {
     }
 
     /// Write the given format and version into a writable stream of bytes.
-    fn write_format_version<W: Write>(writer: &mut W, format: DeckCodeFormat, version: DeckCodeVersion) -> DeckEncodingResult<usize> {
+    fn write_header<W: Write>(writer: &mut W, format: DeckCodeFormat, version: DeckCodeVersion) -> DeckEncodingResult<usize> {
         let format: u8 = format.into();
         let version: u8 = version.into();
 
@@ -101,6 +101,14 @@ impl Deck {
         Ok(())
     }
 
+    /// Write [a single card number](Self::write_group) into the given writer.
+    fn write_card_main<W: Write>(writer: &mut W, card: &str) -> DeckEncodingResult<()> {
+        let card = card.parse::<u32>().map_err(DeckEncodingError::InvalidCardNumber)?;
+        writer.write_u32_varint(card).map_err(DeckEncodingError::Write)?;
+
+        Ok(())
+    }
+
     /// Read [all possible card codes with a non-standard quantity](Self::read_card_extra) into the given hashmap.
     fn read_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
         let len = cursor.get_ref().len();
@@ -117,16 +125,34 @@ impl Deck {
     fn read_card_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
         let quantity = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
-        let set = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let set = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
         let set = CardSet::from(set).to_code().ok_or(DeckDecodingError::UnknownSet)?;
 
-        let region = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let region = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
         let region = CardRegion::from(region).to_code().ok_or(DeckDecodingError::UnknownRegion)?;
 
-        let card = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let card = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         let code = CardCode::from_s_r_c(&set, &region, card);
         contents.insert(code, quantity);
+
+        Ok(())
+    }
+
+    /// Write [a single card code with a non-standard quantity](Self::write_extra) into the given writer.
+    fn write_card_extra<W: Write>(writer: &mut W, code: CardCode, quantity: u32) -> DeckEncodingResult<()> {
+        writer.write_u32_varint(quantity).map_err(DeckEncodingError::Write)?;
+
+        let set = CardSet::try_from(code.set()).map_err(|_| DeckEncodingError::UnknownSet)?;
+        let set: u32 = set.into();
+        writer.write_u32_varint(set).map_err(DeckEncodingError::Write)?;
+
+        let region = CardRegion::try_from(code.region()).map_err(|_| DeckEncodingError::UnknownRegion)?;
+        let region: u32 = region.into();
+        writer.write_u32_varint(region).map_err(DeckEncodingError::Write)?;
+
+        let card = code.card().parse::<u32>().map_err(DeckEncodingError::InvalidCardNumber)?;
+        writer.write_u32_varint(card).map_err(DeckEncodingError::Write)?;
 
         Ok(())
     }
@@ -135,7 +161,7 @@ impl Deck {
     pub fn from_code(code: &str) -> DeckDecodingResult<Deck> {
         let mut cursor = Cursor::new(Self::decode_code(&code)?);
 
-        let (format, _version) = Self::read_format_version(&mut cursor)?;
+        let (format, _version) = Self::read_header(&mut cursor)?;
 
         let mut contents = HashMap::<CardCode, u32>::new();
 
@@ -154,7 +180,7 @@ impl Deck {
 
         let version = self.min_deckcode_version().ok_or(DeckEncodingError::UnknownVersion)?;
 
-        Self::write_format_version(&mut cursor, format, version)?;
+        Self::write_header(&mut cursor, format, version)?;
 
         match format {
             DeckCodeFormat::F1 => {
@@ -172,7 +198,7 @@ impl Deck {
 pub enum DeckDecodingError {
     /// The provided string was not a valid base-32 string.
     Base32Encoding(data_encoding::DecodeError),
-    /// The decoder cursor was not able to read data from the code.
+    /// The decoder cursor was not able to read data from the byte buffer.
     Read(std::io::Error),
     /// The deck code format of the provided string was unknown.
     UnknownFormat,
@@ -188,11 +214,15 @@ pub enum DeckDecodingError {
 #[derive(Debug)]
 pub enum DeckEncodingError {
     /// The encoder cursor was not able to write data into the byte buffer.
-    ///
-    /// _The chances of a deck code being longer than [`usize`] bytes are so low, I think this may probably be ignored..._
     Write(std::io::Error),
     /// The deck code version of the deck could not be determined.
     UnknownVersion,
+    /// A card in the deck belongs to a set with an unknown internal id.
+    UnknownSet,
+    /// A card in the deck belongs to a region with an unknown internal id.
+    UnknownRegion,
+    /// A card in the deck has a invalid card number segment in the card code.
+    InvalidCardNumber(std::num::ParseIntError),
 }
 
 pub type DeckDecodingResult<T> = Result<T, DeckDecodingError>;
