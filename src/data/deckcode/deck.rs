@@ -1,9 +1,9 @@
 //! Module defining the [`Deck`] struct and its serialization methods and results.
 
 use std::collections::HashMap;
-use std::io::{Cursor, Read};
+use std::io::{Cursor, Read, Write};
 use varint_rs::VarintReader;
-use crate::data::deckcode::version::DeckCodeVersion;
+use crate::data::deckcode::version::{DeckCodeVersion, DeckCodeVersioned};
 use crate::data::setbundle::card::Card;
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
@@ -20,106 +20,183 @@ pub struct Deck {
 
 
 impl Deck {
-    /// Deserialize a deck code into a [`Deck`].
-    pub fn from_code(code: &str) -> DeckDecodingResult {
-        // Create a Vec of bytes from the input deck code
-        let bytes = data_encoding::BASE32_NOPAD.decode(code.as_bytes())
-            .map_err(DeckDecodingError::Base32)?;
+    /// Decode a deck code into a [`Vec`] of [`u8`].
+    fn decode_code(code: &str) -> DeckDecodingResult<Vec<u8>> {
+        data_encoding::BASE32_NOPAD
+            .decode(code.as_bytes())
+            .map_err(DeckDecodingError::Base32Encoding)
+    }
 
-        // Create a cursor spanning the bytes, so they can be read
-        let mut cursor = Cursor::new(&bytes);
+    /// Encode a [`Vec`] of [`u8`] into a deck code.
+    fn encode_code(bytes: Vec<u8>) -> String {
+        data_encoding::BASE32_NOPAD
+            .encode(&bytes)
+    }
 
-        // Find the format and the version of the deck code
+    /// Read the format and version bytes from a readable stream of bytes.
+    fn read_format_version<R: Read>(reader: &mut R) -> DeckDecodingResult<(DeckCodeFormat, DeckCodeVersion)> {
         let mut format_version: [u8; 1] = [0; 1];
-        cursor.read_exact(&mut format_version).map_err(DeckDecodingError::Read)?;
-        let format = DeckCodeFormat::try_from(format_version[0] >> 4).map_err(|_| DeckDecodingError::UnknownFormat)?;
-        let _version = DeckCodeVersion::try_from(format_version[0] & 0xF).map_err(|_| DeckDecodingError::UnknownVersion)?;
+        reader.read_exact(&mut format_version).map_err(DeckDecodingError::Read)?;
 
-        // Create the hashmap containing the deck's cards
+        let format = DeckCodeFormat::try_from(format_version[0] >> 4).map_err(|_| DeckDecodingError::UnknownFormat)?;
+        let version = DeckCodeVersion::try_from(format_version[0] & 0xF).map_err(|_| DeckDecodingError::UnknownVersion)?;
+
+        Ok((format, version))
+    }
+
+    /// Write the given format and version into a writable stream of bytes.
+    fn write_format_version<W: Write>(writer: &mut W, format: DeckCodeFormat, version: DeckCodeVersion) -> DeckEncodingResult<usize> {
+        let format: u8 = format.into();
+        let version: u8 = version.into();
+
+        let byte: u8 = (format << 4) | version;
+
+        writer.write(&[byte]).map_err(DeckEncodingError::Write)
+    }
+
+    /// Read [the triplets, twins, and singletons supergroups](Self::read_supergroup) into the given hashmap.
+    fn read_main<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+        for quantity in (1..=3).rev() {
+            Self::read_supergroup(reader, contents, quantity)?;
+        }
+
+        Ok(())
+    }
+
+    /// Read [the groups](Self::read_group) of [a single supergroup](Self::read_main) into the given hashmap.
+    fn read_supergroup<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
+        let group_count = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+
+        for _group in 0..group_count {
+            Self::read_group(reader, contents, quantity)?;
+        }
+
+        Ok(())
+    }
+
+    /// Read [the card codes](Self::read_card_main) of [a single group](Self::read_supergroup) into the given hashmap.
+    fn read_group<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
+        let card_count = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+
+        let set = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let set = CardSet::from(set).to_code().ok_or(DeckDecodingError::UnknownSet)?;
+
+        let region = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let region = CardRegion::from(region).to_code().ok_or(DeckDecodingError::UnknownRegion)?;
+
+        for _card in 0..card_count {
+            Self::read_card_main(reader, contents, quantity, &set, &region)?;
+        }
+
+        Ok(())
+    }
+
+    /// Read [a single card code](Self::read_group) into the given hashmap.
+    fn read_card_main<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32, set: &str, region: &str) -> DeckDecodingResult<()> {
+        let card = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+
+        let code = CardCode::from_s_r_c(set, region, card);
+        contents.insert(code, quantity);
+
+        Ok(())
+    }
+
+    /// Read [all possible card codes with a non-standard quantity](Self::read_card_extra) into the given hashmap.
+    fn read_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+        let len = cursor.get_ref().len();
+
+        // While the cursor has still some bytes left...
+        while (cursor.position() as usize) < (len - 1) {
+            Self::read_card_extra(reader, contents)?;
+        }
+
+        Ok(())
+    }
+
+    /// Read [a single card code with a non-standard quantity](Self::read_extra) into the given hashmap.
+    fn read_card_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+        let quantity = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
+
+        let set = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let set = CardSet::from(set).to_code().ok_or(DeckDecodingError::UnknownSet)?;
+
+        let region = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+        let region = CardRegion::from(region).to_code().ok_or(DeckDecodingError::UnknownRegion)?;
+
+        let card = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
+
+        let code = CardCode::from_s_r_c(&set, &region, card);
+        contents.insert(code, quantity);
+
+        Ok(())
+    }
+
+    /// Deserialize a deck code into a [`Deck`].
+    pub fn from_code(code: &str) -> DeckDecodingResult<Deck> {
+        let mut cursor = Cursor::new(Self::decode_code(&code)?);
+
+        let (format, _version) = Self::read_format_version(&mut cursor)?;
+
         let mut contents = HashMap::<CardCode, u32>::new();
 
-        // Do something different based on the format of the deck code
         match format {
             DeckCodeFormat::F1 => {
-                // All deck codes have three supergroups, containing cards inserted 3×, 2×, and 1× respectively
-                for quantity in (1..=3).rev() {
-                    // Supergroups contain a group for each set and region combination of the cards inside
-                    let group_count = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-
-                    for _group_number in 0..group_count {
-                        // Groups may contain any number of cards
-                        let card_count = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-
-                        // Sets are represented via their internal id and must be converted to strings
-                        let set = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-                        let set = CardSet::from_id(set).to_code().expect("sets with an internal id to have a short code");
-
-                        // Regions are represented via their internal id and must be converted to strings
-                        let region = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-                        let region = CardRegion::from_id(region).to_code().expect("regions with an internal id to have a short code");
-
-                        for _card_number in 0..card_count {
-                            // Card numbers are represented "directly"
-                            let card = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-
-                            // Create a card code from the obtained information
-                            let code = format!("{:02}{}{:03}", &set, &region, &card);
-                            let code = CardCode::from(code);
-
-                            contents.insert(code, quantity);
-                        }
-                    }
-                }
-
-                // Read cards with a quantity of 4 or more. Wild!
-                // No groups here, just raw cards
-                let len = cursor.get_ref().len();
-                while (cursor.position() as usize) < (len - 1) {
-                    let quantity = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-
-                    let set = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-                    let set = CardSet::from_id(set).to_code().expect("sets with an internal id to have a short code");
-
-                    let region = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-                    let region = CardRegion::from_id(region).to_code().expect("regions with an internal id to have a short code");
-
-                    let card = cursor.read_u32_varint().map_err(DeckDecodingError::Read)?;
-
-                    let code = format!("{:02}{}{:03}", &set, &region, &card);
-                    let code = CardCode::from(code);
-
-                    contents.insert(code, quantity);
-                }
-
+                Self::read_main(&mut cursor, &mut contents)?;
+                Self::read_extra(&mut cursor, &mut contents)?;
                 Ok(Deck { contents })
             }
         }
     }
 
     /// Serialize the [`Deck`] into a deck code of the given [format](DeckCodeFormat).
-    pub fn to_code(self, format: DeckCodeFormat) -> String {
+    pub fn to_code(&self, format: DeckCodeFormat) -> DeckEncodingResult<String> {
+        let mut cursor = Cursor::new(Vec::new());
+
+        let version = self.min_deckcode_version().ok_or(DeckEncodingError::UnknownVersion)?;
+
+        Self::write_format_version(&mut cursor, format, version)?;
+
         match format {
-            DeckCodeFormat::F1 => todo!(),
+            DeckCodeFormat::F1 => {
+                todo!()
+            }
         }
+
+        Ok(Self::encode_code(cursor.into_inner()))
     }
 }
 
 
-/// An error occoured while decoding a [`Deck`](crate::data::deckcode::deck::Deck) from a code.
+/// An error occoured while decoding a [`Deck`] from a code.
 #[derive(Debug)]
 pub enum DeckDecodingError {
     /// The provided string was not a valid base-32 string.
-    Base32(data_encoding::DecodeError),
-    /// The provided string was probably not long enough to be a valid deck code.
+    Base32Encoding(data_encoding::DecodeError),
+    /// The decoder cursor was not able to read data from the code.
     Read(std::io::Error),
     /// The deck code format of the provided string was unknown.
     UnknownFormat,
     /// The deck code version of the provided string was unknown.
     UnknownVersion,
+    /// The deck code contains a set with an unknown short code.
+    UnknownSet,
+    /// The deck code contains a region with an unknown short code.
+    UnknownRegion,
 }
 
+/// An error occoured while encoding a [`Deck`] into a code.
+#[derive(Debug)]
+pub enum DeckEncodingError {
+    /// The encoder cursor was not able to write data into the byte buffer.
+    ///
+    /// _The chances of a deck code being longer than [`usize`] bytes are so low, I think this may probably be ignored..._
+    Write(std::io::Error),
+    /// The deck code version of the deck could not be determined.
+    UnknownVersion,
+}
 
-pub type DeckDecodingResult = Result<Deck, DeckDecodingError>;
+pub type DeckDecodingResult<T> = Result<T, DeckDecodingError>;
+pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 
 
 #[cfg(test)]

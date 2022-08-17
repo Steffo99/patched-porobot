@@ -67,8 +67,14 @@ impl CardCode {
     pub fn token(&self) -> &str {
         &self.full[7..9]
     }
-}
 
+    /// Create a new card code given the set and region strings and the card number.
+    ///
+    /// Note: Does not perform any kind of check on the `set` and `region` parameters, and may cause the creation of invalid [`CardCode`]s if misused.
+    pub fn from_s_r_c(set: &str, region: &str, card: u32) -> Self {
+        CardCode::from(format!("{:02}{}{:03}", &set, &region, &card))
+    }
+}
 
 impl From<CardCode> for String {
     fn from(cc: CardCode) -> Self {
@@ -76,6 +82,9 @@ impl From<CardCode> for String {
     }
 }
 
+/// Create a new card code given the full card code string.
+///
+/// Note: Does not perform any kind of check on the given string, and may cause the creation of invalid [`CardCode`]s if misused.
 impl From<String> for CardCode {
     fn from(full: String) -> Self {
         CardCode { full }

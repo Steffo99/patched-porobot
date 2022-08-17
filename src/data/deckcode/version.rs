@@ -1,6 +1,7 @@
 //! Module defining the [`DeckCodeVersion`] enum and [`DeckCodeVersioned`] trait.
 
 use std::cmp::max;
+use crate::data::deckcode::deck::Deck;
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
 use crate::data::setbundle::set::CardSet;
@@ -40,6 +41,18 @@ impl TryFrom<u8> for DeckCodeVersion {
             4 => Ok(Self::V4),
             5 => Ok(Self::V5),
             _ => Err(())
+        }
+    }
+}
+
+impl From<DeckCodeVersion> for u8 {
+    fn from(value: DeckCodeVersion) -> Self {
+        match value {
+            DeckCodeVersion::V1 => 1,
+            DeckCodeVersion::V2 => 2,
+            DeckCodeVersion::V3 => 3,
+            DeckCodeVersion::V4 => 4,
+            DeckCodeVersion::V5 => 5,
         }
     }
 }
@@ -101,7 +114,7 @@ impl DeckCodeVersioned for CardRegion {
 }
 
 
-/// [`CardCode`]s versions are the maximum version of their components.
+/// [`CardCode`]'s version is the maximum version of its components.
 impl DeckCodeVersioned for CardCode {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         let set = CardSet::from_code(self.set()).min_deckcode_version();
@@ -111,5 +124,13 @@ impl DeckCodeVersioned for CardCode {
         if region.is_none() { return None };
 
         max(set, region)
+    }
+}
+
+
+/// [`Deck`]'s version is the maximum version of all its [`CardCode`]s.
+impl DeckCodeVersioned for Deck {
+    fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
+        self.contents.keys().map(|cc| cc.min_deckcode_version()?).max()
     }
 }

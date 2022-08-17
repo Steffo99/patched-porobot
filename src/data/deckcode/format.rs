@@ -20,3 +20,11 @@ impl TryFrom<u8> for DeckCodeFormat {
         }
     }
 }
+
+impl From<DeckCodeFormat> for u8 {
+    fn from(value: DeckCodeFormat) -> Self {
+        match value {
+            DeckCodeFormat::F1 => 1,
+        }
+    }
+}

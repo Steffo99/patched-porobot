@@ -84,38 +84,45 @@ impl CardSet {
             _ => None,
         }
     }
-
-    /// Get the [`CardSet`] from its internal id.
-    ///
-    /// [`CardSet::Event`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
-    pub fn from_id(value: u32) -> Self {
-        match value {
-            1 => Self::Foundations,
-            2 => Self::RisingTides,
-            3 => Self::CallOfTheMountain,
-            4 => Self::EmpiresOfTheAscended,
-            5 => Self::BeyondTheBandlewood,
-            6 => Self::Worldwalker,
-            _ => Self::Unsupported,
-        }
-    }
-
-    /// Get the internal id of this [`CardSet`].
-    ///
-    /// If the set has no internal id, it will return [`Option::None`].
-    pub fn to_id(&self) -> Option<u32> {
-        match self {
-            Self::Foundations => Some(1),
-            Self::RisingTides => Some(2),
-            Self::CallOfTheMountain => Some(3),
-            Self::EmpiresOfTheAscended => Some(4),
-            Self::BeyondTheBandlewood => Some(5),
-            Self::Worldwalker => Some(6),
-            _ => None,
-        }
-    }
-
 }
+
+
+/// Get the [`CardSet`] from its internal id.
+///
+/// [`CardSet::Event`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
+impl From<u32> for CardSet {
+    fn from(value: u32) -> Self {
+        match value {
+            1 => CardSet::Foundations,
+            2 => CardSet::RisingTides,
+            3 => CardSet::CallOfTheMountain,
+            4 => CardSet::EmpiresOfTheAscended,
+            5 => CardSet::BeyondTheBandlewood,
+            6 => CardSet::Worldwalker,
+            _ => CardSet::Unsupported,
+        }
+    }
+}
+
+/// Get the internal id of this [`CardSet`].
+///
+/// If the set has no associated internal id, it will return [`Result::Err`].
+impl TryFrom<CardSet> for u32 {
+    type Error = ();
+
+    fn try_from(value: CardSet) -> Result<Self, Self::Error> {
+        match value {
+            CardSet::Foundations => Ok(1),
+            CardSet::RisingTides => Ok(2),
+            CardSet::CallOfTheMountain => Ok(3),
+            CardSet::EmpiresOfTheAscended => Ok(4),
+            CardSet::BeyondTheBandlewood => Ok(5),
+            CardSet::Worldwalker => Ok(6),
+            _ => Err(()),
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

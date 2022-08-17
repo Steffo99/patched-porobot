@@ -93,44 +93,52 @@ impl CardRegion {
             _ => None,
         }
     }
+}
 
-    /// Get the [`CardRegion`] from its internal id.
-    ///
-    /// If no region has the specified id, this will return [`CardRegion::Unsupported`].
-    pub fn from_id(value: u32) -> Self {
+/// Get the [`CardRegion`] from its internal id.
+///
+/// If no region has the specified id, this will return [`CardRegion::Unsupported`].
+impl From<u32> for CardRegion {
+    fn from(value: u32) -> Self {
+        #[rustfmt::skip]
         match value {
-            0 => Self::Demacia,
-            1 => Self::Freljord,
-            2 => Self::Ionia,
-            3 => Self::Noxus,
-            4 => Self::PiltoverZaun,
-            5 => Self::ShadowIsles,
-            6 => Self::Bilgewater,
-            7 => Self::Shurima,
-            9 => Self::Targon,
-            10 => Self::BandleCity,
-            12 => Self::Runeterra,
-            _ => Self::Unsupported,
+             0 => CardRegion::Demacia,
+             1 => CardRegion::Freljord,
+             2 => CardRegion::Ionia,
+             3 => CardRegion::Noxus,
+             4 => CardRegion::PiltoverZaun,
+             5 => CardRegion::ShadowIsles,
+             6 => CardRegion::Bilgewater,
+             7 => CardRegion::Shurima,
+             9 => CardRegion::Targon,
+            10 => CardRegion::BandleCity,
+            12 => CardRegion::Runeterra,
+             _ => CardRegion::Unsupported,
         }
     }
+}
 
-    /// Get the internal id of this [`CardRegion`].
-    ///
-    /// If the region has no internal id, it will return [`Option::None`].
-    pub fn to_id(&self) -> Option<u32> {
-        match self {
-            Self::Demacia => Some(0),
-            Self::Freljord => Some(1),
-            Self::Ionia => Some(2),
-            Self::Noxus => Some(3),
-            Self::PiltoverZaun => Some(4),
-            Self::ShadowIsles => Some(5),
-            Self::Bilgewater => Some(6),
-            Self::Shurima => Some(7),
-            Self::Targon => Some(9),
-            Self::BandleCity => Some(10),
-            Self::Runeterra => Some(12),
-            _ => None,
+/// Get the internal id of this [`CardRegion`].
+///
+/// If the region has no internal id, it will return [`Result::Err`].
+impl TryFrom<CardRegion> for u32 {
+    type Error = ();
+
+    fn try_from(value: CardRegion) -> Result<Self, Self::Error> {
+        #[rustfmt::skip]
+        match value {
+            CardRegion::Demacia      => Ok(0),
+            CardRegion::Freljord     => Ok(1),
+            CardRegion::Ionia        => Ok(2),
+            CardRegion::Noxus        => Ok(3),
+            CardRegion::PiltoverZaun => Ok(4),
+            CardRegion::ShadowIsles  => Ok(5),
+            CardRegion::Bilgewater   => Ok(6),
+            CardRegion::Shurima      => Ok(7),
+            CardRegion::Targon       => Ok(9),
+            CardRegion::BandleCity   => Ok(10),
+            CardRegion::Runeterra    => Ok(12),
+            _                        => Err(()),
         }
     }
 }
