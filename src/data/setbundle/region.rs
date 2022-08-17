@@ -100,7 +100,6 @@ impl CardRegion {
 /// If no region has the specified id, this will return [`CardRegion::Unsupported`].
 impl From<u32> for CardRegion {
     fn from(value: u32) -> Self {
-        #[rustfmt::skip]
         match value {
              0 => CardRegion::Demacia,
              1 => CardRegion::Freljord,
@@ -125,7 +124,6 @@ impl TryFrom<CardRegion> for u32 {
     type Error = ();
 
     fn try_from(value: CardRegion) -> Result<Self, Self::Error> {
-        #[rustfmt::skip]
         match value {
             CardRegion::Demacia      => Ok(0),
             CardRegion::Freljord     => Ok(1),

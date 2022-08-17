@@ -54,28 +54,84 @@ impl Deck {
         writer.write(&[byte]).map_err(DeckEncodingError::Write)
     }
 
-    /// Read [the triplets, twins, and singletons supergroups](Self::read_supergroup) into the given hashmap.
-    fn read_main<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+    /// [Read] a [`Deck`] using the [`F1`](DeckCodeFormat::F1) format.
+    fn read_f1_body<R: Read>(reader: &mut R) -> DeckDecodingResult<Self> {
+        let mut contents = HashMap::<CardCode, u32>::new();
+        Self::read_f1_standard(reader, &mut contents)?;
+        Self::read_f1_extra(reader, &mut contents)?;
+        Ok(Deck { contents })
+    }
+
+    /// [Write] this [`Deck`] using the [`F1`](DeckCodeFormat::F1) format.
+    fn write_f1_body<W: Write>(&self, writer: &mut W) -> DeckEncodingResult<()> {
+        let mut supergroups = HashMap::<u32, Vec<CardCode>>::new();
+
+        for (card, quantity) in self.contents.iter() {
+            match supergroups.get(quantity) {
+                None => {
+                    let mut supergroup = Vec::<CardCode>::new();
+                    supergroup.push(card.to_owned());
+                    supergroups.insert(*quantity, supergroup);
+                }
+                Some(mut supergroup) => {
+                    supergroup.push(card.to_owned());
+                }
+            }
+        }
+
+        ///
         for quantity in (1..=3).rev() {
-            Self::read_supergroup(reader, contents, quantity)?;
+            match supergroups.get(&quantity) {
+                None => {}
+                Some(supergroup) => {
+                    Self::write_f1_supergroup(writer, supergroup, quantity)?;
+                    supergroups.remove(&quantity);
+                }
+            }
+        };
+        for (quantity, supergroup) in supergroups.iter() {
+
         }
 
         Ok(())
     }
 
-    /// Read [the groups](Self::read_group) of [a single supergroup](Self::read_main) into the given hashmap.
-    fn read_supergroup<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
+    /// [Read] the triplets, twins, and singletons **supergroups**.
+    fn read_f1_standard<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+        for quantity in (1..=3).rev() {
+            Self::read_f1_supergroup(reader, contents, quantity)?;
+        }
+
+        Ok(())
+    }
+
+    /// [Write] the **standard segment** of the deck code.
+    fn write_f1_standard<W: Write>(writer: &mut W, triplets: Vec<CardCode>, twins: Vec<CardCode>, singletons: Vec<CardCode>) -> DeckEncodingResult<()> {
+        Self::write_f1_supergroup(writer, triplets, 3)?;
+        Self::write_f1_supergroup(writer, twins, 2)?;
+        Self::write_f1_supergroup(writer, singletons, 1)?;
+
+        Ok(())
+    }
+
+    /// [Read] the **groups** of a single supergroup.
+    fn read_f1_supergroup<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
         let group_count = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         for _group in 0..group_count {
-            Self::read_group(reader, contents, quantity)?;
+            Self::read_f1_group(reader, contents, quantity)?;
         }
 
         Ok(())
     }
 
-    /// Read [the card codes](Self::read_card_main) of [a single group](Self::read_supergroup) into the given hashmap.
-    fn read_group<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
+    /// [Write] the **groups** of a single supergroup.
+    fn write_f1_supergroup<W: Write>(writer: &mut W, supergroup: &Vec<CardCode>, quantity: u32) -> DeckEncodingResult<()> {
+        todo!()
+    }
+
+    /// [Read] the **cards** of a single group.
+    fn read_f1_group<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32) -> DeckDecodingResult<()> {
         let card_count = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         let set = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
@@ -85,14 +141,19 @@ impl Deck {
         let region = CardRegion::from(region).to_code().ok_or(DeckDecodingError::UnknownRegion)?;
 
         for _card in 0..card_count {
-            Self::read_card_main(reader, contents, quantity, &set, &region)?;
+            Self::read_f1_standard_card(reader, contents, quantity, &set, &region)?;
         }
 
         Ok(())
     }
 
-    /// Read [a single card code](Self::read_group) into the given hashmap.
-    fn read_card_main<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32, set: &str, region: &str) -> DeckDecodingResult<()> {
+    /// [Write] the **cards** of a single group.
+    fn write_f1_group<W: Write>(writer: &mut W, group: Vec<CardCode>, set: u32, region: u32) -> DeckDecodingResult<()> {
+        todo!()
+    }
+
+    /// [Read] **a single card**.
+    fn read_f1_standard_card<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>, quantity: u32, set: &str, region: &str) -> DeckDecodingResult<()> {
         let card = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         let code = CardCode::from_s_r_c(set, region, card);
@@ -101,28 +162,33 @@ impl Deck {
         Ok(())
     }
 
-    /// Write [a single card number](Self::write_group) into the given writer.
-    fn write_card_main<W: Write>(writer: &mut W, card: &str) -> DeckEncodingResult<()> {
+    /// [Write] **a single card**.
+    fn write_f1_standard_card<W: Write>(writer: &mut W, card: &str) -> DeckEncodingResult<()> {
         let card = card.parse::<u32>().map_err(DeckEncodingError::InvalidCardNumber)?;
         writer.write_u32_varint(card).map_err(DeckEncodingError::Write)?;
 
         Ok(())
     }
 
-    /// Read [all possible card codes with a non-standard quantity](Self::read_card_extra) into the given hashmap.
-    fn read_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+    /// [Read] the **extra segment** of the deck code.
+    fn read_f1_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
         let len = cursor.get_ref().len();
 
         // While the cursor has still some bytes left...
         while (cursor.position() as usize) < (len - 1) {
-            Self::read_card_extra(reader, contents)?;
+            Self::read_f1_extra_card(reader, contents)?;
         }
 
         Ok(())
     }
 
-    /// Read [a single card code with a non-standard quantity](Self::read_extra) into the given hashmap.
-    fn read_card_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
+    /// [Write] the **extra segment** of the deck code.
+    fn write_f1_extra<W: Write>(writer: &mut W, codes: Vec<CardCode>) -> DeckDecodingResult<()> {
+        todo!()
+    }
+
+    /// [Read] **a single card** with a **non-standard quantity**.
+    fn read_f1_extra_card<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
         let quantity = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         let set = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
@@ -139,8 +205,8 @@ impl Deck {
         Ok(())
     }
 
-    /// Write [a single card code with a non-standard quantity](Self::write_extra) into the given writer.
-    fn write_card_extra<W: Write>(writer: &mut W, code: CardCode, quantity: u32) -> DeckEncodingResult<()> {
+    /// [Write] **a single card** with a **non-standard quantity**.
+    fn write_f1_card_extra<W: Write>(writer: &mut W, code: CardCode, quantity: u32) -> DeckEncodingResult<()> {
         writer.write_u32_varint(quantity).map_err(DeckEncodingError::Write)?;
 
         let set = CardSet::try_from(code.set()).map_err(|_| DeckEncodingError::UnknownSet)?;
@@ -163,14 +229,8 @@ impl Deck {
 
         let (format, _version) = Self::read_header(&mut cursor)?;
 
-        let mut contents = HashMap::<CardCode, u32>::new();
-
         match format {
-            DeckCodeFormat::F1 => {
-                Self::read_main(&mut cursor, &mut contents)?;
-                Self::read_extra(&mut cursor, &mut contents)?;
-                Ok(Deck { contents })
-            }
+            DeckCodeFormat::F1 => Self::read_f1_body(&mut cursor)
         }
     }
 
