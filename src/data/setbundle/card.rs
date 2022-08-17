@@ -248,9 +248,9 @@ mod tests {
                 localized_levelup_xml: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
                 localized_levelup_text: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
                 associated_card_codes: vec![
-                    String::from("06RU025T14"),
-                    String::from("06RU025T6"),
-                    String::from("06RU025T5"),
+                    CardCode::from("06RU025T14".to_string()),
+                    CardCode::from("06RU025T6".to_string()),
+                    CardCode::from("06RU025T5".to_string()),
                 ],
                 associated_card_names_localized: vec![],
                 localized_flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),

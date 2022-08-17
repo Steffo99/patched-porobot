@@ -4,5 +4,4 @@
 
 pub mod deck;
 pub mod version;
-pub mod quantity;
 pub mod format;

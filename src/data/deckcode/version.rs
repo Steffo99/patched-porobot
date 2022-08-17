@@ -11,33 +11,50 @@ use crate::data::setbundle::set::CardSet;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum DeckCodeVersion {
     /// > Closed alpha. Supports original set.
-    V1 = 1,
+    V1,
 
     /// > Launch. Supports second set with the Bilgewater faction.
     ///
     /// > Supports third set with the Targon faction.
-    V2 = 2,
+    V2,
 
     /// > Supports Empires of the Ascended expansion with Shurima faction.
-    V3 = 3,
+    V3,
 
     /// > Supports Beyond the Bandlewood expansion with Bandle City faction and an update to the deck code library which will create the lowest version code required based on the cards in the deck.
-    V4 = 4,
+    V4,
 
     /// > Supports Worldwalker expansion with Runeterra faction.
-    V5 = 5,
+    V5,
 }
+
+
+impl TryFrom<u8> for DeckCodeVersion {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            1 => Ok(Self::V1),
+            2 => Ok(Self::V2),
+            3 => Ok(Self::V3),
+            4 => Ok(Self::V4),
+            5 => Ok(Self::V5),
+            _ => Err(())
+        }
+    }
+}
+
 
 
 /// Indicates that a given type is versioned in the [specs for deck codes](https://github.com/RiotGames/LoRDeckCodes).
 pub trait DeckCodeVersioned {
     /// Get the minimum deck version required to encode the deck in "code" format.
-    fn min_deck_version(&self) -> Option<DeckCodeVersion>;
+    fn min_deckcode_version(&self) -> Option<DeckCodeVersion>;
 }
 
 
 impl DeckCodeVersioned for CardSet {
-    fn min_deck_version(&self) -> Option<DeckCodeVersion> {
+    fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         match self {
             CardSet::Foundations => Some(DeckCodeVersion::V1),
 
@@ -57,7 +74,7 @@ impl DeckCodeVersioned for CardSet {
 
 
 impl DeckCodeVersioned for CardRegion {
-    fn min_deck_version(&self) -> Option<DeckCodeVersion> {
+    fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         match self {
             CardRegion::Noxus => Some(DeckCodeVersion::V1),
             CardRegion::Demacia => Some(DeckCodeVersion::V1),
@@ -86,11 +103,11 @@ impl DeckCodeVersioned for CardRegion {
 
 /// [`CardCode`]s versions are the maximum version of their components.
 impl DeckCodeVersioned for CardCode {
-    fn min_deck_version(&self) -> Option<DeckCodeVersion> {
-        let set = CardSet::from_code(self.set()).min_deck_version();
+    fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
+        let set = CardSet::from_code(self.set()).min_deckcode_version();
         if set.is_none() { return None };
 
-        let region = CardRegion::from_code(self.region()).min_deck_version();
+        let region = CardRegion::from_code(self.region()).min_deckcode_version();
         if region.is_none() { return None };
 
         max(set, region)

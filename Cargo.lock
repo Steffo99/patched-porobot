@@ -1045,10 +1045,10 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
- "sorted-vec",
  "tantivy",
  "teloxide",
  "tokio",
+ "varint-rs",
 ]
 
 [[package]]
@@ -1502,12 +1502,6 @@ dependencies = [
  "libc",
  "winapi",
 ]
-
-[[package]]
-name = "sorted-vec"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da8edb37c24177a4d09d502f3755ef679986654742af1a50a6e4f9b68108d366"
 
 [[package]]
 name = "stable_deref_trait"
@@ -1972,6 +1966,12 @@ name = "valuable"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "830b7e5d4d90034032940e4ace0d9a9a057e7a45cd94e6c007832e39edb82f6d"
+
+[[package]]
+name = "varint-rs"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f54a172d0620933a27a4360d3db3e2ae0dd6cceae9730751a036bbf182c4b23"
 
 [[package]]
 name = "vcpkg"
