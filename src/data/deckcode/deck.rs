@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 use std::io::{Cursor, Read, Write};
+use itertools::Itertools;
 use varint_rs::{VarintReader, VarintWriter};
 use crate::data::deckcode::version::{DeckCodeVersion, DeckCodeVersioned};
 use crate::data::setbundle::card::Card;
@@ -57,8 +58,13 @@ impl Deck {
     /// [Read] a [`Deck`] using the [`F1`](DeckCodeFormat::F1) format.
     fn read_f1_body<R: Read>(reader: &mut R) -> DeckDecodingResult<Self> {
         let mut contents = HashMap::<CardCode, u32>::new();
-        Self::read_f1_standard(reader, &mut contents)?;
+
+        for quantity in (1..=3).rev() {
+            Self::read_f1_supergroup(reader, &mut contents, quantity)?;
+        }
+
         Self::read_f1_extra(reader, &mut contents)?;
+
         Ok(Deck { contents })
     }
 
@@ -79,37 +85,14 @@ impl Deck {
             }
         }
 
-        ///
         for quantity in (1..=3).rev() {
-            match supergroups.get(&quantity) {
-                None => {}
-                Some(supergroup) => {
-                    Self::write_f1_supergroup(writer, supergroup, quantity)?;
-                    supergroups.remove(&quantity);
-                }
-            }
+            let supergroup = supergroups.remove(&quantity).unwrap_or(vec![]);
+            Self::write_f1_supergroup(reader, supergroup, quantity)
         };
+
         for (quantity, supergroup) in supergroups.iter() {
-
+            todo!()
         }
-
-        Ok(())
-    }
-
-    /// [Read] the triplets, twins, and singletons **supergroups**.
-    fn read_f1_standard<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
-        for quantity in (1..=3).rev() {
-            Self::read_f1_supergroup(reader, contents, quantity)?;
-        }
-
-        Ok(())
-    }
-
-    /// [Write] the **standard segment** of the deck code.
-    fn write_f1_standard<W: Write>(writer: &mut W, triplets: Vec<CardCode>, twins: Vec<CardCode>, singletons: Vec<CardCode>) -> DeckEncodingResult<()> {
-        Self::write_f1_supergroup(writer, triplets, 3)?;
-        Self::write_f1_supergroup(writer, twins, 2)?;
-        Self::write_f1_supergroup(writer, singletons, 1)?;
 
         Ok(())
     }
@@ -126,8 +109,38 @@ impl Deck {
     }
 
     /// [Write] the **groups** of a single supergroup.
-    fn write_f1_supergroup<W: Write>(writer: &mut W, supergroup: &Vec<CardCode>, quantity: u32) -> DeckEncodingResult<()> {
-        todo!()
+    fn write_f1_supergroup<W: Write>(writer: &mut W, supergroup: Vec<CardCode>, _quantity: u32) -> DeckEncodingResult<()> {
+        let mut groups = HashMap::<(&str, &str), Vec<CardCode>>::new();
+
+        for card in supergroup.into_iter() {
+            let key = (card.set(), card.region());
+            match groups.get(&key) {
+                None => {
+                    let mut group = Vec::<CardCode>::new();
+                    group.push(card);
+                    groups.insert(key, group);
+                }
+                Some(mut group) => {
+                    group.push(card);
+                }
+            }
+        }
+
+        let len: u32 = groups.len().try_into().expect("groups length to be smaller than usize");
+        writer.write_u32_varint(len).map_err(DeckEncodingError::Write)?;
+
+        // Sort first by ascending group length, then by key
+        let groups = groups
+            .into_iter()
+            .sorted_by(|a, b| a.1.len().cmp(&b.1.len()).then(a.0.cmp(&b.0)));
+
+        for ((set, region), group) in groups {
+            let group = group.iter().map(|cc| cc.card()).collect_vec();
+
+            Self::write_f1_group(writer, group, set, region)?;
+        }
+
+        Ok(())
     }
 
     /// [Read] the **cards** of a single group.
@@ -148,8 +161,21 @@ impl Deck {
     }
 
     /// [Write] the **cards** of a single group.
-    fn write_f1_group<W: Write>(writer: &mut W, group: Vec<CardCode>, set: u32, region: u32) -> DeckDecodingResult<()> {
-        todo!()
+    fn write_f1_group<W: Write>(writer: &mut W, group: Vec<&str>, set: &str, region: &str) -> DeckDecodingResult<()> {
+        let len: u32 = groups.len().try_into().expect("cards length to be smaller than usize");
+        writer.write_u32_varint(len).map_err(DeckEncodingError::Write)?;
+
+        let set: u32 = CardSet::from_code(set).try_into().map_err(DeckEncodingError::UnknownSet)?;
+        writer.writer_u32_varint(set).map_err(DeckEncodingError::Write)?;
+
+        let region: u32 = CardRegion::from_code(region).try_into().map_err(DeckEncodingError::UnknownRegion)?;
+        writer.writer_u32_varint(region).map_err(DeckEncodingError::Write)?;
+
+        for card in group {
+            Self::write_f1_standard_card(writer, card)?;
+        }
+
+        Ok(())
     }
 
     /// [Read] **a single card**.
@@ -206,7 +232,7 @@ impl Deck {
     }
 
     /// [Write] **a single card** with a **non-standard quantity**.
-    fn write_f1_card_extra<W: Write>(writer: &mut W, code: CardCode, quantity: u32) -> DeckEncodingResult<()> {
+    fn write_f1_extra_card<W: Write>(writer: &mut W, code: CardCode, quantity: u32) -> DeckEncodingResult<()> {
         writer.write_u32_varint(quantity).map_err(DeckEncodingError::Write)?;
 
         let set = CardSet::try_from(code.set()).map_err(|_| DeckEncodingError::UnknownSet)?;
