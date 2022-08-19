@@ -349,8 +349,10 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 ///
 /// # Example
 ///
-/// ```
-/// deck![
+/// ```rust
+/// use patched_porobot::deck;
+///
+/// let _my_deck = deck![
 ///     "01DE002": 3,
 ///     "01DE003": 3,
 ///     "01DE004": 3,
@@ -371,14 +373,14 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 ///     "01DE019": 3,
 ///     "01DE020": 3,
 ///     "01DE021": 3,
-/// ]
+/// ];
 /// ```
 #[macro_export]
 macro_rules! deck {
     [$($cd:literal: $qty:literal),* $(,)?] => {
-        Deck {
-            contents: HashMap::from([
-                $((CardCode { full: $cd.to_string() }, $qty),)*
+        patched_porobot::data::deckcode::deck::Deck {
+            contents: std::collections::HashMap::from([
+                $((patched_porobot::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
             ])
         }
     }
@@ -431,6 +433,7 @@ mod tests {
         ( $id:ident, $deck:expr ) => {
             #[test]
             fn $id() {
+                use patched_porobot::data::deckcode::deck::Deck;
                 let deck1 = $deck;
                 let code = deck1.to_code(DeckCodeFormat::F1).expect("deck to serialize successfully");
                 println!("Serialized deck code (for science, obviously): {}", &code);
