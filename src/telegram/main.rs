@@ -10,7 +10,7 @@ use log::*;
 use std::path::PathBuf;
 use teloxide::prelude::*;
 
-/// The main function that [`patched_porobot_telegram`] should run when it's started.
+/// The main function that `patched_porobot_telegram` should run when it's started.
 pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");

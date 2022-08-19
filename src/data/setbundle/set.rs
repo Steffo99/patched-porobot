@@ -51,9 +51,9 @@ impl CardSet {
         hm.get(self)
     }
 
-    /// Get the [`CardSet`] from its short code, **assuming it is not an [`CardSet::Event`] card**.
+    /// Get the [`CardSet`] from its short code, **assuming it is not an [`CardSet::Events`] card**.
     ///
-    /// [`CardSet::Event`] cards have the short code of the set they were released in, so it is impossible to determine if a card belongs to that set from its short code.
+    /// [`CardSet::Events`] cards have the short code of the set they were released in, so it is impossible to determine if a card belongs to that set from its short code.
     pub fn from_code(value: &str) -> Self {
         match value {
             "01" => Self::Foundations,
@@ -69,7 +69,7 @@ impl CardSet {
 
     /// Get the short code of this [`CardSet`].
     ///
-    /// [`CardSet::Event`] cards have the short code of the set they were released in, so this method will return [`Option::None`] for them.
+    /// [`CardSet::Events`] cards have the short code of the set they were released in, so this method will return [`Option::None`] for them.
     ///
     /// If the set has no short code, it will also return [`Option::None`].
     pub fn to_code(&self) -> Option<String> {
@@ -89,7 +89,7 @@ impl CardSet {
 
 /// Get the [`CardSet`] from its internal id.
 ///
-/// [`CardSet::Event`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
+/// [`CardSet::Events`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
 impl From<u32> for CardSet {
     fn from(value: u32) -> Self {
         match value {

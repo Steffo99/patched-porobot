@@ -119,7 +119,7 @@ impl Deck {
     fn f1_group_cards<'cc>(codes: &[&'cc CardCode]) -> HashMap<(&'cc str, &'cc str), Vec<&'cc CardCode>> {
         // Create the hashmap accumulating groups of cards
         // It has the tuple (set, region) as key
-        let mut groups = HashMap::<(&str, &str), Vec<&CardCode>>::new();
+        let mut groups = HashMap::new();
 
         // Insert all cards into the various groups
         for card in codes {
@@ -338,8 +338,51 @@ pub enum DeckEncodingError {
     InvalidCardNumber(std::num::ParseIntError),
 }
 
+/// The [`Result`] of a [`Deck`] **decoding** operation, for example [`Deck::from_code`].
 pub type DeckDecodingResult<T> = Result<T, DeckDecodingError>;
+
+/// The [`Result`] of a [`Deck`] **encoding** operation, for example [`Deck::to_code`].
 pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
+
+
+/// Macro to build a deck from card code strings and quantities.
+///
+/// # Example
+///
+/// ```
+/// deck![
+///     "01DE002": 3,
+///     "01DE003": 3,
+///     "01DE004": 3,
+///     "01DE005": 3,
+///     "01DE006": 3,
+///     "01DE007": 3,
+///     "01DE008": 3,
+///     "01DE009": 3,
+///     "01DE010": 3,
+///     "01DE011": 3,
+///     "01DE012": 3,
+///     "01DE013": 3,
+///     "01DE014": 3,
+///     "01DE015": 3,
+///     "01DE016": 3,
+///     "01DE017": 3,
+///     "01DE018": 3,
+///     "01DE019": 3,
+///     "01DE020": 3,
+///     "01DE021": 3,
+/// ]
+/// ```
+#[macro_export]
+macro_rules! deck {
+    [$($cd:literal: $qty:literal),* $(,)?] => {
+        Deck {
+            contents: HashMap::from([
+                $((CardCode { full: $cd.to_string() }, $qty),)*
+            ])
+        }
+    }
+}
 
 
 #[cfg(test)]
@@ -393,16 +436,6 @@ mod tests {
                 println!("Serialized deck code (for science, obviously): {}", &code);
                 let deck2 = Deck::from_code(&code).expect("deck to deserialize successfully");
                 assert_eq!(deck1, deck2);
-            }
-        }
-    }
-
-    macro_rules! deck {
-        [$($cd:literal: $qty:literal),* $(,)?] => {
-            Deck {
-                contents: HashMap::from([
-                    $((CardCode { full: $cd.to_string() }, $qty),)*
-                ])
             }
         }
     }

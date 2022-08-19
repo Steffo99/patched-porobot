@@ -1,10 +1,8 @@
 //! Module defining the [`DeckCodeVersion`] enum and [`DeckCodeVersioned`] trait.
 
-use std::cmp::max;
 use crate::data::deckcode::deck::Deck;
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
-use crate::data::setbundle::set::CardSet;
 
 
 /// The version of a deck code.

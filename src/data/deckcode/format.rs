@@ -1,4 +1,4 @@
-//! This module defines [`DeckCodeFormat`].
+//! Module defining [`DeckCodeFormat`].
 
 
 /// The format of a deck code.

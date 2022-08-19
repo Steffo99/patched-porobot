@@ -23,7 +23,7 @@ pub struct CardCode {
 impl CardCode {
     /// Determines whether the card code is valid or not by checking the following:
     /// 
-    /// - that the full [String::is_ascii];
+    /// - that the full string [is ascii](str::is_ascii);
     /// - that it is either 7 or 9 characters long.
     pub fn is_valid(&self) -> bool {
         let is_ascii = self.full.is_ascii();
