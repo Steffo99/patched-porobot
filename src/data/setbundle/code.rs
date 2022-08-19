@@ -1,6 +1,8 @@
 //! Module defining [CardCode].
 
 
+use crate::data::setbundle::card::{Card, CardIndex};
+
 /// The internal code of a [Card](super::card::Card).
 /// 
 /// It is a ASCII string composed of the following segments:
@@ -70,6 +72,11 @@ impl CardCode {
     /// Note: Does not perform any kind of check on the `set` and `region` parameters, and may cause the creation of invalid [`CardCode`]s if misused.
     pub fn from_s_r_c(set: &str, region: &str, card: u32) -> Self {
         CardCode::from(format!("{:02}{}{:03}", &set, &region, &card))
+    }
+
+    /// Find, in a [`CardIndex`], the [`Card`] this code belongs to.
+    pub fn to_card(&self, cards: &CardIndex) -> Option<&Card> {
+        cards.get(&self)
     }
 }
 
