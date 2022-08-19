@@ -49,7 +49,7 @@ impl Deck {
         let format: u8 = format.into();
         let version: u8 = version.into();
 
-        let byte: u8 = (format << 4) | version;
+        let byte: u8 = (format << 4) | (version & 0xF);
 
         writer.write(&[byte]).map_err(DeckEncodingError::Write)?;
 
@@ -157,7 +157,11 @@ impl Deck {
         // Sort first by ascending group length, then by key
         let groups = groups
             .into_iter()
-            .sorted_by(|a, b| a.1.len().cmp(&b.1.len()).then(a.0.cmp(&b.0)));
+            .sorted_by(|(a_key, a_group), (b_key, b_group)|
+                a_group.len().cmp(&b_group.len())
+                    .then(
+                a_key.cmp(&b_key))
+            );
 
         // Write all groups
         for ((set, region), group) in groups {
@@ -195,7 +199,7 @@ impl Deck {
         let region: u32 = CardRegion::from_code(region).try_into().map_err(|_| DeckEncodingError::UnknownRegion)?;
         writer.write_u32_varint(region).map_err(DeckEncodingError::Write)?;
 
-        for card in group {
+        for card in group.iter().sorted() {
             Self::write_f1_standard_card(writer, card.card())?;
         }
 
@@ -342,10 +346,172 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_deser() {
-        let deck = Deck::from_code("CICACAYGBAAQIBIBAMAQKKZPGEDQEBQEBEGBEFA2EYAQCAYGCABACAIFGUAQGBIH").unwrap();
-        let code = deck.to_code(DeckCodeFormat::F1).unwrap();
-        assert_eq!(code, "CICACAYGBAAQIBIBAMAQKKZPGEDQEBQEBEGBEFA2EYAQCAYGCABACAIFGUAQGBIH")
+    macro_rules! test_de_ser {
+        ( $id:ident, $src:literal ) => {
+            #[test]
+            fn $id() {
+                let deck = Deck::from_code($src).expect("deck to deserialize successfully");
+                let code = deck.to_code(DeckCodeFormat::F1).expect("deck to serialize successfully");
+                assert_eq!(code, $src);
+            }
+        };
+        ( $id:ident, $src:literal, $($tag:meta),* $(,)?) => {
+            #[test]
+            $(#[$tag])*
+            fn $id() {
+                let deck = Deck::from_code($src).expect("deck to deserialize successfully");
+                let code = deck.to_code(DeckCodeFormat::F1).expect("deck to serialize successfully");
+                assert_eq!(code, $src);
+            }
+        };
     }
+
+    // riot's code is perfect and their examples always work correctly
+    test_de_ser!(test_de_ser_riotexample,   "CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL", ignore);
+
+    test_de_ser!(test_de_ser_yordlestar,    "CQBQCBAJBUCAKCRYHKTADNIBAYBQSDQ2DQ3FEWACAECQVNQBAIBQSOK5AEAQGCIV");
+    test_de_ser!(test_de_ser_gimboclown,    "CICACAYGBAAQIBIBAMAQKKZPGEDQEBQEBEGBEFA2EYAQCAYGCABACAIFGUAQGBIH");
+    test_de_ser!(test_de_ser_paltrisundisc, "CMCACAQGAMAQKBYOAEDAOMAEAQDSOPSCKMBAEBIHA4FQMBAHAEGA2HBMJQAQGBAHEVHWQ");
+    test_de_ser!(test_de_ser_nomoretf,      "CMBQCBABCEBACAIXEYCQIBZWINQWO3IFAEBACBABAQAQUAIGAEOQEAIBBMVAEBAHHNCQEAIEA4TACBIHCY");
+    test_de_ser!(test_de_ser_lonelyporo3,   "CEAQCAIBBAAAA");
+    test_de_ser!(test_de_ser_lonelyporo2,   "CEAACAIBAEEAA");
+    test_de_ser!(test_de_ser_lonelyporo1,   "CEAAAAIBAEAQQ");
+    test_de_ser!(test_de_ser_someporos1,    "CQAAABIBAEAQQAIBAMRACAIECQAQGBATAECQVIAB");
+    test_de_ser!(test_de_ser_steffonoxus,   "CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    test_de_ser!(test_de_ser_rampanivia,    "CECACBAAAUBQCAACA4VAGAYBBIJRMBIBAEGBQIJSGQAQCAIBGEBACAIAEAAQCAIU");
+    test_de_ser!(test_de_ser_poromegamix,   "CQDACAQBAMAQIAIPAECQVIABAIAQIFAXAIBQIEQTAMAQCCAQGUCACAYBAIAQGBADAECQVDABAIAQCKZZAA");
+    test_de_ser!(test_de_ser_hecapony,      "CMBAMAIFAQDRKJRKGEDQIBYDGNFWGZ3SPEAACAIEA45Q");
+    test_de_ser!(test_de_ser_paltriunholy,  "CQCQCAYBAIAQIAIPAECQVIABAEDAOCIFAEAQGCAJCA2QIAICAEBQCBABBIAQMBYOAMCAOO2MNUAQCBQHBM");
+    // test_de_ser!(test_de_ser_, "");
+
+    macro_rules! test_ser_de {
+        ( $id:ident, $deck:expr ) => {
+            #[test]
+            fn $id() {
+                let deck1 = $deck;
+                let code = deck1.to_code(DeckCodeFormat::F1).expect("deck to serialize successfully");
+                println!("Serialized deck code (for science, obviously): {}", &code);
+                let deck2 = Deck::from_code(&code).expect("deck to deserialize successfully");
+                assert_eq!(deck1, deck2);
+            }
+        }
+    }
+
+    macro_rules! deck {
+        [$($cd:literal: $qty:literal),* $(,)?] => {
+            Deck {
+                contents: HashMap::from([
+                    $((CardCode { full: $cd.to_string() }, $qty),)*
+                ])
+            }
+        }
+    }
+
+    // Some tests from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes_Tests/UnitTest1.cs
+
+    test_ser_de!(test_ser_de_smalldeck, deck![
+        "01DE002": 1,
+    ]);
+    test_ser_de!(test_ser_de_largedeck, deck![
+        "01DE002": 3,
+        "01DE003": 3,
+        "01DE004": 3,
+        "01DE005": 3,
+        "01DE006": 3,
+        "01DE007": 3,
+        "01DE008": 3,
+        "01DE009": 3,
+        "01DE010": 3,
+        "01DE011": 3,
+        "01DE012": 3,
+        "01DE013": 3,
+        "01DE014": 3,
+        "01DE015": 3,
+        "01DE016": 3,
+        "01DE017": 3,
+        "01DE018": 3,
+        "01DE019": 3,
+        "01DE020": 3,
+        "01DE021": 3,
+    ]);
+    test_ser_de!(test_ser_de_smallmorethan3, deck![
+        "01DE002": 4,
+    ]);
+    test_ser_de!(test_ser_de_largemorethan3, deck![
+        "01DE002": 3,
+        "01DE003": 3,
+        "01DE004": 3,
+        "01DE005": 3,
+        "01DE006": 4,
+        "01DE007": 5,
+        "01DE008": 6,
+        "01DE009": 7,
+        "01DE010": 8,
+        "01DE011": 9,
+        "01DE012": 3,
+        "01DE013": 3,
+        "01DE014": 3,
+        "01DE015": 3,
+        "01DE016": 3,
+        "01DE017": 3,
+        "01DE018": 3,
+        "01DE019": 3,
+        "01DE020": 3,
+        "01DE021": 3,
+    ]);
+    test_ser_de!(test_ser_de_single40, deck![
+        "01DE002": 40,
+    ]);
+    test_ser_de!(test_ser_de_worstcaselength, deck![
+        "01DE002": 4,
+        "01DE003": 4,
+        "01DE004": 4,
+        "01DE005": 4,
+        "01DE006": 4,
+        "01DE007": 5,
+        "01DE008": 6,
+        "01DE009": 7,
+        "01DE010": 8,
+        "01DE011": 9,
+        "01DE012": 4,
+        "01DE013": 4,
+        "01DE014": 4,
+        "01DE015": 4,
+        "01DE016": 4,
+        "01DE017": 4,
+        "01DE018": 4,
+        "01DE019": 4,
+        "01DE020": 4,
+        "01DE021": 4,
+    ]);
+    test_ser_de!(test_ser_de_bilgewater, deck![
+        "01DE002": 4,
+        "02BW003": 2,
+        "02BW010": 3,
+        "01DE004": 5,
+    ]);
+    test_ser_de!(test_ser_de_shurima, deck![
+        "01DE002": 4,
+        "02BW003": 2,
+        "02BW010": 3,
+        "04SH047": 5,
+    ]);
+    test_ser_de!(test_ser_de_targon, deck![
+        "01DE002": 4,
+        "03MT003": 2,
+        "03MT010": 3,
+        "02BW004": 5,
+    ]);
+    test_ser_de!(test_ser_de_runeterra, deck![
+        "01DE002": 4,
+        "03MT003": 2,
+        "03MT010": 3,
+        "01RU001": 5,
+    ]);
+    test_ser_de!(test_ser_de_morepowder, deck![
+        "02BW012": 69,
+    ]);
+
+    //test_ser_de!(test_ser_de_, deck![]);
+
 }

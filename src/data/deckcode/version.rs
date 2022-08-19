@@ -66,26 +66,6 @@ pub trait DeckCodeVersioned {
 }
 
 
-impl DeckCodeVersioned for CardSet {
-    fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
-        match self {
-            CardSet::Foundations => Some(DeckCodeVersion::V1),
-
-            CardSet::RisingTides => Some(DeckCodeVersion::V2),
-            CardSet::CallOfTheMountain => Some(DeckCodeVersion::V2),
-
-            CardSet::EmpiresOfTheAscended => Some(DeckCodeVersion::V3),
-
-            CardSet::BeyondTheBandlewood => Some(DeckCodeVersion::V4),
-
-            CardSet::Worldwalker => Some(DeckCodeVersion::V5),
-
-            _ => None,
-        }
-    }
-}
-
-
 impl DeckCodeVersioned for CardRegion {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         match self {
@@ -117,13 +97,7 @@ impl DeckCodeVersioned for CardRegion {
 /// [`CardCode`]'s version is the maximum version of its components.
 impl DeckCodeVersioned for CardCode {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
-        let set = CardSet::from_code(self.set()).min_deckcode_version();
-        if set.is_none() { return None };
-
-        let region = CardRegion::from_code(self.region()).min_deckcode_version();
-        if region.is_none() { return None };
-
-        max(set, region)
+        CardRegion::from_code(self.region()).min_deckcode_version()
     }
 }
 
@@ -132,7 +106,7 @@ impl DeckCodeVersioned for CardCode {
 impl DeckCodeVersioned for Deck {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         let codes = self.contents.keys();
-        let versions = codes.map(|cc| cc.min_deckcode_version()).into_iter();
+        let versions = codes.map(|cc| cc.min_deckcode_version());
 
         // TODO: I'm almost sure this can be optimized, but it's 5 AM
         for version in versions.clone() {
