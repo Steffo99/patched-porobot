@@ -1,9 +1,6 @@
 //! Module defining [CardCode].
 
 
-use crate::data::setbundle::region::CardRegion;
-use crate::data::setbundle::set::CardSet;
-
 /// The internal code of a [Card](super::card::Card).
 /// 
 /// It is a ASCII string composed of the following segments:

@@ -131,6 +131,18 @@ impl DeckCodeVersioned for CardCode {
 /// [`Deck`]'s version is the maximum version of all its [`CardCode`]s.
 impl DeckCodeVersioned for Deck {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
-        self.contents.keys().map(|cc| cc.min_deckcode_version()?).max()
+        let codes = self.contents.keys();
+        let versions = codes.map(|cc| cc.min_deckcode_version()).into_iter();
+
+        // TODO: I'm almost sure this can be optimized, but it's 5 AM
+        for version in versions.clone() {
+            if version.is_none() {
+                return None;
+            }
+        }
+
+        let versions = versions.map(|v| v.unwrap());
+
+        versions.max()
     }
 }
