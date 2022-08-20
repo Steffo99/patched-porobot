@@ -11,12 +11,12 @@ use crate::data::setbundle::card::{Card, CardIndex};
 /// - `4..7`: card;
 /// - `7..9`: token, never present if the card is [collectible](super::card::Card::collectible).
 ///
-/// # Examples
+/// # Example
 ///
 /// ```rust
 /// use patched_porobot::data::setbundle::code::CardCode;
 ///
-/// CardCode("06RU025".to_string())
+/// CardCode { full: "06RU025".to_string() };
 /// ```
 ///
 /// # Warning
