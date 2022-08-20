@@ -279,6 +279,14 @@ impl Deck {
     }
 
     /// Deserialize a deck code into a [`Deck`].
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    ///
+    /// Deck::from_code("CQBQCBAJBUCAKCRYHKTADNIBAYBQSDQ2DQ3FEWACAECQVNQBAIBQSOK5AEAQGCIV");
+    /// ```
     pub fn from_code(code: &str) -> DeckDecodingResult<Deck> {
         let mut cursor = Cursor::new(Self::decode_code(&code)?);
 
@@ -290,6 +298,20 @@ impl Deck {
     }
 
     /// Serialize the [`Deck`] into a deck code of the given [format](DeckCodeFormat).
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::deckcode::format::DeckCodeFormat;
+    ///
+    /// let d: Deck = deck![
+    ///     "01DE002": 40,
+    /// ];
+    ///
+    /// d.to_code(DeckCodeFormat::F1).expect("deck to be serialized successfully");
+    /// ```
     pub fn to_code(&self, format: DeckCodeFormat) -> DeckEncodingResult<String> {
         let mut cursor = Cursor::new(Vec::new());
 
