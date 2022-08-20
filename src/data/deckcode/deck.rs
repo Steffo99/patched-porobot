@@ -285,7 +285,7 @@ impl Deck {
     /// ```rust
     /// use patched_porobot::data::deckcode::deck::Deck;
     ///
-    /// Deck::from_code("CQBQCBAJBUCAKCRYHKTADNIBAYBQSDQ2DQ3FEWACAECQVNQBAIBQSOK5AEAQGCIV");
+    /// Deck::from_code("CQBQCBAJBUCAKCRYHKTADNIBAYBQSDQ2DQ3FEWACAECQVNQBAIBQSOK5AEAQGCIV").expect("deck to be deserialized successfully");
     /// ```
     pub fn from_code(code: &str) -> DeckDecodingResult<Deck> {
         let mut cursor = Cursor::new(Self::decode_code(&code)?);
