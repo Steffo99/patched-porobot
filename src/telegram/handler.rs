@@ -1,7 +1,7 @@
 //! Module providing handlers for @patchedporobot on Telegram.
 
 use crate::search::cardsearch::CardSearchEngine;
-use crate::telegram::inline::card_to_inlinequeryresult;
+use crate::telegram::inline::{card_to_inlinequeryresult, deck_to_inlinequeryresult};
 use itertools::Itertools;
 use log::*;
 use teloxide::dispatching::DpHandlerDescription;
@@ -9,6 +9,7 @@ use teloxide::payloads::{AnswerInlineQuery, SendMessage};
 use teloxide::prelude::*;
 use teloxide::requests::{JsonRequest, ResponseResult};
 use teloxide::types::{ParseMode, Recipient};
+use crate::data::deckcode::deck::Deck;
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
 pub fn inline_query_handler(
@@ -26,9 +27,23 @@ pub fn inline_query_handler(
                     cache_time: None,
                     is_personal: Some(false),
                     next_offset: None,
-                    switch_pm_text: Some("How to search cards".to_string()),
+                    switch_pm_text: Some("How to use the bot".to_string()),
                     switch_pm_parameter: Some("err-no-query".to_string()),
                 };
+            }
+
+            if let Ok(deck) = Deck::from_code(&query.query.to_ascii_uppercase()) {
+                break AnswerInlineQuery {
+                    inline_query_id: query.id.clone(),
+                    results: vec![
+                        deck_to_inlinequeryresult(&engine.cards, &deck)
+                    ],
+                    cache_time: None,
+                    is_personal: Some(false),
+                    next_offset: None,
+                    switch_pm_text: None,
+                    switch_pm_parameter: None,
+                }
             }
 
             debug!("Querying the search engine...");

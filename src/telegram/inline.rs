@@ -3,9 +3,11 @@
 //! [inline mode]: https://core.telegram.org/bots/api#inline-mode
 
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
-use crate::data::setbundle::card::Card;
-use crate::telegram::display::display_card;
-use teloxide::types::{InlineQueryResult, InlineQueryResultPhoto, ParseMode};
+use crate::data::setbundle::card::{Card, CardIndex};
+use crate::telegram::display::{display_card, display_deck};
+use teloxide::types::{InlineQueryResult, InlineQueryResultArticle, InlineQueryResultPhoto, InputMessageContent, InputMessageContentText, ParseMode};
+use crate::data::deckcode::deck::Deck;
+use crate::data::deckcode::format::DeckCodeFormat;
 
 /// Converts a [Card] into a [InlineQueryResult].
 pub fn card_to_inlinequeryresult(
@@ -35,5 +37,28 @@ pub fn card_to_inlinequeryresult(
         caption_entities: None,
         reply_markup: None,
         input_message_content: None,
+    })
+}
+
+
+pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck) -> InlineQueryResult {
+    let code = deck.to_code(DeckCodeFormat::F1).expect("serialized deck to deserialize properly");
+
+    InlineQueryResult::Article(InlineQueryResultArticle {
+        id: code.clone(),
+        title: format!("Deck with {} cards", deck.contents.len()),
+        input_message_content: InputMessageContent::Text(InputMessageContentText {
+            message_text: display_deck(index, deck, code),
+            parse_mode: Some(ParseMode::Html),
+            entities: None,
+            disable_web_page_preview: Some(true)
+        }),
+        reply_markup: None,
+        url: None,
+        hide_url: None,
+        description: None,
+        thumb_url: None,
+        thumb_width: None,
+        thumb_height: None
     })
 }

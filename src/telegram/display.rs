@@ -16,6 +16,7 @@ use crate::data::setbundle::supertype::CardSupertype;
 use crate::data::deckcode::deck::Deck;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
+use crate::data::deckcode::format::DeckCodeFormat;
 
 /// Render a [Card] in [Telegram Bot HTML].
 ///
@@ -153,10 +154,17 @@ fn display_levelup(levelup: &String) -> String {
     }
 }
 
-
 /// Render a [Deck] in [Telegram Bot HTML].
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
-pub fn display_deck(index: &CardIndex, globals: &LocalizedGlobalsIndexes, deck: &Deck) -> String {
-    todo!()
+pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
+    let cards = deck.contents
+        .keys()
+        .map(|k| format!("<b>{}×</b> {}",
+            deck.contents.get(k).unwrap(),
+            index.get(k).expect("card to exist in the index").name)
+        )
+        .join("\n");
+
+    format!("<code>{}</code>\n\n{}", &code, &cards)
 }
