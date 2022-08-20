@@ -1,6 +1,7 @@
 //! Module defining [Card].
 
 use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
 use crate::data::setbundle::subtype::CardSubtype;
 use crate::data::setbundle::supertype::CardSupertype;
 use super::r#type::CardType;
@@ -15,7 +16,7 @@ use super::code::CardCode;
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
 /// The data is available in a developer-friendly interface, but nevertheless it can be serialized and deserialized via [serde] in the exact same format used in the `set*.json` files.
-#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Unique seven-character identifier of the card.
     #[serde(rename = "cardCode")]
@@ -157,6 +158,14 @@ impl Card {
     /// Equivalent to calling [Card].[art](Card::art).[get(0)]([T]::get).
     pub fn main_art(&self) -> Option<&CardArt> {
         self.art.get(0)
+    }
+}
+
+
+/// Card [`Hash`]es are equal to hashes of their [`Card::code`].
+impl Hash for Card {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.code.hash(state)
     }
 }
 
