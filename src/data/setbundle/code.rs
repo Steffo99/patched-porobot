@@ -10,10 +10,18 @@ use crate::data::setbundle::card::{Card, CardIndex};
 /// - `2..4`: region;
 /// - `4..7`: card;
 /// - `7..9`: token, never present if the card is [collectible](super::card::Card::collectible).
-/// 
+///
 /// # Examples
-/// 
-/// - Evelynn: `06RU025`
+///
+/// ```rust
+/// use patched_porobot::data::setbundle::code::CardCode;
+///
+/// CardCode("06RU025".to_string())
+/// ```
+///
+/// # Warning
+///
+/// The way this is built is pretty... unsafe, so beware to not construct this with invalid codes.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(transparent)]
 pub struct CardCode {
