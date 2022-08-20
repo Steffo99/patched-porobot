@@ -2,6 +2,9 @@
 //!
 //! [inline mode]: https://core.telegram.org/bots/api#inline-mode
 
+use std::collections::hash_map::DefaultHasher;
+use std::hash::Hash;
+use std::ptr::hash;
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::setbundle::card::{Card, CardIndex};
 use crate::telegram::display::{display_card, display_deck};
@@ -45,7 +48,7 @@ pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck) -> InlineQueryR
     let code = deck.to_code(DeckCodeFormat::F1).expect("serialized deck to deserialize properly");
 
     InlineQueryResult::Article(InlineQueryResultArticle {
-        id: code.clone(),
+        id: format!("{:x}", md5::compute(&code)),
         title: format!("Deck with {} cards", deck.contents.len()),
         input_message_content: InputMessageContent::Text(InputMessageContentText {
             message_text: display_deck(index, deck, code),

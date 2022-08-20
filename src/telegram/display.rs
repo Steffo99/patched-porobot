@@ -158,12 +158,20 @@ fn display_levelup(levelup: &String) -> String {
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
+    // TODO: optimize this
     let cards = deck.contents
         .keys()
-        .map(|k| format!("<b>{}×</b> {}",
-            deck.contents.get(k).unwrap(),
-            index.get(k).expect("card to exist in the index").name)
-        )
+        .sorted_by(|a, b| {
+            let card_a = index.get(a).expect("card to exist in the index");
+            let card_b = index.get(b).expect("card to exist in the index");
+
+            card_a.cost.cmp(&card_b.cost).then(card_a.name.cmp(&card_b.name))
+        })
+        .map(|k| {
+            let card = index.get(k).expect("card to exist in the index");
+            let quantity = deck.contents.get(k).unwrap();
+            format!("<b>{}×</b> {}", &quantity, &card.name)
+        })
         .join("\n");
 
     format!("<code>{}</code>\n\n{}", &code, &cards)
