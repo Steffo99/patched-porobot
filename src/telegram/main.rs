@@ -10,7 +10,7 @@ use log::*;
 use std::path::PathBuf;
 use teloxide::prelude::*;
 
-/// The main function that [`patched_porobot_telegram`] should run when it's started.
+/// The main function that `patched_porobot_telegram` should run when it's started.
 pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");
@@ -30,6 +30,8 @@ pub async fn main() {
         .expect("to be able to load `set5-en_us` bundle");
     let set6 = SetBundle::load(&*PathBuf::from("./data/set6-en_us"))
         .expect("to be able to load `set6-en_us` bundle");
+    let set6cde = SetBundle::load(&*PathBuf::from("./data/set6cde-en_us"))
+        .expect("to be able to load `set6cde-en_us` bundle");
     debug!("Loaded all bundles!");
 
     debug!("Indexing globals...");
@@ -38,7 +40,7 @@ pub async fn main() {
 
     debug!("Indexing cards...");
     let cards: Vec<Card> = [
-        set1.cards, set2.cards, set3.cards, set4.cards, set5.cards, set6.cards,
+        set1.cards, set2.cards, set3.cards, set4.cards, set5.cards, set6.cards, set6cde.cards,
     ]
     .concat();
 

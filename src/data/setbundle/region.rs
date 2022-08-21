@@ -53,6 +53,92 @@ impl CardRegion {
     pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRegionIndex) -> Option<&'hm LocalizedCardRegion> {
         hm.get(self)
     }
+
+    /// Get the [`CardRegion`] from its short code.
+    ///
+    /// If no region has the specified short code, this will return [`CardRegion::Unsupported`].
+    pub fn from_code(value: &str) -> Self {
+        match value {
+            "DE" => Self::Demacia,
+            "FR" => Self::Freljord,
+            "IO" => Self::Ionia,
+            "NX" => Self::Noxus,
+            "PZ" => Self::PiltoverZaun,
+            "SI" => Self::ShadowIsles,
+            "BW" => Self::Bilgewater,
+            "SH" => Self::Shurima,
+            "MT" => Self::Targon,
+            "BC" => Self::BandleCity,
+            "RU" => Self::Runeterra,
+            _ => Self::Unsupported,
+        }
+    }
+
+    /// Get the short code of this [`CardRegion`].
+    ///
+    /// If the region has no short code, it will return [`Option::None`].
+    pub fn to_code(&self) -> Option<String> {
+        match self {
+            Self::Demacia => Some("DE".to_string()),
+            Self::Freljord => Some("FR".to_string()),
+            Self::Ionia => Some("IO".to_string()),
+            Self::Noxus => Some("NX".to_string()),
+            Self::PiltoverZaun => Some("PZ".to_string()),
+            Self::ShadowIsles => Some("SI".to_string()),
+            Self::Bilgewater => Some("BW".to_string()),
+            Self::Shurima => Some("SH".to_string()),
+            Self::Targon => Some("MT".to_string()),
+            Self::BandleCity => Some("BC".to_string()),
+            Self::Runeterra => Some("RU".to_string()),
+            _ => None,
+        }
+    }
+}
+
+/// Get the [`CardRegion`] from its internal id.
+///
+/// If no region has the specified id, this will return [`CardRegion::Unsupported`].
+impl From<u32> for CardRegion {
+    fn from(value: u32) -> Self {
+        match value {
+             0 => CardRegion::Demacia,
+             1 => CardRegion::Freljord,
+             2 => CardRegion::Ionia,
+             3 => CardRegion::Noxus,
+             4 => CardRegion::PiltoverZaun,
+             5 => CardRegion::ShadowIsles,
+             6 => CardRegion::Bilgewater,
+             7 => CardRegion::Shurima,
+             9 => CardRegion::Targon,
+            10 => CardRegion::BandleCity,
+            12 => CardRegion::Runeterra,
+             _ => CardRegion::Unsupported,
+        }
+    }
+}
+
+/// Get the internal id of this [`CardRegion`].
+///
+/// If the region has no internal id, it will return [`Result::Err`].
+impl TryFrom<CardRegion> for u32 {
+    type Error = ();
+
+    fn try_from(value: CardRegion) -> Result<Self, Self::Error> {
+        match value {
+            CardRegion::Demacia      => Ok(0),
+            CardRegion::Freljord     => Ok(1),
+            CardRegion::Ionia        => Ok(2),
+            CardRegion::Noxus        => Ok(3),
+            CardRegion::PiltoverZaun => Ok(4),
+            CardRegion::ShadowIsles  => Ok(5),
+            CardRegion::Bilgewater   => Ok(6),
+            CardRegion::Shurima      => Ok(7),
+            CardRegion::Targon       => Ok(9),
+            CardRegion::BandleCity   => Ok(10),
+            CardRegion::Runeterra    => Ok(12),
+            _                        => Err(()),
+        }
+    }
 }
 
 

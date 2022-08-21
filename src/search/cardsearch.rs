@@ -8,6 +8,7 @@ use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
 use tantivy::{Document, Index, IndexReader, IndexWriter};
+use crate::data::setbundle::code::CardCode;
 
 /// The search engine.
 ///
@@ -249,7 +250,7 @@ impl CardSearchEngine {
         use tantivy::doc;
 
         doc!(
-            fields.code => card.code,
+            fields.code => card.code.full,
             fields.name => card.name,
             fields.r#type => String::from(&card.r#type),
             fields.set => card.set
@@ -364,7 +365,7 @@ impl CardSearchEngine {
             .filter_map(|(_score, address)| searcher.doc(address.to_owned()).ok())
             .filter_map(|doc| doc.get_first(f_code).cloned())
             .filter_map(|field| field.as_text().map(String::from))
-            .filter_map(|code| self.cards.get(&*code))
+            .filter_map(|code| self.cards.get(&CardCode::from(code)))
             .collect_vec();
 
         Ok(results)

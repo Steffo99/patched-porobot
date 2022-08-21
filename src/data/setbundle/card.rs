@@ -1,6 +1,7 @@
 //! Module defining [Card].
 
 use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
 use crate::data::setbundle::subtype::CardSubtype;
 use crate::data::setbundle::supertype::CardSupertype;
 use super::r#type::CardType;
@@ -10,15 +11,16 @@ use super::rarity::CardRarity;
 use super::region::CardRegion;
 use super::speed::SpellSpeed;
 use super::set::CardSet;
+use super::code::CardCode;
 
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
 /// The data is available in a developer-friendly interface, but nevertheless it can be serialized and deserialized via [serde] in the exact same format used in the `set*.json` files.
-#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Unique seven-character identifier of the card.
     #[serde(rename = "cardCode")]
-    pub code: String,
+    pub code: CardCode,
 
     /// Localized name of the card.
     pub name: String,
@@ -119,7 +121,7 @@ pub struct Card {
     ///
     /// To access references to the cards themselves, use [Card::associated_cards].
     #[serde(rename = "associatedCardRefs")]
-    pub associated_card_codes: Vec<String>,
+    pub associated_card_codes: Vec<CardCode>,
 
     /// [Vec] with [Card::name]s of other cards associated with this one.
     ///
@@ -160,8 +162,16 @@ impl Card {
 }
 
 
-/// An index of [Card]s, with [Card::code]s as keys.
-pub type CardIndex = HashMap<String, Card>;
+/// Card [`Hash`]es are equal to hashes of their [`Card::code`].
+impl Hash for Card {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.code.hash(state)
+    }
+}
+
+
+/// An index of [Card]s, with [CardCode]s as keys.
+pub type CardIndex = HashMap<CardCode, Card>;
 
 
 #[cfg(test)]
@@ -217,7 +227,7 @@ mod tests {
             }
             "#).unwrap(),
             Card {
-                code: String::from("06RU025"),
+                code: CardCode::from("06RU025".to_string()),
                 name: String::from("Evelynn"),
                 r#type: CardType::Unit,
                 set: CardSet::Worldwalker,
@@ -247,9 +257,9 @@ mod tests {
                 localized_levelup_xml: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
                 localized_levelup_text: String::from("When you or an ally kill an allied Husk, give me its positive keywords this round and I level up."),
                 associated_card_codes: vec![
-                    String::from("06RU025T14"),
-                    String::from("06RU025T6"),
-                    String::from("06RU025T5"),
+                    CardCode::from("06RU025T14".to_string()),
+                    CardCode::from("06RU025T6".to_string()),
+                    CardCode::from("06RU025T5".to_string()),
                 ],
                 associated_card_names_localized: vec![],
                 localized_flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),

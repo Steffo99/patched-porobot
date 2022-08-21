@@ -6,15 +6,17 @@ use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::corebundle::keyword::LocalizedCardKeywordIndex;
 use crate::data::corebundle::region::LocalizedCardRegionIndex;
 use crate::data::corebundle::set::LocalizedCardSetIndex;
-use crate::data::setbundle::card::Card;
+use crate::data::setbundle::card::{Card, CardIndex};
 use crate::data::setbundle::keyword::CardKeyword;
 use crate::data::setbundle::r#type::CardType;
 use crate::data::setbundle::region::CardRegion;
 use crate::data::setbundle::set::CardSet;
 use crate::data::setbundle::subtype::CardSubtype;
 use crate::data::setbundle::supertype::CardSupertype;
+use crate::data::deckcode::deck::Deck;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
+use crate::data::deckcode::format::DeckCodeFormat;
 
 /// Render a [Card] in [Telegram Bot HTML].
 ///
@@ -150,4 +152,33 @@ fn display_levelup(levelup: &String) -> String {
     } else {
         format!("<u>Level up</u>: {}\n\n", escape(&levelup))
     }
+}
+
+/// Render a [Deck] in [Telegram Bot HTML].
+///
+/// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
+pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
+    // TODO: optimize this
+    let cards = deck.contents
+        .keys()
+        .sorted_by(|a, b| {
+            let card_a = index.get(a).expect("card to exist in the index");
+            let card_b = index.get(b).expect("card to exist in the index");
+
+            card_a.cost.cmp(&card_b.cost).then(card_a.name.cmp(&card_b.name))
+        })
+        .map(|k| {
+            let card = index.get(k).expect("card to exist in the index");
+            let quantity = deck.contents.get(k).unwrap();
+
+            if card.supertype == "Champion" {
+                format!("<b>{}×</b> <u>{}</u>", &quantity, &card.name)
+            }
+            else {
+                format!("<b>{}×</b> {}", &quantity, &card.name)
+            }
+        })
+        .join("\n");
+
+    format!("<code>{}</code>\n\n{}", &code, &cards)
 }
