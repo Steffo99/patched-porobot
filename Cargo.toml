@@ -1,6 +1,6 @@
 [package]
 name = "patched_porobot"
-version = "0.5.3"
+version = "0.6.0"
 authors = ["Stefano Pigozzi <me@steffo.eu>"]
 edition = "2021"
 description = "Legends of Runeterra card database utilities and bots"
