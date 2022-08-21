@@ -170,7 +170,13 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
         .map(|k| {
             let card = index.get(k).expect("card to exist in the index");
             let quantity = deck.contents.get(k).unwrap();
-            format!("<b>{}×</b> {}", &quantity, &card.name)
+
+            if card.supertype == "Champion" {
+                format!("<b>{}×</b> <u>{}</u>", &quantity, &card.name)
+            }
+            else {
+                format!("<b>{}×</b> {}", &quantity, &card.name)
+            }
         })
         .join("\n");
 
