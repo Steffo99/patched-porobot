@@ -30,7 +30,7 @@ impl Deck {
     /// Encode a slice of [bytes](u8) into a deck code.
     fn encode_code(bytes: &[u8]) -> String {
         data_encoding::BASE32_NOPAD
-            .encode(&bytes)
+            .encode(bytes)
     }
 
     /// [Read] the header byte into a [format](DeckCodeFormat) and [version](DeckCodeVersion) tuple.
