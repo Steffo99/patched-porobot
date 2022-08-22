@@ -167,10 +167,6 @@ impl PartialEq for Card {
     fn eq(&self, other: &Self) -> bool {
         self.code == other.code
     }
-
-    fn ne(&self, other: &Self) -> bool {
-        self.code != other.code
-    }
 }
 
 
