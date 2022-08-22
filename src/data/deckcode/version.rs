@@ -108,9 +108,7 @@ impl DeckCodeVersioned for Deck {
 
         // TODO: I'm almost sure this can be optimized, but it's 5 AM
         for version in versions.clone() {
-            if version.is_none() {
-                return None;
-            }
+            version?;
         }
 
         let versions = versions.map(|v| v.unwrap());
