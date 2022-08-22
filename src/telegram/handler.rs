@@ -21,6 +21,7 @@ pub fn inline_query_handler(
         // It's not a real loop, it's just to make the code flow more tolerable.
         let payload: AnswerInlineQuery = loop {
             if query.query.len() == 0 {
+                debug!("Empty query specified.");
                 break AnswerInlineQuery {
                     inline_query_id: query.id.clone(),
                     results: vec![],
@@ -33,6 +34,7 @@ pub fn inline_query_handler(
             }
 
             if let Ok(deck) = Deck::from_code(&query.query.to_ascii_uppercase()) {
+                debug!("Parsed deck successfully!");
                 break AnswerInlineQuery {
                     inline_query_id: query.id.clone(),
                     results: vec![
@@ -46,11 +48,11 @@ pub fn inline_query_handler(
                 }
             }
 
-            debug!("Querying the search engine...");
+            debug!("Querying the card search engine...");
             let results = engine.query(&query.query, 50);
 
             if let Err(_) = results {
-                debug!("Invalid query syntax.");
+                debug!("Invalid card search query syntax.");
                 break AnswerInlineQuery {
                     inline_query_id: query.id.clone(),
                     results: vec![],
@@ -77,6 +79,7 @@ pub fn inline_query_handler(
                 };
             }
 
+            debug!("Card search query successful!");
             break AnswerInlineQuery {
                 inline_query_id: query.id.clone(),
                 results: results
