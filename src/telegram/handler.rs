@@ -107,7 +107,7 @@ pub fn inline_query_handler(
 const WELCOME_MESSAGE: &'static str = r#"
 👋 Hi! I'm a robotic poro who can search for Legends of Runeterra cards to send them in chats!
 
-To use my features, enter <b>my username</b> in any chat, followed by <b>your search query</b>, like this:
+To search for a card, enter <b>my username</b> in any chat, followed by <b>your search query</b>, like this:
 <pre>@patchedporobot braum</pre>
 
 After a while, you'll see the list of cards I found, and you'll be able to tap one of them to send it!
@@ -117,7 +117,10 @@ You can also perform more <b>complex queries</b>, such as this one:
 
 To read all details on the queries you can ask me to perform, visit the <a href="https://docs.rs/patched_porobot/latest/patched_porobot_telegram/">documentation</a>!
 
-Have a fun time searching!
+Additionally, you can ask me to read a deck code to send the full deck details in chat, like this:
+<pre>@patchedporobot CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA</pre>
+
+Have a fun time playing Legends of Runeterra!
 
 <i>@patchedporobot isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</i>
 "#;
