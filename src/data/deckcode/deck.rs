@@ -227,7 +227,7 @@ impl Deck {
     fn read_f1_extra<R: Read>(reader: &mut R, contents: &mut HashMap<CardCode, u32>) -> DeckDecodingResult<()> {
 
         // While the cursor has still some bytes left...
-        while let Ok(_) = Self::read_f1_extra_card(reader, contents) {}
+        while Self::read_f1_extra_card(reader, contents).is_ok() {}
 
         Ok(())
     }
