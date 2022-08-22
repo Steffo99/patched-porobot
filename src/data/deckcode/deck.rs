@@ -129,8 +129,7 @@ impl Deck {
             // Create or insert groups
             match groups.get(&key) {
                 None => {
-                    let mut group = Vec::new();
-                    group.push(*card);
+                    let mut group = vec![*card];
                     groups.insert(key, group);
                 }
                 Some(_) => {
