@@ -159,7 +159,7 @@ impl Deck {
             .sorted_by(|(a_key, a_group), (b_key, b_group)|
                 a_group.len().cmp(&b_group.len())
                     .then(
-                a_key.cmp(&b_key))
+                a_key.cmp(b_key))
             );
 
         // Write all groups
