@@ -16,7 +16,7 @@ pub fn inline_query_handler(
     engine: CardSearchEngine,
 ) -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
     Update::filter_inline_query().chain(dptree::endpoint(move |query: InlineQuery, bot: Bot| {
-        info!("Handling inline query: `{}`", &query.query);
+        info!("Handling inline query...");
 
         // It's not a real loop, it's just to make the code flow more tolerable.
         let payload: AnswerInlineQuery = loop {
@@ -77,7 +77,6 @@ pub fn inline_query_handler(
                 };
             }
 
-            debug!("Found {} cards.", &len);
             break AnswerInlineQuery {
                 inline_query_id: query.id.clone(),
                 results: results
