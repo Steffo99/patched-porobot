@@ -16,7 +16,7 @@ use super::code::CardCode;
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
 /// The data is available in a developer-friendly interface, but nevertheless it can be serialized and deserialized via [serde] in the exact same format used in the `set*.json` files.
-#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Unique seven-character identifier of the card.
     #[serde(rename = "cardCode")]
@@ -162,7 +162,19 @@ impl Card {
 }
 
 
-/// Card [`Hash`]es are equal to hashes of their [`Card::code`].
+/// Two [`Card`]s are equal if they have the same [`Card::code`].
+impl PartialEq for Card {
+    fn eq(&self, other: &Self) -> bool {
+        self.code == other.code
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.code != other.code
+    }
+}
+
+
+/// [`Card`] [`Hash`]es are equal to hashes of their [`Card::code`].
 impl Hash for Card {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.code.hash(state)
