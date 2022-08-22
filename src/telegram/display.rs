@@ -16,7 +16,6 @@ use crate::data::setbundle::supertype::CardSupertype;
 use crate::data::deckcode::deck::Deck;
 use itertools::Itertools;
 use teloxide::utils::html::escape;
-use crate::data::deckcode::format::DeckCodeFormat;
 
 /// Render a [Card] in [Telegram Bot HTML].
 ///

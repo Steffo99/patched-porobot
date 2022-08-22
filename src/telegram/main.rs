@@ -6,6 +6,7 @@ use crate::data::setbundle::card::{Card, CardIndex};
 use crate::data::setbundle::SetBundle;
 use crate::search::cardsearch::CardSearchEngine;
 use crate::telegram::handler::{inline_query_handler, message_handler};
+use glob::glob;
 use log::*;
 use std::path::PathBuf;
 use teloxide::prelude::*;
@@ -15,34 +16,30 @@ pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");
 
-    debug!("Loading bundles...");
+    debug!("Loading core bundle...");
     let core = CoreBundle::load(&*PathBuf::from("./data/core-en_us"))
         .expect("to be able to load `core-en_us` bundle");
-    let set1 = SetBundle::load(&*PathBuf::from("./data/set1-en_us"))
-        .expect("to be able to load `set1-en_us` bundle");
-    let set2 = SetBundle::load(&*PathBuf::from("./data/set2-en_us"))
-        .expect("to be able to load `set2-en_us` bundle");
-    let set3 = SetBundle::load(&*PathBuf::from("./data/set3-en_us"))
-        .expect("to be able to load `set3-en_us` bundle");
-    let set4 = SetBundle::load(&*PathBuf::from("./data/set4-en_us"))
-        .expect("to be able to load `set4-en_us` bundle");
-    let set5 = SetBundle::load(&*PathBuf::from("./data/set5-en_us"))
-        .expect("to be able to load `set5-en_us` bundle");
-    let set6 = SetBundle::load(&*PathBuf::from("./data/set6-en_us"))
-        .expect("to be able to load `set6-en_us` bundle");
-    let set6cde = SetBundle::load(&*PathBuf::from("./data/set6cde-en_us"))
-        .expect("to be able to load `set6cde-en_us` bundle");
-    debug!("Loaded all bundles!");
+    debug!("Loaded core bundle successfully!");
+
+    debug!("Loading set bundles...");
+    let setpaths = glob("./data/set*-*")
+        .expect("setglob to be a valid glob")
+        .into_iter()
+        .filter(|sp| sp.is_ok())
+        .map(|sp| sp.unwrap());
+    let mut cards: Vec<Card> = vec![];
+    for setpath in setpaths {
+        debug!("Loading {:?}...", &setpath);
+        let set = SetBundle::load(&setpath)
+            .expect(&*format!("to be able to load {:?} as a set bundle", &setpath));
+        let mut setcards = set.cards;
+        cards.append(&mut setcards);
+    }
+    debug!("Loaded {} cards!", &cards.len());
 
     debug!("Indexing globals...");
     let globals = LocalizedGlobalsIndexes::from(core.globals);
     debug!("Indexed globals!");
-
-    debug!("Indexing cards...");
-    let cards: Vec<Card> = [
-        set1.cards, set2.cards, set3.cards, set4.cards, set5.cards, set6.cards, set6cde.cards,
-    ]
-    .concat();
 
     let mut index = CardIndex::new();
     for card in cards {
