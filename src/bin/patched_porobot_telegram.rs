@@ -1,12 +1,12 @@
 //! # [@patchedporobot]
 //!
-//! Inline bot for searching and sending Legends of Runeterra cards in Telegram chats
+//! Inline bot for searching and sending Legends of Runeterra cards and decks in Telegram chats
 //!
 //! ## Usage
 //!
 //! [@patchedporobot] is a inline bot: this means that you can use it everywhere, without having to add it to chats.
 //!
-//! ### Basic queries
+//! ### Card queries
 //!
 //! You can search for a card by entering in the "Write a message..." bot the username of the bot, followed by the card you want to search for:
 //!
@@ -26,7 +26,7 @@
 //! @patchedporobot piltover poro
 //! ```
 //!
-//! ### Conjunctions
+//! #### Conjunctions
 //!
 //! By default, all terms in the query are joined by `AND` conjuctions, meaning that only cards containing **all** of the terms are retrieved.
 //!
@@ -42,7 +42,7 @@
 //! @patchedporobot von AND yipp OR cat
 //! ```
 //!
-//! ### Fields
+//! #### Fields
 //!
 //! You can perform searches about specific card properties:
 //!
@@ -56,11 +56,11 @@
 //! @patchedporobot name:Bard OR description:Chime
 //! ```
 //!
-//! #### Supported fields
+//! ##### Supported fields
 //!
 //! [@patchedporobot] supports the various fields for searching cards: see [**this table**](patched_porobot::search::cardsearch::CardSearchEngine::schema) for a list of all of them!
 //!
-//! ### Ranges
+//! #### Ranges
 //!
 //! Finally, you can request specific ranges for your search using square brackets and the `TO` keyword:
 //!
@@ -68,9 +68,19 @@
 //! @patchedporobot attack:[8 TO 12]
 //! ```
 //!
-//! ### Query parser
+//! #### Query parser
 //!
 //! Since [@patchedporobot] uses [`tantivy`] internally, you might find more information on even more advanced queries in the [documentation of their `QueryParser`](tantivy::query::QueryParser)!
+//!
+//! ### Deck queries
+//!
+//! You can have [@patchedporobot] display a deck and its cards by pasting the deck code after the bot's username:
+//!
+//! ```text
+//! @patchedporobot CIBQCAICAQAQGBQIBEBAMBAJBMGBUHJNGE4AEAIBAIYQEAQGEU2QCAIBAIUQ
+//! ```
+//!
+//! Then, select the "Deck with N cards" option to send the deck's card list in the chat!
 //!
 //!
 //! [@patchedporobot]: https://t.me/patchedporobot
