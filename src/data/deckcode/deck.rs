@@ -288,7 +288,7 @@ impl Deck {
     ///     .expect("deck to be deserialized successfully");
     /// ```
     pub fn from_code(code: &str) -> DeckDecodingResult<Deck> {
-        let mut cursor = Cursor::new(Self::decode_code(&code)?);
+        let mut cursor = Cursor::new(Self::decode_code(code)?);
 
         let (format, _version) = Self::read_header(&mut cursor)?;
 
