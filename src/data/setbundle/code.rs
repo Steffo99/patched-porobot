@@ -38,11 +38,7 @@ impl CardCode {
     pub fn is_valid(&self) -> bool {
         let is_ascii = self.full.is_ascii();
 
-        let is_long = match self.full.len() {
-            7 => true,
-            9 => true,
-            _ => false,
-        };
+        let is_long = matches!(self.full.len(), 7 | 9);
 
         is_ascii && is_long
     }
