@@ -80,7 +80,7 @@ impl CardCode {
 
     /// Find, in a [`CardIndex`], the [`Card`] this code belongs to.
     pub fn to_card<'c>(&self, cards: &'c CardIndex) -> Option<&'c Card> {
-        cards.get(&self)
+        cards.get(self)
     }
 }
 
