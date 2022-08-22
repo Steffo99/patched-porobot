@@ -129,7 +129,7 @@ impl Deck {
             // Create or insert groups
             match groups.get(&key) {
                 None => {
-                    let mut group = vec![*card];
+                    let group = vec![*card];
                     groups.insert(key, group);
                 }
                 Some(_) => {
