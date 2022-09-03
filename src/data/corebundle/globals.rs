@@ -142,6 +142,7 @@ mod tests {
     use crate::data::setbundle::set::CardSet;
     use crate::data::setbundle::speed::SpellSpeed;
 
+    #[rustfmt::skip]
     #[test]
     fn deserialize() {
         assert_eq!(
@@ -193,7 +194,49 @@ mod tests {
             "#
             )
             .unwrap(),
-            LocalizedGlobalsVecs { vocab_terms: vec![LocalizedVocabTerm { vocabterm: "Allegiance".to_string(), name: "Allegiance".to_string(), description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string() }], keywords: vec![LocalizedCardKeyword { keyword: CardKeyword::SpellOverwhelm, name: "Overwhelm".to_string(), description: "Inflicts damage beyond what would kill the target(s) to the enemy Nexus.".to_string() }], regions: vec![LocalizedCardRegion { region: CardRegion::Noxus, name: "Noxus".to_string(), abbreviation: "NX".to_string(), icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string() }], spell_speeds: vec![LocalizedSpellSpeed { spell_speed: SpellSpeed::Slow, name: "Slow".to_string() }], rarities: vec![LocalizedCardRarity { rarity: CardRarity::Common, name: "COMMON".to_string() }], sets: vec![LocalizedCardSet { set: CardSet::CallOfTheMountain, name: "Call of the Mountain".to_string(), icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string() }] }
+            LocalizedGlobalsVecs {
+                vocab_terms: vec![
+                    LocalizedVocabTerm {
+                        vocabterm: "Allegiance".to_string(),
+                        name: "Allegiance".to_string(),
+                        description: "When you summon this, it gets its allegiance bonus if the top card of your deck matches its region.".to_string()
+                    }
+                ],
+                keywords: vec![
+                    LocalizedCardKeyword {
+                        keyword: CardKeyword::SpellOverwhelm,
+                        name: "Overwhelm".to_string(),
+                        description: "Inflicts damage beyond what would kill the target(s) to the enemy Nexus.".to_string()
+                    }
+                ],
+                regions: vec![
+                    LocalizedCardRegion {
+                        region: CardRegion::Noxus,
+                        name: "Noxus".to_string(),
+                        abbreviation: "NX".to_string(),
+                        icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/regions/icon-noxus.png".to_string()
+                    }
+                ],
+                spell_speeds: vec![
+                    LocalizedSpellSpeed {
+                        spell_speed: SpellSpeed::Slow,
+                        name: "Slow".to_string()
+                    }
+                ],
+                rarities: vec![
+                    LocalizedCardRarity {
+                        rarity: CardRarity::Common,
+                        name: "COMMON".to_string()
+                    }
+                ],
+                sets: vec![
+                    LocalizedCardSet {
+                        set: CardSet::CallOfTheMountain,
+                        name: "Call of the Mountain".to_string(),
+                        icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string()
+                    }
+                ]
+            }
         )
     }
 }
