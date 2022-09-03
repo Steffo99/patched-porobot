@@ -32,6 +32,10 @@ pub enum CardSet {
     #[serde(rename = "Set6")]
     Worldwalker,
 
+    /// The Darkin Saga / Awakening.
+    #[serde(rename = "Set6cde")]
+    TheDarkinSaga,
+
     /// Events, cards released "outside" a set.
     #[serde(rename = "SetEvent")]
     Events,
@@ -144,6 +148,7 @@ mod tests {
     test_deserialization!(deserialize_set4, r#""Set4""#, CardSet::EmpiresOfTheAscended);
     test_deserialization!(deserialize_set5, r#""Set5""#, CardSet::BeyondTheBandlewood);
     test_deserialization!(deserialize_set6, r#""Set6""#, CardSet::Worldwalker);
+    test_deserialization!(deserialize_set6cde, r#""Set6cde""#, CardSet::TheDarkinSaga);
     test_deserialization!(deserialize_setevent, r#""SetEvent""#, CardSet::Events);
     test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardSet::Unsupported);
 }
