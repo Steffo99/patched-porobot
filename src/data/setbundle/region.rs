@@ -50,7 +50,10 @@ impl CardRegion {
     /// Returns [Option::None] if no matching [LocalizedCardRegion] was found, for example for [CardRegion::Unsupported] regions.
     ///
     /// Equivalent to calling [LocalizedCardRegionIndex::get].
-    pub fn localized<'hm>(&self, hm: &'hm LocalizedCardRegionIndex) -> Option<&'hm LocalizedCardRegion> {
+    pub fn localized<'hm>(
+        &self,
+        hm: &'hm LocalizedCardRegionIndex,
+    ) -> Option<&'hm LocalizedCardRegion> {
         hm.get(self)
     }
 
@@ -101,18 +104,18 @@ impl CardRegion {
 impl From<u32> for CardRegion {
     fn from(value: u32) -> Self {
         match value {
-             0 => CardRegion::Demacia,
-             1 => CardRegion::Freljord,
-             2 => CardRegion::Ionia,
-             3 => CardRegion::Noxus,
-             4 => CardRegion::PiltoverZaun,
-             5 => CardRegion::ShadowIsles,
-             6 => CardRegion::Bilgewater,
-             7 => CardRegion::Shurima,
-             9 => CardRegion::Targon,
+            0 => CardRegion::Demacia,
+            1 => CardRegion::Freljord,
+            2 => CardRegion::Ionia,
+            3 => CardRegion::Noxus,
+            4 => CardRegion::PiltoverZaun,
+            5 => CardRegion::ShadowIsles,
+            6 => CardRegion::Bilgewater,
+            7 => CardRegion::Shurima,
+            9 => CardRegion::Targon,
             10 => CardRegion::BandleCity,
             12 => CardRegion::Runeterra,
-             _ => CardRegion::Unsupported,
+            _ => CardRegion::Unsupported,
         }
     }
 }
@@ -125,22 +128,21 @@ impl TryFrom<CardRegion> for u32 {
 
     fn try_from(value: CardRegion) -> Result<Self, Self::Error> {
         match value {
-            CardRegion::Demacia      => Ok(0),
-            CardRegion::Freljord     => Ok(1),
-            CardRegion::Ionia        => Ok(2),
-            CardRegion::Noxus        => Ok(3),
+            CardRegion::Demacia => Ok(0),
+            CardRegion::Freljord => Ok(1),
+            CardRegion::Ionia => Ok(2),
+            CardRegion::Noxus => Ok(3),
             CardRegion::PiltoverZaun => Ok(4),
-            CardRegion::ShadowIsles  => Ok(5),
-            CardRegion::Bilgewater   => Ok(6),
-            CardRegion::Shurima      => Ok(7),
-            CardRegion::Targon       => Ok(9),
-            CardRegion::BandleCity   => Ok(10),
-            CardRegion::Runeterra    => Ok(12),
-            _                        => Err(()),
+            CardRegion::ShadowIsles => Ok(5),
+            CardRegion::Bilgewater => Ok(6),
+            CardRegion::Shurima => Ok(7),
+            CardRegion::Targon => Ok(9),
+            CardRegion::BandleCity => Ok(10),
+            CardRegion::Runeterra => Ok(12),
+            _ => Err(()),
         }
     }
 }
-
 
 #[cfg(test)]
 #[rustfmt::skip]

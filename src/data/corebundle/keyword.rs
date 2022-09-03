@@ -1,7 +1,7 @@
 //! Module defining structs representing localized card keywords.
 
-use std::collections::HashMap;
 use crate::data::setbundle::keyword::CardKeyword;
+use std::collections::HashMap;
 
 /// A Legends of Runeterra [CardKeyword], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -21,7 +21,6 @@ pub struct LocalizedCardKeyword {
 pub type LocalizedCardKeywordVec = Vec<LocalizedCardKeyword>;
 /// An index of [LocalizedCardKeyword]s, with [LocalizedCardKeyword::keyword]s as keys.
 pub type LocalizedCardKeywordIndex = HashMap<CardKeyword, LocalizedCardKeyword>;
-
 
 #[cfg(test)]
 mod tests {

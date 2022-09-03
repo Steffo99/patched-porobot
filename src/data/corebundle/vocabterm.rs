@@ -24,7 +24,6 @@ pub type LocalizedVocabTermVec = Vec<LocalizedVocabTerm>;
 /// An index of [LocalizedVocabTerm]s, with [LocalizedVocabTerm::vocabterm]s as keys.
 pub type LocalizedVocabTermIndex = HashMap<String, LocalizedVocabTerm>;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

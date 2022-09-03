@@ -86,7 +86,6 @@ impl CardSet {
     }
 }
 
-
 /// Get the [`CardSet`] from its internal id.
 ///
 /// [`CardSet::Events`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
@@ -122,7 +121,6 @@ impl TryFrom<CardSet> for u32 {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

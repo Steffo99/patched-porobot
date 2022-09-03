@@ -2,13 +2,13 @@
 
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::setbundle::card::{Card, CardIndex};
+use crate::data::setbundle::code::CardCode;
 use itertools::Itertools;
 use tantivy::collector::TopDocs;
 use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
 use tantivy::{Document, Index, IndexReader, IndexWriter};
-use crate::data::setbundle::code::CardCode;
 
 /// The search engine.
 ///

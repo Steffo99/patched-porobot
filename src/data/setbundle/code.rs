@@ -1,10 +1,9 @@
 //! Module defining [CardCode].
 
-
 use crate::data::setbundle::card::{Card, CardIndex};
 
 /// The internal code of a [Card](super::card::Card).
-/// 
+///
 /// It is a ASCII string composed of the following segments:
 /// - `0..2`: set;
 /// - `2..4`: region;
@@ -22,17 +21,18 @@ use crate::data::setbundle::card::{Card, CardIndex};
 /// # Warning
 ///
 /// The way this is built is pretty... unsafe, so beware to not construct this with invalid codes.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
+)]
 #[serde(transparent)]
 pub struct CardCode {
     /// The card code as a [`String`].
-    pub full: String
+    pub full: String,
 }
-
 
 impl CardCode {
     /// Determines whether the card code is valid or not by checking the following:
-    /// 
+    ///
     /// - that the full string [is ascii](str::is_ascii);
     /// - that it is either 7 or 9 characters long.
     pub fn is_valid(&self) -> bool {
@@ -44,28 +44,28 @@ impl CardCode {
     }
 
     /// The set segment of the code.
-    /// 
+    ///
     /// In valid codes, it is always 2-ASCII-characters long.
     pub fn set(&self) -> &str {
         &self.full[0..2]
     }
 
     /// The region segment of the code.
-    /// 
+    ///
     /// In valid codes, it is always 2-ASCII-characters long.
     pub fn region(&self) -> &str {
         &self.full[2..4]
     }
 
     /// The card segment of the code.
-    /// 
+    ///
     /// In valid codes, it is always 3-ASCII-characters long.
     pub fn card(&self) -> &str {
         &self.full[4..7]
     }
 
     /// The token segment of the code.
-    /// 
+    ///
     /// In valid codes, it may either be an empty string, or 2-ASCII-characters long.
     pub fn token(&self) -> &str {
         &self.full[7..9]

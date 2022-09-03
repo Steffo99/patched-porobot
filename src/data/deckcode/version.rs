@@ -4,7 +4,6 @@ use crate::data::deckcode::deck::Deck;
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
 
-
 /// The version of a deck code.
 #[non_exhaustive]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -27,7 +26,6 @@ pub enum DeckCodeVersion {
     V5,
 }
 
-
 impl TryFrom<u8> for DeckCodeVersion {
     type Error = ();
 
@@ -38,7 +36,7 @@ impl TryFrom<u8> for DeckCodeVersion {
             3 => Ok(Self::V3),
             4 => Ok(Self::V4),
             5 => Ok(Self::V5),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 }
@@ -55,14 +53,11 @@ impl From<DeckCodeVersion> for u8 {
     }
 }
 
-
-
 /// Indicates that a given type is versioned in the [specs for deck codes](https://github.com/RiotGames/LoRDeckCodes).
 pub trait DeckCodeVersioned {
     /// Get the minimum deck version required to encode the deck in "code" format.
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion>;
 }
-
 
 impl DeckCodeVersioned for CardRegion {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
@@ -91,14 +86,12 @@ impl DeckCodeVersioned for CardRegion {
     }
 }
 
-
 /// [`CardCode`]'s version is the maximum version of its components.
 impl DeckCodeVersioned for CardCode {
     fn min_deckcode_version(&self) -> Option<DeckCodeVersion> {
         CardRegion::from_code(self.region()).min_deckcode_version()
     }
 }
-
 
 /// [`Deck`]'s version is the maximum version of all its [`CardCode`]s.
 impl DeckCodeVersioned for Deck {

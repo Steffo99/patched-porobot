@@ -10,6 +10,7 @@ use std::path::Path;
 
 pub mod art;
 pub mod card;
+pub mod code;
 pub mod keyword;
 pub mod rarity;
 pub mod region;
@@ -18,7 +19,6 @@ pub mod speed;
 pub mod subtype;
 pub mod supertype;
 pub mod r#type;
-pub mod code;
 
 /// A parsed [Data Dragon] [Set Bundle].
 ///

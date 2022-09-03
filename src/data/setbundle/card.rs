@@ -1,17 +1,17 @@
 //! Module defining [Card].
 
-use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
-use crate::data::setbundle::subtype::CardSubtype;
-use crate::data::setbundle::supertype::CardSupertype;
-use super::r#type::CardType;
 use super::art::CardArt;
+use super::code::CardCode;
 use super::keyword::CardKeyword;
+use super::r#type::CardType;
 use super::rarity::CardRarity;
 use super::region::CardRegion;
-use super::speed::SpellSpeed;
 use super::set::CardSet;
-use super::code::CardCode;
+use super::speed::SpellSpeed;
+use crate::data::setbundle::subtype::CardSubtype;
+use crate::data::setbundle::supertype::CardSupertype;
+use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
 
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
@@ -146,10 +146,12 @@ pub struct Card {
     pub supertype: CardSupertype,
 }
 
-
 impl Card {
     /// Get references to the cards associated with this one, given an [HashMap] of cards indexed by code.
-    pub fn associated_cards<'c, 'hm: 'c>(&'c self, index: &'hm CardIndex) -> impl Iterator<Item=Option<&'hm Card>> + 'c {
+    pub fn associated_cards<'c, 'hm: 'c>(
+        &'c self,
+        index: &'hm CardIndex,
+    ) -> impl Iterator<Item = Option<&'hm Card>> + 'c {
         self.associated_card_codes.iter().map(|r| index.get(r))
     }
 
@@ -161,14 +163,12 @@ impl Card {
     }
 }
 
-
 /// Two [`Card`]s are equal if they have the same [`Card::code`].
 impl PartialEq for Card {
     fn eq(&self, other: &Self) -> bool {
         self.code == other.code
     }
 }
-
 
 /// [`Card`] [`Hash`]es are equal to hashes of their [`Card::code`].
 impl Hash for Card {
@@ -177,10 +177,8 @@ impl Hash for Card {
     }
 }
 
-
 /// An index of [Card]s, with [CardCode]s as keys.
 pub type CardIndex = HashMap<CardCode, Card>;
-
 
 #[cfg(test)]
 mod tests {

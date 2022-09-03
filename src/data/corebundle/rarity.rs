@@ -1,7 +1,7 @@
 //! Module defining structs representing localized card rarities.
 
-use std::collections::HashMap;
 use crate::data::setbundle::rarity::CardRarity;
+use std::collections::HashMap;
 
 /// A Legends of Runeterra [CardRarity], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -18,7 +18,6 @@ pub struct LocalizedCardRarity {
 pub type LocalizedCardRarityVec = Vec<LocalizedCardRarity>;
 /// An index of [LocalizedCardRarity]s, with [LocalizedCardRarity::rarity]s as keys.
 pub type LocalizedCardRarityIndex = HashMap<CardRarity, LocalizedCardRarity>;
-
 
 #[cfg(test)]
 mod tests {

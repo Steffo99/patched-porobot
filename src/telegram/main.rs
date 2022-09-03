@@ -30,8 +30,10 @@ pub async fn main() {
     let mut cards: Vec<Card> = vec![];
     for setpath in setpaths {
         debug!("Loading {:?}...", &setpath);
-        let set = SetBundle::load(&setpath)
-            .expect(&*format!("to be able to load {:?} as a set bundle", &setpath));
+        let set = SetBundle::load(&setpath).expect(&*format!(
+            "to be able to load {:?} as a set bundle",
+            &setpath
+        ));
         let mut setcards = set.cards;
         cards.append(&mut setcards);
     }

@@ -1,7 +1,7 @@
 //! Module defining structs representing localized card sets.
 
-use std::collections::HashMap;
 use crate::data::setbundle::set::CardSet;
+use std::collections::HashMap;
 
 /// A Legends of Runeterra [CardSet], and its associated localization.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
@@ -22,7 +22,6 @@ pub struct LocalizedCardSet {
 pub type LocalizedCardSetVec = Vec<LocalizedCardSet>;
 /// An index of [LocalizedCardSet]s, with [LocalizedCardSet::set]s as keys.
 pub type LocalizedCardSetIndex = HashMap<CardSet, LocalizedCardSet>;
-
 
 #[cfg(test)]
 mod tests {
