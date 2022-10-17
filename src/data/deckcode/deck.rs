@@ -484,9 +484,9 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 #[macro_export]
 macro_rules! deck {
     [$($cd:literal: $qty:literal),* $(,)?] => {
-        patched_porobot::data::deckcode::deck::Deck {
+        crate::data::deckcode::deck::Deck {
             contents: std::collections::HashMap::from([
-                $((patched_porobot::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
+                $((crate::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
             ])
         }
     }
@@ -539,7 +539,7 @@ mod tests {
         ( $id:ident, $deck:expr ) => {
             #[test]
             fn $id() {
-                use patched_porobot::data::deckcode::deck::Deck;
+                use crate::data::deckcode::deck::Deck;
                 let deck1 = $deck;
                 let code = deck1
                     .to_code(DeckCodeFormat::F1)
