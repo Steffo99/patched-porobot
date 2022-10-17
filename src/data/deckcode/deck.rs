@@ -427,10 +427,10 @@ impl Deck {
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
     pub fn is_singleton(&self, cards: &CardIndex) -> bool {
-        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.contents.len() == 40;
         let champions_limit = self.contents.keys().map(|cc| cc.to_card(cards)).filter_map(|r| r).filter(|c| c.supertype == "CHAMPION").count() == 6;
-        let regions_limit = self.regions().len() <= 2;
+        let regions_limit = self.regions().len() <= 3;
 
         copies_limit && cards_limit && champions_limit && regions_limit
     }
