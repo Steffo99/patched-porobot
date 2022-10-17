@@ -2,11 +2,12 @@
 
 use super::format::DeckCodeFormat;
 use crate::data::deckcode::version::{DeckCodeVersion, DeckCodeVersioned};
+use crate::data::setbundle::card::CardIndex;
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
 use crate::data::setbundle::set::CardSet;
 use itertools::Itertools;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::io::{Cursor, Read, Write};
 use varint_rs::{VarintReader, VarintWriter};
 
@@ -408,6 +409,31 @@ impl Deck {
 
         Ok(Self::encode_code(&cursor.into_inner()))
     }
+
+    /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
+    pub fn regions(&self) -> HashSet<CardRegion> {
+        todo!();
+    }
+
+    /// Check if the [`Deck`] is legal for play in the *Standard* format.
+    pub fn is_standard(&self, cards: &CardIndex) -> bool {
+        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let cards_limit = self.contents.len() == 40;
+        let champions_limit = self.contents.keys().map(|cc| cc.to_card(cards)).filter_map(|r| r).filter(|c| c.supertype == "CHAMPION").count() == 6;
+        let regions_limit = self.regions().len() <= 2;
+
+        copies_limit && cards_limit && champions_limit && regions_limit
+    }
+
+    /// Check if the [`Deck`] is legal for play in the *Singleton* format.
+    pub fn is_singleton(&self, cards: &CardIndex) -> bool {
+        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let cards_limit = self.contents.len() == 40;
+        let champions_limit = self.contents.keys().map(|cc| cc.to_card(cards)).filter_map(|r| r).filter(|c| c.supertype == "CHAMPION").count() == 6;
+        let regions_limit = self.regions().len() <= 2;
+
+        copies_limit && cards_limit && champions_limit && regions_limit
+    }
 }
 
 /// An error occoured while decoding a [`Deck`] from a code.
@@ -653,5 +679,20 @@ mod tests {
         "02BW012": 69,
     ]);
 
-    //test_ser_de!(test_ser_de_, deck![]);
+    // test_ser_de!(test_ser_de_, deck![]);
+
+    // macro_rules! test_legality {
+    //     ( $id:ident, $check:path, $assert:expr, $deck:expr ) => {
+    //         #[test]
+    //         fn $id() {
+    //             let deck = $deck;
+    //             let result = $check(deck);
+    //             assert_eq!(result, $assert);
+    //         }
+    //     };
+    // }
+
+    // test_legality!(test_legality, Deck::is_standard, true, 
+    //     &Deck::from_code("CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL").unwrap()
+    // );
 }
