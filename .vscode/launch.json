@@ -1,0 +1,85 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug all unit tests",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--bin=patched_porobot_telegram",
+                    "--bin=patched_porobot_discord",
+                    "--bin=patched_porobot_matrix",
+                    "--package=patched_porobot",
+                    "--all-features"
+                ],
+                "filter": {
+                    "name": "patched_porobot",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'patched_porobot_telegram'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=patched_porobot_telegram",
+                    "--package=patched_porobot"
+                ],
+                "filter": {
+                    "name": "patched_porobot_telegram",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'patched_porobot_discord'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=patched_porobot_discord",
+                    "--package=patched_porobot"
+                ],
+                "filter": {
+                    "name": "patched_porobot_discord",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'patched_porobot_matrix'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=patched_porobot_matrix",
+                    "--package=patched_porobot"
+                ],
+                "filter": {
+                    "name": "patched_porobot_matrix",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+    ]
+}
