@@ -484,9 +484,9 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 #[macro_export]
 macro_rules! deck {
     [$($cd:literal: $qty:literal),* $(,)?] => {
-        crate::data::deckcode::deck::Deck {
+        $crate::data::deckcode::deck::Deck {
             contents: std::collections::HashMap::from([
-                $((crate::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
+                $(($crate::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
             ])
         }
     }
