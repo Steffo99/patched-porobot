@@ -103,7 +103,6 @@ impl From<u32> for CardSet {
             3 => CardSet::CallOfTheMountain,
             4 => CardSet::EmpiresOfTheAscended,
             5 => CardSet::BeyondTheBandlewood,
-            6 => CardSet::Worldwalker,
             _ => CardSet::Unsupported,
         }
     }
