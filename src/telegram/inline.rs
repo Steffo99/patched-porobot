@@ -7,9 +7,6 @@ use crate::data::deckcode::deck::Deck;
 use crate::data::deckcode::format::DeckCodeFormat;
 use crate::data::setbundle::card::{Card, CardIndex};
 use crate::telegram::display::{display_card, display_deck};
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hash;
-use std::ptr::hash;
 use teloxide::types::{
     InlineQueryResult, InlineQueryResultArticle, InlineQueryResultPhoto, InputMessageContent,
     InputMessageContentText, ParseMode,
