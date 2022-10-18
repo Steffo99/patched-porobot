@@ -12,7 +12,7 @@ use teloxide::types::{
     InputMessageContentText, ParseMode,
 };
 
-/// Converts a [Card] into a [InlineQueryResult].
+/// Convert a [Card] into a [InlineQueryResult].
 pub fn card_to_inlinequeryresult(
     globals: &LocalizedGlobalsIndexes,
     card: &Card,
@@ -43,6 +43,7 @@ pub fn card_to_inlinequeryresult(
     })
 }
 
+/// Convert a [Deck] into a [InlineQueryResult].
 pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck) -> InlineQueryResult {
     let code = deck
         .to_code(DeckCodeFormat::F1)
