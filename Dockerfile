@@ -1,4 +1,4 @@
-FROM rust:1.62 AS labels
+FROM rust:1.64 AS labels
 
 LABEL org.opencontainers.image.title="Patched Porobot"
 LABEL org.opencontainers.image.description="Legends of Runeterra card database utilities and bots"
