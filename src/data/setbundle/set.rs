@@ -55,8 +55,10 @@ impl CardSet {
         hm.get(self)
     }
 
-    /// Get the [`CardSet`] from its short code, **assuming it is not an [`CardSet::Events`] card**.
+    /// Get the [`CardSet`] from its short code.
     ///
+    /// [`CardSet::Worldwalker`] and [`CardSet::TheDarkinSaga`] share the same code `06`, so a variant cannot be determined.
+    /// 
     /// [`CardSet::Events`] cards have the short code of the set they were released in, so it is impossible to determine if a card belongs to that set from its short code.
     pub fn from_code(value: &str) -> Self {
         match value {
