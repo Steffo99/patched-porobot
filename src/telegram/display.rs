@@ -153,10 +153,10 @@ fn display_levelup(levelup: &String) -> String {
     }
 }
 
-/// Render a [Deck] in [Telegram Bot HTML].
+/// Render a [Deck] in [Telegram Bot HTML], with an optional `name`.
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
-pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
+pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&str>) -> String {
     // TODO: optimize this
     let cards = deck
         .contents
@@ -182,5 +182,8 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: String) -> String {
         })
         .join("\n");
 
-    format!("<code>{}</code>\n\n{}", &code, &cards)
+    match name {
+        Some(name) => format!("<b>{}</b>\n<code>{}</code>\n\n{}", &name, &code, &cards),
+        None => format!("<code>{}</code>\n\n{}", &code, &cards),
+    }
 }
