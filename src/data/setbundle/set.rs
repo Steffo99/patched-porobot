@@ -122,6 +122,7 @@ impl TryFrom<CardSet> for u32 {
             CardSet::EmpiresOfTheAscended => Ok(4),
             CardSet::BeyondTheBandlewood => Ok(5),
             CardSet::Worldwalker => Ok(6),
+            CardSet::TheDarkinSaga => Ok(6),
             _ => Err(()),
         }
     }
