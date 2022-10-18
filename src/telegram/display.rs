@@ -183,7 +183,7 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
         .join("\n");
 
     match name {
-        Some(name) => format!("<b>{}</b>\n<code>{}</code>\n\n{}", &name, &code, &cards),
+        Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n\n{}", &name, &code, &cards),
         None => format!("<code>{}</code>\n\n{}", &code, &cards),
     }
 }
