@@ -84,6 +84,7 @@ impl CardSet {
             Self::EmpiresOfTheAscended => Some("04".to_string()),
             Self::BeyondTheBandlewood => Some("05".to_string()),
             Self::Worldwalker => Some("06".to_string()),
+            Self::TheDarkinSaga => Some("06".to_string()),
 
             _ => None,
         }
