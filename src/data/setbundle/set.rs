@@ -65,7 +65,6 @@ impl CardSet {
             "03" => Self::CallOfTheMountain,
             "04" => Self::EmpiresOfTheAscended,
             "05" => Self::BeyondTheBandlewood,
-            "06" => Self::Worldwalker,
 
             _ => Self::Unsupported,
         }
