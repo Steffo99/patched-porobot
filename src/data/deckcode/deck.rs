@@ -198,9 +198,7 @@ impl Deck {
         let card_count = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
 
         let set = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
-        let set = CardSet::from(set)
-            .to_code()
-            .ok_or(DeckDecodingError::UnknownSet)?;
+        let set = format!("{:02}", &set);
 
         let region = reader.read_u32_varint().map_err(DeckDecodingError::Read)?;
         let region = CardRegion::from(region)
@@ -229,8 +227,7 @@ impl Deck {
             .write_u32_varint(len)
             .map_err(DeckEncodingError::Write)?;
 
-        let set: u32 = CardSet::from_code(set)
-            .try_into()
+        let set: u32 = set.parse()
             .map_err(|_| DeckEncodingError::UnknownSet)?;
         writer
             .write_u32_varint(set)
