@@ -94,6 +94,8 @@ impl CardSet {
 
 /// Get the [`CardSet`] from its internal id.
 ///
+/// [`CardSet::Worldwalker`] and [`CardSet::TheDarkinSaga`] share the same id, so a variant cannot be determined.
+/// 
 /// [`CardSet::Events`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
 impl From<u32> for CardSet {
     fn from(value: u32) -> Self {
