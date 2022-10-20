@@ -9,6 +9,8 @@ on:
 
 jobs:
   cargotest:
+    name: "Run checks and tests on the repository"
+    runs-on: ubuntu-latest
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v3
