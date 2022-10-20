@@ -7,15 +7,12 @@ use crate::data::deckcode::deck::Deck;
 use crate::data::deckcode::format::DeckCodeFormat;
 use crate::data::setbundle::card::{Card, CardIndex};
 use crate::telegram::display::{display_card, display_deck};
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hash;
-use std::ptr::hash;
 use teloxide::types::{
     InlineQueryResult, InlineQueryResultArticle, InlineQueryResultPhoto, InputMessageContent,
     InputMessageContentText, ParseMode,
 };
 
-/// Converts a [Card] into a [InlineQueryResult].
+/// Convert a [Card] into a [InlineQueryResult].
 pub fn card_to_inlinequeryresult(
     globals: &LocalizedGlobalsIndexes,
     card: &Card,
@@ -46,16 +43,20 @@ pub fn card_to_inlinequeryresult(
     })
 }
 
-pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck) -> InlineQueryResult {
+/// Convert a [Deck] with an optional name into a [InlineQueryResult].
+pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck, name: &Option<&str>) -> InlineQueryResult {
     let code = deck
         .to_code(DeckCodeFormat::F1)
         .expect("serialized deck to deserialize properly");
 
     InlineQueryResult::Article(InlineQueryResultArticle {
         id: format!("{:x}", md5::compute(&code)),
-        title: format!("Deck with {} cards", deck.contents.len()),
+        title: match &name {
+            Some(name) => format!(r#"Deck "{}" with {} cards"#, name, deck.contents.len()),
+            None => format!("Deck with {} cards", deck.contents.len())
+        },
         input_message_content: InputMessageContent::Text(InputMessageContentText {
-            message_text: display_deck(index, deck, code),
+            message_text: display_deck(index, deck, &code, &name),
             parse_mode: Some(ParseMode::Html),
             entities: None,
             disable_web_page_preview: Some(true),

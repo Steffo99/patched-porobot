@@ -55,8 +55,10 @@ impl CardSet {
         hm.get(self)
     }
 
-    /// Get the [`CardSet`] from its short code, **assuming it is not an [`CardSet::Events`] card**.
+    /// Get the [`CardSet`] from its short code.
     ///
+    /// [`CardSet::Worldwalker`] and [`CardSet::TheDarkinSaga`] share the same code `06`, so a variant cannot be determined.
+    /// 
     /// [`CardSet::Events`] cards have the short code of the set they were released in, so it is impossible to determine if a card belongs to that set from its short code.
     pub fn from_code(value: &str) -> Self {
         match value {
@@ -65,7 +67,6 @@ impl CardSet {
             "03" => Self::CallOfTheMountain,
             "04" => Self::EmpiresOfTheAscended,
             "05" => Self::BeyondTheBandlewood,
-            "06" => Self::Worldwalker,
 
             _ => Self::Unsupported,
         }
@@ -84,6 +85,7 @@ impl CardSet {
             Self::EmpiresOfTheAscended => Some("04".to_string()),
             Self::BeyondTheBandlewood => Some("05".to_string()),
             Self::Worldwalker => Some("06".to_string()),
+            Self::TheDarkinSaga => Some("06".to_string()),
 
             _ => None,
         }
@@ -92,6 +94,8 @@ impl CardSet {
 
 /// Get the [`CardSet`] from its internal id.
 ///
+/// [`CardSet::Worldwalker`] and [`CardSet::TheDarkinSaga`] share the same id, so a variant cannot be determined.
+/// 
 /// [`CardSet::Events`] cards have the id of the set they were released in, so it is impossible to determine if a card belongs to that set from its id.
 impl From<u32> for CardSet {
     fn from(value: u32) -> Self {
@@ -101,7 +105,6 @@ impl From<u32> for CardSet {
             3 => CardSet::CallOfTheMountain,
             4 => CardSet::EmpiresOfTheAscended,
             5 => CardSet::BeyondTheBandlewood,
-            6 => CardSet::Worldwalker,
             _ => CardSet::Unsupported,
         }
     }
@@ -121,6 +124,7 @@ impl TryFrom<CardSet> for u32 {
             CardSet::EmpiresOfTheAscended => Ok(4),
             CardSet::BeyondTheBandlewood => Ok(5),
             CardSet::Worldwalker => Ok(6),
+            CardSet::TheDarkinSaga => Ok(6),
             _ => Err(()),
         }
     }

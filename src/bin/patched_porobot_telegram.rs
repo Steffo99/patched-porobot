@@ -72,7 +72,7 @@
 //!
 //! Since [@patchedporobot] uses [`tantivy`] internally, you might find more information on even more advanced queries in the [documentation of their `QueryParser`](tantivy::query::QueryParser)!
 //!
-//! ### Deck queries
+//! ### Deck parsing
 //!
 //! You can have [@patchedporobot] display a deck and its cards by pasting the deck code after the bot's username:
 //!
@@ -82,6 +82,15 @@
 //!
 //! Then, select the "Deck with N cards" option to send the deck's card list in the chat!
 //!
+//! #### Named decks
+//!
+//! Optionally, you may add a name to your deck, which will be displayed above the deck code:
+//!
+//! ```text
+//! @patchedporobot CIBQCAICAQAQGBQIBEBAMBAJBMGBUHJNGE4AEAIBAIYQEAQGEU2QCAIBAIUQ Gimbo's Depths
+//! ```
+//!
+//! If entered correctly, the bot will display a slightly different option containing the deck's name (_Deck "NAME" with N cards_), which you can check before the message is sent to the chat.
 //!
 //! [@patchedporobot]: https://t.me/patchedporobot
 
