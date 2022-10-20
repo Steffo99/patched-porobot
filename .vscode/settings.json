@@ -11,5 +11,12 @@
         "Cargo.lock": true,
         "riot.txt": true,
         "target": true,
-    }
+    },
+    "rust-analyzer.cargo.features": [
+        "exec",
+        "search",
+        "telegram",
+        "discord",
+        "matrix",
+    ]
 }

@@ -10,6 +10,8 @@ use teloxide::payloads::{AnswerInlineQuery, SendMessage};
 use teloxide::prelude::*;
 use teloxide::requests::{JsonRequest, ResponseResult};
 use teloxide::types::{ParseMode, Recipient};
+use lazy_static::lazy_static;
+use regex::Regex;
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
 pub fn inline_query_handler(
@@ -33,17 +35,28 @@ pub fn inline_query_handler(
                 };
             }
 
-            if let Ok(deck) = Deck::from_code(&query.query.to_ascii_uppercase()) {
-                debug!("Parsed deck successfully!");
-                break AnswerInlineQuery {
-                    inline_query_id: query.id.clone(),
-                    results: vec![deck_to_inlinequeryresult(&engine.cards, &deck)],
-                    cache_time: None,
-                    is_personal: Some(false),
-                    next_offset: None,
-                    switch_pm_text: None,
-                    switch_pm_parameter: None,
-                };
+            lazy_static! {
+                static ref DECK_RE: Regex = Regex::new(r#"^(?P<code>[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567]+)(?:\s+(?P<name>.+?))?\s*$"#).unwrap();
+            }
+            
+            if let Some(deck_captures) = DECK_RE.captures(&query.query) {
+                if let Some(deck_code) = deck_captures.name("code") {
+                    if let Ok(deck) = Deck::from_code(&deck_code.as_str()) {
+                        
+                        debug!("Parsed deck successfully!");
+                        let name = deck_captures.name("name").map(|m| m.as_str());
+
+                        break AnswerInlineQuery {
+                            inline_query_id: query.id.clone(),
+                            results: vec![deck_to_inlinequeryresult(&engine.cards, &deck, &name)],
+                            cache_time: None,
+                            is_personal: Some(false),
+                            next_offset: None,
+                            switch_pm_text: None,
+                            switch_pm_parameter: None,
+                        };
+                    }
+                }
             }
 
             debug!("Querying the card search engine...");
