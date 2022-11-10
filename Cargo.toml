@@ -37,6 +37,7 @@ reqwest = { version = "0.11.11", optional = true }
 tokio = { version =  "1.20.1", features = ["rt-multi-thread", "macros"], optional = true }
 md5 = { version = "0.7.0", optional = true }
 # discord
+serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 # matrix
 
 
@@ -45,7 +46,7 @@ md5 = { version = "0.7.0", optional = true }
 exec = ["pretty_env_logger", "glob"]
 search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio", "md5"]
-discord = ["exec", "search"]
+discord = ["exec", "search", "serenity", "tokio"]
 matrix = ["exec", "search"]
 
 
