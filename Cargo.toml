@@ -11,7 +11,7 @@ categories = ["games", "parser-implementations"]
 
 [package.metadata.docs.rs]
 all-features = true
-cargo-args = ["--bins"]
+cargo-args = ["--bins", "--lib"]
 rustdoc-args = ["--document-private-items"]
 
 
@@ -38,6 +38,7 @@ tokio = { version =  "1.20.3", features = ["rt-multi-thread", "macros"], optiona
 md5 = { version = "0.7.0", optional = true }
 rand = { version = "0.8.5", optional = true }
 # discord
+serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 # matrix
 
 
@@ -46,7 +47,7 @@ rand = { version = "0.8.5", optional = true }
 exec = ["pretty_env_logger"]
 search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio", "md5", "rand"]
-discord = ["exec", "search"]
+discord = ["exec", "search", "serenity", "tokio"]
 matrix = ["exec", "search"]
 
 
