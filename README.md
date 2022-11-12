@@ -1,4 +1,4 @@
-# ![](icon.png) patched-porobot
+# ![](icon.png) Patched Porobot
 
 Legends of Runeterra card library and bots
 
