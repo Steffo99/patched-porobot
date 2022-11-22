@@ -21,12 +21,6 @@ pub mod vocabterm;
 /// [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CoreBundle {
-    /// The name of the root directory of the bundle.
-    pub name: String,
-
-    /// The contents of the `metadata.json` file.
-    pub metadata: BundleMetadata,
-
     /// The contents of the `[locale]/data/globals-[locale].json` file.
     pub globals: globals::LocalizedGlobalsVecs,
 }
@@ -35,13 +29,6 @@ impl CoreBundle {
     /// Load a Core Bundle directory to create a [CoreBundle] instance.
     pub fn load(bundle_path: &Path) -> LoadingResult<Self> {
         let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
-
-        let name = bundle_path
-            .file_name()
-            .ok_or(LoadingError::GettingBundleName)?
-            .to_str()
-            .ok_or(LoadingError::ConvertingBundleName)?
-            .to_string();
 
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
@@ -53,9 +40,44 @@ impl CoreBundle {
         let globals = globals::LocalizedGlobalsVecs::load(globals_path)?;
 
         Ok(CoreBundle {
-            name,
-            metadata,
             globals,
         })
     }
+
+    /// Fetch from `base_url` the Core Bundle data with the given `locale`.
+    #[cfg(feature = "fetch")]
+    pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str) -> LoadingResult<Self> {
+        let globals = client
+            .get(format!("{base_url}/core/{locale}/data/globals-{locale}.json"))
+            .send()
+            .await
+            .map_err(LoadingError::RemoteFetching)?
+            .json::<globals::LocalizedGlobalsVecs>()
+            .await
+            .map_err(LoadingError::RemoteDeserializing)?;
+
+        Ok(Self {globals})
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! test_fetch {
+        ( $id:ident, $version:literal, $locale:literal ) => {
+            #[cfg(feature = "fetch")]
+            #[tokio::test]
+            async fn $id() {
+                let client = reqwest::Client::new();
+                let result = CoreBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale).await;
+                assert!(result.is_ok());
+            }
+        };
+    }
+
+    test_fetch!(test_fetch_3_17_0_en_us, "3_17_0", "en_us");
+    test_fetch!(test_fetch_3_17_0_it_it, "3_17_0", "it_it");
+    test_fetch!(test_fetch_latest_en_us, "latest", "en_us");
 }

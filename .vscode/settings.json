@@ -13,6 +13,7 @@
         "target": true,
     },
     "rust-analyzer.cargo.features": [
+        "fetch",
         "exec",
         "search",
         "telegram",
