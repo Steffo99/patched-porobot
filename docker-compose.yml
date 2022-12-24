@@ -21,3 +21,7 @@ services:
       - "poro_cards:/usr/src/patched_porobot/data:r"
     env_file:
       - stack.env
+    deploy:
+      resources:
+        limits:
+          memory: 16M
