@@ -4,7 +4,7 @@
 version: "3.9"
 
 volumes:
-  poro_cards:
+  cards:
     driver: mochoa/s3fs-volume-plugin:latest
     driver_opts:
       s3fsopts: >-
@@ -18,7 +18,7 @@ services:
     command: "patched_porobot_telegram"
     restart: unless-stopped
     volumes:
-      - "poro_cards:/usr/src/patched_porobot/data:r"
+      - "cards:/usr/src/patched_porobot/data:r"
     env_file:
       - stack.env
     deploy:
