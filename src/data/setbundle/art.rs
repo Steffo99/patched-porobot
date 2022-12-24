@@ -30,14 +30,12 @@ pub struct CardArt {
 }
 
 impl CardArt {
-    /// URL to the `.jpg` image of the `en_us` locale of the rendered card, via `poro.steffo.eu`.
-    ///
-    /// Please do not overload this endpoint, as it currently does not use a CDN!
+    /// URL to the `.jpg` image of the `en_us` locale of the rendered card, via my custom S3 mirror.
     ///
     /// # Example
     ///
     /// ```text
-    /// https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg
+    /// https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001.jpg
     /// ```
     ///
     pub fn card_jpg(&self) -> String {
@@ -51,19 +49,17 @@ impl CardArt {
         GET_JPG
             .replace_all(
                 &self.card_png,
-                "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg",
+                "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/$bundle-$locale/$locale/img/cards/$code.jpg",
             )
             .to_string()
     }
 
-    /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via `poro.steffo.eu`.
-    ///
-    /// Please do not overload this endpoint, as it currently does not use a CDN!
+    /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via my custom S3 mirror.
     ///
     /// # Example
     ///
     /// ```text
-    /// https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg
+    /// https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001-full.jpg
     /// ```
     ///
     pub fn full_jpg(&self) -> String {
@@ -77,7 +73,7 @@ impl CardArt {
         GET_JPG
             .replace_all(
                 &self.full_png,
-                "https://poro.steffo.eu/$bundle-$locale/$locale/img/cards/$code.jpg",
+                "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/$bundle-$locale/$locale/img/cards/$code.jpg",
             )
             .to_string()
     }
@@ -103,11 +99,11 @@ mod tests {
 
         assert_eq!(
             art.card_jpg(),
-            "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001.jpg"
+            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001.jpg"
         );
         assert_eq!(
             art.full_jpg(),
-            "https://poro.steffo.eu/set1-en_us/en_us/img/cards/01DE001-full.jpg"
+            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001-full.jpg"
         );
     }
 }
