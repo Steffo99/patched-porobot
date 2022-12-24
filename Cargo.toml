@@ -11,7 +11,7 @@ categories = ["games", "parser-implementations"]
 
 [package.metadata.docs.rs]
 all-features = true
-cargo-args = ["--bins", "--lib"]
+cargo-args = ["--bins"]
 rustdoc-args = ["--document-private-items"]
 
 
