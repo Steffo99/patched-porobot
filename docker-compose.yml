@@ -1,5 +1,4 @@
 # To be used in Portainer
-# Requires https://hub.docker.com/r/mochoa/s3fs-volume-plugin to be installed
 
 version: "3.9"
 
