@@ -19,7 +19,7 @@ services:
     command: "patched_porobot_telegram"
     restart: unless-stopped
     volumes:
-      - "cards:/usr/src/patched_porobot/data:r"
+      - "cards:/usr/src/patched_porobot/data"
     env_file:
       - stack.env
     deploy:
