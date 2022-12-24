@@ -3,23 +3,13 @@
 
 version: "3.9"
 
-volumes:
-  cards:
-    driver: mochoa/s3fs-volume-plugin:latest
-    driver_opts:
-      s3fsopts: >-
-        url=$S3FS_URL,
-        passwd_file=$S3FS_PASSWD_FILE,
-        use_path_request_style
-    name: "porobot-storage"
-
 services:
   telegram:
     image: "ghcr.io/steffo99/patched-porobot:latest"
     command: "patched_porobot_telegram"
     restart: unless-stopped
     volumes:
-      - "cards:/usr/src/patched_porobot/data"
+      - "$PORO_CARDS_DIR:/usr/src/patched_porobot/data"
     env_file:
       - stack.env
     deploy:
