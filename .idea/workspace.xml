@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="29a8bc18-63e6-49d5-818a-2adb8bb27108" name="Changes" comment="Update cargo.lock version" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileColors">
+    <fileColor scope="IDE" color="524000" />
+    <fileColor scope="Continuous" color="422f52" />
+    <fileColor scope="Source" color="204552" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Rust File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="discord" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="1apa8vv1" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="Source" pattern="file:src//*" />
+    <scope name="Continuous" pattern="file:.github//*" />
+    <scope name="IDE" pattern="file:.idea//*||file:.vscode//*" />
+  </component>
+  <component name="ProjectId" id="2ChA9gDQojb55J89qxWB9VBV8oT" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+    <ConfirmationsSetting value="1" id="Remove" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/store/Documents/Workspaces/Steffo99/patched-porobot&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.22482893&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/bin" />
+      <recent name="$PROJECT_DIR$/src/data/setbundle" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/media" />
+      <recent name="$PROJECT_DIR$/src/data/anybundle" />
+      <recent name="$PROJECT_DIR$/src/schema" />
+      <recent name="$PROJECT_DIR$/src/schema/corebundle" />
+      <recent name="$PROJECT_DIR$/src/schema/setbundle" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Cargo.Telegram bot">
+    <configuration name="Clippy" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="clippy" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Discord bot" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --features &quot;search discord&quot; --bin &quot;patched_porobot_discord&quot; --verbose" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs>
+        <env name="RUST_LOG" value="patched_porobot,patched_porobot_telegram" />
+        <env name="TELOXIDE_TOKEN" value="1185032041:AAEyRS33SdRFjmyP-6LmVoFd69XVZrkr_e0" />
+      </envs>
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Doc tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="test --doc" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Documentation" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="doc --all-features --document-private-items" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Telegram bot" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run --features &quot;search telegram&quot; --bin &quot;patched_porobot_telegram&quot; --verbose" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs>
+        <env name="RUST_LOG" value="patched_porobot,patched_porobot_telegram" />
+        <env name="TELOXIDE_TOKEN" value="1185032041:AAEyRS33SdRFjmyP-6LmVoFd69XVZrkr_e0" />
+      </envs>
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unit tests" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="test --lib" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs>
+        <env name="RUST_LOG" value="patched_porobot" />
+      </envs>
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Documentation" />
+      <item itemvalue="Cargo.Clippy" />
+      <item itemvalue="Cargo.Doc tests" />
+      <item itemvalue="Cargo.Telegram bot" />
+      <item itemvalue="Cargo.Discord bot" />
+      <item itemvalue="Cargo.Unit tests" />
+    </list>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="externalLinter" value="Clippy" />
+    <option name="toolchainHomeDirectory" value="/usr/bin" />
+    <option name="version" value="2" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="29a8bc18-63e6-49d5-818a-2adb8bb27108" name="Changes" comment="" />
+      <created>1659244293767</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1659244293767</updated>
+      <workItem from="1660276501412" duration="216000" />
+      <workItem from="1660276731877" duration="1659000" />
+      <workItem from="1660589050457" duration="1375000" />
+      <workItem from="1660603987556" duration="1602000" />
+      <workItem from="1660612085062" duration="1663000" />
+      <workItem from="1660655283208" duration="10309000" />
+      <workItem from="1660688149021" duration="1774000" />
+      <workItem from="1660694648166" duration="8397000" />
+      <workItem from="1660738725015" duration="1729000" />
+      <workItem from="1660741505452" duration="13458000" />
+      <workItem from="1660756468195" duration="6583000" />
+      <workItem from="1660788653426" duration="3067000" />
+      <workItem from="1660828245894" duration="599000" />
+      <workItem from="1660854390310" duration="658000" />
+      <workItem from="1660875826037" duration="3522000" />
+      <workItem from="1660895236100" duration="10274000" />
+      <workItem from="1660949873663" duration="2561000" />
+      <workItem from="1661017251327" duration="9830000" />
+      <workItem from="1661108191975" duration="2775000" />
+      <workItem from="1661182901821" duration="5360000" />
+      <workItem from="1661207477818" duration="181000" />
+      <workItem from="1662224161695" duration="3920000" />
+      <workItem from="1666119522849" duration="3589000" />
+      <workItem from="1666125534364" duration="3296000" />
+      <workItem from="1673778882257" duration="15234000" />
+      <workItem from="1673798997045" duration="2180000" />
+      <workItem from="1673806079024" duration="367000" />
+    </task>
+    <task id="LOCAL-00157" summary="Fix `deck` macro">
+      <created>1660951461749</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1660951461749</updated>
+    </task>
+    <task id="LOCAL-00158" summary="Add the `CardCode::to_card` method">
+      <created>1660952280537</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1660952280537</updated>
+    </task>
+    <task id="LOCAL-00159" summary="Start building the `display_deck` skeleton">
+      <created>1660952355463</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1660952355463</updated>
+    </task>
+    <task id="LOCAL-00160" summary="Improve `CardCode`'s docstring">
+      <created>1661019315649</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019315650</updated>
+    </task>
+    <task id="LOCAL-00161" summary="Add missing lifetime to `CardCode::to_card`">
+      <created>1661019327165</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019327165</updated>
+    </task>
+    <task id="LOCAL-00162" summary="Add support for set6cde">
+      <created>1661019345390</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019345390</updated>
+    </task>
+    <task id="LOCAL-00163" summary="Add some examples in docstrings">
+      <created>1661019594832</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019594832</updated>
+    </task>
+    <task id="LOCAL-00164" summary="Consume the `Result` in one of the previously mentioned docstrings">
+      <created>1661019630301</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019630301</updated>
+    </task>
+    <task id="LOCAL-00165" summary="Fix `CardCode`'s example">
+      <created>1661019676377</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019676377</updated>
+    </task>
+    <task id="LOCAL-00166" summary="Fix `CardCode`'s example">
+      <created>1661019688453</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019688453</updated>
+    </task>
+    <task id="LOCAL-00167" summary="Manually wrap example line">
+      <created>1661019797606</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1661019797606</updated>
+    </task>
+    <task id="LOCAL-00168" summary="Manually implement `Hash` for `Card`">
+      <created>1661020975651</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1661020975652</updated>
+    </task>
+    <task id="LOCAL-00169" summary="Ignore http links for Data Dragon">
+      <created>1661021283608</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1661021283608</updated>
+    </task>
+    <task id="LOCAL-00170" summary="Complete deck code implementation for telegram">
+      <created>1661025664867</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1661025664867</updated>
+    </task>
+    <task id="LOCAL-00171" summary="Complete deck code implementation for telegram">
+      <created>1661027919198</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1661027919198</updated>
+    </task>
+    <task id="LOCAL-00172" summary="Underline champions">
+      <created>1661108225975</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1661108225976</updated>
+    </task>
+    <task id="LOCAL-00173" summary="Bump version to 0.6.0">
+      <created>1661120527344</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1661120527344</updated>
+    </task>
+    <task id="LOCAL-00174" summary="Document deck queries in the bot's instructions">
+      <created>1661184092179</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184092180</updated>
+    </task>
+    <task id="LOCAL-00175" summary="Register the update to cargo.lock">
+      <created>1661184105037</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184105038</updated>
+    </task>
+    <task id="LOCAL-00176" summary="Make `Card`s `Eq` based on their `Card::code`">
+      <created>1661184803143</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184803143</updated>
+    </task>
+    <task id="LOCAL-00177" summary="Do not implement `PartialEq::ne` for `Card`">
+      <created>1661184829760</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184829760</updated>
+    </task>
+    <task id="LOCAL-00178" summary="Use `matches!` macro to determine if `CardCode::is_valid`">
+      <created>1661184908762</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184908762</updated>
+    </task>
+    <task id="LOCAL-00179" summary="Remove useless reference in `CardCode::to_card`">
+      <created>1661184940097</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184940097</updated>
+    </task>
+    <task id="LOCAL-00180" summary="Remove useless reference in `Deck::encode_code`">
+      <created>1661184955119</created>
+      <option name="number" value="00180" />
+      <option name="presentableId" value="LOCAL-00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1661184955119</updated>
+    </task>
+    <task id="LOCAL-00181" summary="Use `vec!` macro in `Deck::f1_group_cards`">
+      <created>1661185031422</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185031422</updated>
+    </task>
+    <task id="LOCAL-00182" summary="Remove useless reference in `Deck::write_f1_supergroup`">
+      <created>1661185048527</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185048527</updated>
+    </task>
+    <task id="LOCAL-00183" summary="Use `Result::is_ok()` instead of pattern matching in `Deck::read_f1_extra`">
+      <created>1661185085111</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185085111</updated>
+    </task>
+    <task id="LOCAL-00184" summary="Remove useless reference in `Deck::from_code`">
+      <created>1661185098860</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185098860</updated>
+    </task>
+    <task id="LOCAL-00185" summary="Use `?` operator in `Deck::min_deckcode_version`">
+      <created>1661185132784</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185132784</updated>
+    </task>
+    <task id="LOCAL-00186" summary="Do not make `group` mutable in `Deck::f1_group_cards`">
+      <created>1661185160110</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185160110</updated>
+    </task>
+    <task id="LOCAL-00187" summary="Mention deck previews in the bot's welcome message">
+      <created>1661185457610</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185457610</updated>
+    </task>
+    <task id="LOCAL-00188" summary="Hide the entered inline query from logs &#10;&#10;For privacy reasons.">
+      <created>1661185600873</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185600873</updated>
+    </task>
+    <task id="LOCAL-00189" summary="Improve debug messages">
+      <created>1661185712702</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1661185712702</updated>
+    </task>
+    <task id="LOCAL-00190" summary="Load setbundles dynamically">
+      <created>1661190981308</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1661190981308</updated>
+    </task>
+    <task id="LOCAL-00191" summary="Run `cargo fmt`">
+      <created>1662225344889</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1662225344889</updated>
+    </task>
+    <task id="LOCAL-00192" summary="Make IDEA shut up about duplicates">
+      <created>1662225354386</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1662225354386</updated>
+    </task>
+    <task id="LOCAL-00193" summary="Fix a formatting mess">
+      <created>1662226317969</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1662226317969</updated>
+    </task>
+    <task id="LOCAL-00194" summary="Add support for The Darkin Saga set">
+      <created>1662226662489</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1662226662489</updated>
+    </task>
+    <task id="LOCAL-00195" summary="Add support for The Darkin Saga keywords">
+      <created>1662227446505</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1662227446505</updated>
+    </task>
+    <task id="LOCAL-00196" summary="Fix bug in `deck!` where it was trying to access the caller crate">
+      <created>1666120295317</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1666120295318</updated>
+    </task>
+    <task id="LOCAL-00197" summary="Do not try to convert &quot;set&quot; deck code portions to `CardSet` variants">
+      <created>1666123901807</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1666123901807</updated>
+    </task>
+    <task id="LOCAL-00198" summary="Add underline to deck titles">
+      <created>1666130091640</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1666130091640</updated>
+    </task>
+    <task id="LOCAL-00199" summary="Introudce a &quot;crystal&quot; segment in Telegram inline query ids&#10;&#10;To work around the bizzare caching mechanisms Telegram seems to have.">
+      <created>1673781876053</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1673781876053</updated>
+    </task>
+    <task id="LOCAL-00200" summary="do some things">
+      <created>1673793951018</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1673793951018</updated>
+    </task>
+    <task id="LOCAL-00201" summary="do more things">
+      <created>1673798855771</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1673798855771</updated>
+    </task>
+    <task id="LOCAL-00202" summary="Bump version to 0.7.1">
+      <created>1673799131280</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1673799131281</updated>
+    </task>
+    <task id="LOCAL-00203" summary="Fix dockerfile">
+      <created>1673799308091</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1673799308091</updated>
+    </task>
+    <task id="LOCAL-00204" summary="Fix dockerfile 2nd edition">
+      <created>1673802057845</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1673802057845</updated>
+    </task>
+    <task id="LOCAL-00205" summary="Update cargo.lock version">
+      <created>1673806094489</created>
+      <option name="number" value="00205" />
+      <option name="presentableId" value="LOCAL-00205" />
+      <option name="project" value="LOCAL" />
+      <updated>1673806094489</updated>
+    </task>
+    <option name="localTasksCounter" value="206" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Use `vec!` macro in `Deck::f1_group_cards`" />
+    <MESSAGE value="Remove useless reference in `Deck::write_f1_supergroup`" />
+    <MESSAGE value="Use `Result::is_ok()` instead of pattern matching in `Deck::read_f1_extra`" />
+    <MESSAGE value="Remove useless reference in `Deck::from_code`" />
+    <MESSAGE value="Use `?` operator in `Deck::min_deckcode_version`" />
+    <MESSAGE value="Do not make `group` mutable in `Deck::f1_group_cards`" />
+    <MESSAGE value="Mention deck previews in the bot's welcome message" />
+    <MESSAGE value="Hide the entered inline query from logs &#10;&#10;For privacy reasons." />
+    <MESSAGE value="Improve debug messages" />
+    <MESSAGE value="Load setbundles dynamically" />
+    <MESSAGE value="Run `cargo fmt`" />
+    <MESSAGE value="Make IDEA shut up about duplicates" />
+    <MESSAGE value="Fix a formatting mess" />
+    <MESSAGE value="Add support for The Darkin Saga set" />
+    <MESSAGE value="Add support for The Darkin Saga keywords" />
+    <MESSAGE value="Fix bug in `deck!` where it was trying to access the caller crate" />
+    <MESSAGE value="Do not try to convert &quot;set&quot; deck code portions to `CardSet` variants" />
+    <MESSAGE value="Add underline to deck titles" />
+    <MESSAGE value="Introudce a &quot;crystal&quot; segment in Telegram inline query ids&#10;&#10;To work around the bizzare caching mechanisms Telegram seems to have." />
+    <MESSAGE value="do some things" />
+    <MESSAGE value="do more things" />
+    <MESSAGE value="Bump version to 0.7.1" />
+    <MESSAGE value="Fix dockerfile" />
+    <MESSAGE value="Fix dockerfile 2nd edition" />
+    <MESSAGE value="Update cargo.lock version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update cargo.lock version" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

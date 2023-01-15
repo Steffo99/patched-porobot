@@ -1,0 +1,17 @@
+# To be used in Portainer
+
+version: "3.9"
+
+services:
+  telegram:
+    image: "ghcr.io/steffo99/patched-porobot:0-"
+    command: "patched_porobot_telegram"
+    restart: unless-stopped
+    volumes:
+      - "$PORO_CARDS_DIR:/usr/src/patched_porobot/data"
+    env_file:
+      - stack.env
+    deploy:
+      resources:
+        limits:
+          memory: 64M
