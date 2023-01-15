@@ -6,7 +6,7 @@ FROM files AS build
 RUN cargo install --path . --all-features --bins
 
 FROM debian:buster AS system
-COPY --from=install /usr/local/cargo/bin/patched_porobot /usr/local/bin/patched_porobot
+COPY --from=build /usr/local/cargo/bin/patched_porobot /usr/local/bin/patched_porobot
 
 FROM system AS entrypoint
 ENTRYPOINT ["bobbot"]
