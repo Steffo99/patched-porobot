@@ -39,6 +39,7 @@ md5 = { version = "0.7.0", optional = true }
 rand = { version = "0.8.5", optional = true }
 # discord
 serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
+anyhow = { version = "^1.0.68", optional = true }
 # matrix
 
 
@@ -47,7 +48,7 @@ serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rust
 exec = ["pretty_env_logger"]
 search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio", "md5", "rand"]
-discord = ["exec", "search", "serenity", "tokio"]
+discord = ["exec", "search", "serenity", "tokio", "anyhow"]
 matrix = ["exec", "search"]
 
 
