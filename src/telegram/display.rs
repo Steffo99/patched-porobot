@@ -166,6 +166,9 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
         .contents
         .keys()
         .sorted_by(|a, b| {
+
+            log::trace!("Comparing {:#?} with {:#?}", &a, &b);
+
             let card_a = index.get(a).expect("card to exist in the index");
             let card_b = index.get(b).expect("card to exist in the index");
 
@@ -186,8 +189,16 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
         })
         .join("\n");
 
+    let tags = [
+        if deck.is_standard(&index) { "#Standard" } else { "" },
+        if deck.is_singleton(&index) { "#Singleton" } else { "" },
+    ].join(" ");
+    let tags = if tags.len() > 0 { format!("{}\n", &tags) } else { "".to_string() };
+    log::trace!("Deck tags: {}", &tags);
+    todo!();
+
     match name {
-        Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n\n{}", &name, &code, &cards),
-        None => format!("<code>{}</code>\n\n{}", &code, &cards),
+        Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n{}\n{}", &name, &code, &tags, &cards),
+        None => format!("<code>{}</code>\n{}\n{}", &code, &tags, &cards),
     }
 }

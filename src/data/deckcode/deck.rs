@@ -2,7 +2,7 @@
 
 use super::format::DeckCodeFormat;
 use crate::data::deckcode::version::{DeckCodeVersion, DeckCodeVersioned};
-use crate::data::setbundle::card::CardIndex;
+use crate::data::setbundle::card::{Card, CardIndex};
 use crate::data::setbundle::code::CardCode;
 use crate::data::setbundle::region::CardRegion;
 use crate::data::setbundle::set::CardSet;
@@ -411,15 +411,23 @@ impl Deck {
     }
 
     /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
-    pub fn regions(&self) -> HashSet<CardRegion> {
+    pub fn regions(&self, max: u8) -> impl Iterator<Item = CardRegion> {
         todo!();
+    }
+
+    /// Get an [`Iterator`] of all Champions in the deck.
+    pub fn champions(&self) -> impl Iterator<Item = Card> {
+        self.contents.keys()
+            .map(|cc| cc.to_card(cards))
+            .filter_map(|r| r)
+            .filter(|c| c.supertype == "CHAMPION")
     }
 
     /// Check if the [`Deck`] is legal for play in the *Standard* format.
     pub fn is_standard(&self, cards: &CardIndex) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.contents.len() == 40;
-        let champions_limit = self.contents.keys().map(|cc| cc.to_card(cards)).filter_map(|r| r).filter(|c| c.supertype == "CHAMPION").count() == 6;
+        let champions_limit = self.champions().count() == 6;
         let regions_limit = self.regions().len() <= 2;
 
         copies_limit && cards_limit && champions_limit && regions_limit
@@ -429,7 +437,7 @@ impl Deck {
     pub fn is_singleton(&self, cards: &CardIndex) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.contents.len() == 40;
-        let champions_limit = self.contents.keys().map(|cc| cc.to_card(cards)).filter_map(|r| r).filter(|c| c.supertype == "CHAMPION").count() == 6;
+        let champions_limit = self.champions().count() == 6;
         let regions_limit = self.regions().len() <= 3;
 
         copies_limit && cards_limit && champions_limit && regions_limit
@@ -681,18 +689,45 @@ mod tests {
 
     // test_ser_de!(test_ser_de_, deck![]);
 
-    // macro_rules! test_legality {
-    //     ( $id:ident, $check:path, $assert:expr, $deck:expr ) => {
-    //         #[test]
-    //         fn $id() {
-    //             let deck = $deck;
-    //             let result = $check(deck);
-    //             assert_eq!(result, $assert);
-    //         }
-    //     };
-    // }
+    /*
+    macro_rules! test_legality {
+        ( $id:ident, $check:path, $assert:expr, $deck:expr ) => {
+            #[test]
+            fn $id() {
+                let deck = $deck;
+                let result = $check(deck);
+                assert_eq!(result, $assert);
+            }
+        };
+    }
 
-    // test_legality!(test_legality, Deck::is_standard, true, 
-    //     &Deck::from_code("CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL").unwrap()
-    // );
+    test_legality!(test_legality_standard_lonelyporo1, Deck::is_standard, false,
+        &Deck::from_code("CEAAAAIBAEAQQ").unwrap()
+    );
+    test_legality!(test_legality_standard_twistedshrimp, Deck::is_standard, true,
+        &Deck::from_code("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO").unwrap()
+    );
+    test_legality!(test_legality_standard_poros, Deck::is_standard, true,
+        &Deck::from_code("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA").unwrap()
+    );
+    test_legality!(test_legality_standard_sand, Deck::is_standard, true,
+        &Deck::from_code("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY").unwrap()
+    );
+
+    test_legality!(test_legality_singleton_lonelyporo1, Deck::is_singleton, false,
+        &Deck::from_code("CEAAAAIBAEAQQ").unwrap()
+    );
+    test_legality!(test_legality_singleton_twistedshrimp, Deck::is_singleton, false,
+        &Deck::from_code("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO").unwrap()
+    );
+    test_legality!(test_legality_singleton_poros, Deck::is_singleton, false,
+        &Deck::from_code("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA").unwrap()
+    );
+    test_legality!(test_legality_singleton_sand, Deck::is_singleton, false,
+        &Deck::from_code("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY").unwrap()
+    );
+    test_legality!(test_legality_singleton_paltri, Deck::is_singleton, false,
+        &Deck::from_code("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI").unwrap()
+    );
+     */
 }
