@@ -9,6 +9,7 @@ use crate::telegram::handler::{inline_query_handler, message_handler};
 use glob::glob;
 use log::*;
 use std::path::PathBuf;
+use rand::Rng;
 use teloxide::prelude::*;
 
 /// The main function that `patched_porobot_telegram` should run when it's started.
@@ -63,9 +64,14 @@ pub async fn main() {
         .expect("Telegram bot parameters to be valid");
     debug!("Created Telegram bot!");
 
+    debug!("Generating crystal for this run...");
+    let rng = rand::thread_rng();
+    let crystal: String = String::from_utf8(rng.sample_iter(&rand::distributions::Alphanumeric).take(6).collect()).unwrap();
+    debug!("Generated crystal: {}", &crystal);
+
     debug!("Creating handlers...");
     let handler = dptree::entry()
-        .branch(inline_query_handler(engine))
+        .branch(inline_query_handler(crystal, engine))
         .branch(message_handler());
     debug!("Created handlers!");
 

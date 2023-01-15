@@ -15,6 +15,7 @@ use regex::Regex;
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
 pub fn inline_query_handler(
+    crystal: String,
     engine: CardSearchEngine,
 ) -> Handler<'static, DependencyMap, ResponseResult<()>, DpHandlerDescription> {
     Update::filter_inline_query().chain(dptree::endpoint(move |query: InlineQuery, bot: Bot| {
@@ -48,7 +49,7 @@ pub fn inline_query_handler(
 
                         break AnswerInlineQuery {
                             inline_query_id: query.id.clone(),
-                            results: vec![deck_to_inlinequeryresult(&engine.cards, &deck, &name)],
+                            results: vec![deck_to_inlinequeryresult(&crystal, &engine.cards, &deck, &name)],
                             cache_time: None,
                             is_personal: Some(false),
                             next_offset: None,
@@ -95,7 +96,7 @@ pub fn inline_query_handler(
                 inline_query_id: query.id.clone(),
                 results: results
                     .iter()
-                    .map(|card| card_to_inlinequeryresult(&engine.globals, card))
+                    .map(|card| card_to_inlinequeryresult(&crystal, &engine.globals, card))
                     .collect_vec(),
                 cache_time: Some(300),
                 is_personal: Some(false),

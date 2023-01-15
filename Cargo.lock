@@ -1048,6 +1048,7 @@ dependencies = [
  "log",
  "md5",
  "pretty_env_logger",
+ "rand",
  "regex",
  "reqwest",
  "serde",
