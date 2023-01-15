@@ -9,7 +9,7 @@ FROM debian:buster AS system
 COPY --from=build /usr/local/cargo/bin/patched_porobot_telegram /usr/local/bin/patched_porobot_telegram
 
 FROM system AS entrypoint
-ENTRYPOINT ["bobbot"]
+ENTRYPOINT ["patched_porobot_telegram"]
 CMD []
 
 FROM entrypoint AS final
