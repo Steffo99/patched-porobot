@@ -142,7 +142,7 @@ pub struct Card {
     /// The subtypes the card belongs to, such as *Poro* or *Yordle*.
     pub subtypes: Vec<CardSubtype>,
 
-    /// The supertype the card belongs to, such as *Champion*.
+    /// The supertype the card belongs to, such as [`Champion`](CardSupertype::Champion) or [`None`](CardSupertype::None).
     pub supertype: CardSupertype,
 }
 
@@ -271,7 +271,7 @@ mod tests {
                 localized_flavor_text: String::from("The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began."),
                 artist_name: String::from("Kudos Productions"),
                 subtypes: vec![],
-                supertype: String::from("Champion"),
+                supertype: CardSupertype::Champion,
             }
         )
     }
