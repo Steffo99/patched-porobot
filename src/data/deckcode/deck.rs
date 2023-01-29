@@ -433,6 +433,13 @@ impl Deck {
         Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
     }
 
+    /// Get an [`Iterator`] of all Champion [`Card`]s in the deck.
+    pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
+        self.contents.keys()
+            .filter_map(|cc| cc.to_card(cards))
+            .filter(|c| c.supertype == "CHAMPION")
+    }
+
     /// Recursive part of [`regions`]. Horribly inefficient.
     fn regions_recursive(cards_regions: &[&Vec<CardRegion>], regions: &HashSet<CardRegion>, max: usize) -> Option<HashSet<CardRegion>> {
         // Clone the HashSet to gain ownership for the current combination
@@ -469,13 +476,6 @@ impl Deck {
             // Limit case: if there are no more cards left, we are done!
             Some(regions)
         }
-    }
-
-    /// Get an [`Iterator`] of all Champions in the deck.
-    pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
-        self.contents.keys()
-            .filter_map(|cc| cc.to_card(cards))
-            .filter(|c| c.supertype == "CHAMPION")
     }
 
     pub fn card_count(&self) -> u32 {
