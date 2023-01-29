@@ -96,9 +96,13 @@ fn display_regions(regions: &[CardRegion], hm: &LocalizedCardRegionIndex) -> Str
 fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardSubtype]) -> String {
     let mut result = String::new();
 
-    if supertype != "" {
-        result.push_str(&*format!("<i>{}</i> › ", escape(&supertype),));
-    };
+    result.push_str(
+        match supertype {
+            CardSupertype::Champion => "<i>Champion</i> › ",
+            CardSupertype::Unsupported => "<i>Unknown</i> › ",
+            _ => "",
+        }
+    );
 
     result.push_str(&*format!("<i>{}</i>", escape(&*String::from(r#type)),));
 

@@ -1,22 +1,20 @@
 //! Module defining [CardSupertype].
 
-/// A supertype of a [Card](super::card::Card), such as *Champion*.
+/// A supertype of a [`Card`](super::card::Card), such as *Champion*.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "UPPERCASE")]
 pub enum CardSupertype {
-    /// A [Champion](super::rarity::CardRarity::Champion) card.
+    /// No supertype, like most cards in the game.
+    #[serde(rename = "")]
+    None,
+    /// A [Champion](super::rarity::CardRarity::Champion).
+    #[serde(alias = "Champion")]
     Champion,
-    /// An unknown supertype.
+    /// A supertype of an unknown type.
+    #[serde(other)]
     Unsupported,
 }
 
-impl From<&str> for CardSupertype {
-    fn from(s: &str) -> Self {
-        match s.to_lowercase().as_str() {
-            "champion" => CardSupertype::Champion,
-            _          => CardSupertype::Unsupported,
-        }
-    }
-}
 
 #[cfg(test)]
 mod tests {
@@ -34,7 +32,7 @@ mod tests {
         };
     }
 
-    test_deserialization!(deserialize_champion_lowercase, r#""champion""#, CardSupertype::Champion);
+    test_deserialization!(deserialize_none, r#""""#, CardSupertype::None);
     test_deserialization!(deserialize_champion_uppercase, r#""CHAMPION""#, CardSupertype::Champion);
     test_deserialization!(deserialize_champion_titlecase, r#""Champion""#, CardSupertype::Champion);
     test_deserialization!(deserialize_unsupported, r#""sUs""#, CardSupertype::Unsupported);

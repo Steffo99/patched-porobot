@@ -142,7 +142,7 @@ pub struct Card {
     /// The subtypes the card belongs to, such as *Poro* or *Yordle*.
     pub subtypes: Vec<CardSubtype>,
 
-    /// The supertype the card belongs to, such as *Champion*.
+    /// The supertype the card belongs to, such as [`Champion`](CardSupertype::Champion) or [`None`](CardSupertype::None).
     pub supertype: CardSupertype,
 }
 
