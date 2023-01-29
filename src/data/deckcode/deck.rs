@@ -411,34 +411,97 @@ impl Deck {
     }
 
     /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
-    pub fn regions(&self, max: u8) -> impl Iterator<Item = CardRegion> {
-        todo!();
+    ///
+    /// ### Returns
+    ///
+    /// - [`None`] if the deck exceeds the number of regions specified in `max`.
+    /// - [`Some`] wrapping a [`HashSet`] of [`CardRegion`]s otherwise.
+    ///
+    /// ### Warning
+    ///
+    /// Horribly inefficient, as it performs a recursive computation with many clones over all possible region combinations of the deck.
+    ///
+    /// To avoid denial of service attacks, limit the `max` value to a very low number.
+    ///
+    pub fn regions(&self, cards: &CardIndex, max: usize) -> Option<HashSet<CardRegion>> {
+        let cards_regions: Vec<&Vec<CardRegion>> = self.contents.keys()
+            .filter_map(|cc| cc.to_card(cards))
+            .map(|c| &c.regions)
+            .sorted_by(|a, b| a.len().cmp(&b.len()))
+            .collect();
+
+        Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
+    }
+
+    /// Recursive part of [`regions`]. Horribly inefficient.
+    fn regions_recursive(cards_regions: &[&Vec<CardRegion>], regions: &HashSet<CardRegion>, max: usize) -> Option<HashSet<CardRegion>> {
+        // Clone the HashSet to gain ownership for the current combination
+        let mut regions = regions.clone();
+
+        // Try to extract a vector of regions
+        if let Some(card_regions) = cards_regions.get(0) {
+
+            // Select a region from the ones available in the card
+            for card_region in card_regions.iter() {
+
+                // Try to insert the region in the HashSet
+                let inserted = regions.insert(*card_region);
+
+                // If the insertion caused the length of the HashSet to exceed the maximum possible, then this selection is not possible
+                // Requiring inserted to be true is a performance optimization
+                if inserted && regions.len() > max {
+                    continue;
+                }
+
+                // Recursion:  repeat the cycle for a new card!
+                let regions = Deck::regions_recursive(&cards_regions[1..], &regions, max);
+
+                // Propagation: if the Some limit case was reached, bubble it upwards
+                if regions.is_some() {
+                    return regions;
+                }
+            }
+
+            // Limit case: if none of the card regions allow staying below the maximum, then this selection is not possible
+            None
+        }
+        else {
+            // Limit case: if there are no more cards left, we are done!
+            Some(regions)
+        }
     }
 
     /// Get an [`Iterator`] of all Champions in the deck.
-    pub fn champions(&self) -> impl Iterator<Item = Card> {
+    pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
         self.contents.keys()
-            .map(|cc| cc.to_card(cards))
-            .filter_map(|r| r)
+            .filter_map(|cc| cc.to_card(cards))
             .filter(|c| c.supertype == "CHAMPION")
+    }
+
+    pub fn card_count(&self) -> u32 {
+        self.contents.values().sum()
+    }
+
+    pub fn champions_count(&self, cards: &CardIndex) -> u32 {
+        self.champions(cards).map(|c| self.contents.get(&c.code).expect("Card from champions() to be in the Deck")).sum()
     }
 
     /// Check if the [`Deck`] is legal for play in the *Standard* format.
     pub fn is_standard(&self, cards: &CardIndex) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &3);
-        let cards_limit = self.contents.len() == 40;
-        let champions_limit = self.champions().count() == 6;
-        let regions_limit = self.regions().len() <= 2;
+        let cards_limit = self.card_count() == 40;
+        let champions_limit = self.champions_count(&cards) <= 6;
+        let regions_limit = self.regions(&cards, 2).is_some() || regions.contains(&CardRegion::Runeterra);
 
         copies_limit && cards_limit && champions_limit && regions_limit
     }
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
-    pub fn is_singleton(&self, cards: &CardIndex) -> bool {
+    pub fn is_singleton(&self, cards: &CardIndex, regions: &HashSet<CardRegion>) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &1);
-        let cards_limit = self.contents.len() == 40;
-        let champions_limit = self.champions().count() == 6;
-        let regions_limit = self.regions().len() <= 3;
+        let cards_limit = self.card_count() == 40;
+        let champions_limit = self.champions_count(&cards) <= 6;
+        let regions_limit = self.regions(&cards, 3).is_some() || regions.contains(&CardRegion::Runeterra);
 
         copies_limit && cards_limit && champions_limit && regions_limit
     }
@@ -688,46 +751,4 @@ mod tests {
     ]);
 
     // test_ser_de!(test_ser_de_, deck![]);
-
-    /*
-    macro_rules! test_legality {
-        ( $id:ident, $check:path, $assert:expr, $deck:expr ) => {
-            #[test]
-            fn $id() {
-                let deck = $deck;
-                let result = $check(deck);
-                assert_eq!(result, $assert);
-            }
-        };
-    }
-
-    test_legality!(test_legality_standard_lonelyporo1, Deck::is_standard, false,
-        &Deck::from_code("CEAAAAIBAEAQQ").unwrap()
-    );
-    test_legality!(test_legality_standard_twistedshrimp, Deck::is_standard, true,
-        &Deck::from_code("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO").unwrap()
-    );
-    test_legality!(test_legality_standard_poros, Deck::is_standard, true,
-        &Deck::from_code("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA").unwrap()
-    );
-    test_legality!(test_legality_standard_sand, Deck::is_standard, true,
-        &Deck::from_code("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY").unwrap()
-    );
-
-    test_legality!(test_legality_singleton_lonelyporo1, Deck::is_singleton, false,
-        &Deck::from_code("CEAAAAIBAEAQQ").unwrap()
-    );
-    test_legality!(test_legality_singleton_twistedshrimp, Deck::is_singleton, false,
-        &Deck::from_code("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO").unwrap()
-    );
-    test_legality!(test_legality_singleton_poros, Deck::is_singleton, false,
-        &Deck::from_code("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA").unwrap()
-    );
-    test_legality!(test_legality_singleton_sand, Deck::is_singleton, false,
-        &Deck::from_code("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY").unwrap()
-    );
-    test_legality!(test_legality_singleton_paltri, Deck::is_singleton, false,
-        &Deck::from_code("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI").unwrap()
-    );
-     */
 }

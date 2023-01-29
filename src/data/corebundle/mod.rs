@@ -46,7 +46,7 @@ impl CoreBundle {
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
         let globals_path = &bundle_path
-            .join(&locale)
+            .join(locale)
             .join("data")
             .join(format!("globals-{}.json", &locale));
 

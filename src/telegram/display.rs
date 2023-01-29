@@ -189,13 +189,40 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
         })
         .join("\n");
 
-    let tags = [
-        if deck.is_standard(&index) { "#Standard" } else { "" },
-        if deck.is_singleton(&index) { "#Singleton" } else { "" },
-    ].join(" ");
+    let mut tags: Vec<&'static str> = vec![];
+
+    if let Some(regions) = deck.regions(&index, 3) {
+        if deck.is_standard(&index, &regions) {
+            tags.push("#Standard")
+        }
+
+        if deck.is_singleton(&index, &regions) {
+            tags.push("#Singleton")
+        }
+
+        for region in regions {
+            tags.push(match region {
+                CardRegion::Noxus => "#Noxus",
+                CardRegion::Demacia => "#Demacia",
+                CardRegion::Freljord => "#Freljord",
+                CardRegion::ShadowIsles => "#ShadowIsles",
+                CardRegion::Targon => "#Targon",
+                CardRegion::Ionia => "#Ionia",
+                CardRegion::Bilgewater => "#Bilgewater",
+                CardRegion::Shurima => "#Shurima",
+                CardRegion::PiltoverZaun => "#PiltoverZaun",
+                CardRegion::BandleCity => "#BandleCity",
+                CardRegion::Runeterra => "#Runeterra",
+                CardRegion::Jhin => "",
+                CardRegion::Evelynn => "",
+                CardRegion::Bard => "",
+                CardRegion::Unsupported => "[unknown]",
+            })
+        }
+    }
+
+    let tags = tags.join(", ");
     let tags = if tags.len() > 0 { format!("{}\n", &tags) } else { "".to_string() };
-    log::trace!("Deck tags: {}", &tags);
-    todo!();
 
     match name {
         Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n{}\n{}", &name, &code, &tags, &cards),

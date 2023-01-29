@@ -50,7 +50,7 @@ impl SetBundle {
             let mut json_filename = name.to_os_string();
             json_filename.push(".json");
 
-            &bundle_path.join(&locale).join("data").join(&json_filename)
+            &bundle_path.join(locale).join("data").join(&json_filename)
         };
 
         let name = name
