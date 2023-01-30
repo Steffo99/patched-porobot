@@ -55,6 +55,8 @@ pub fn deck_to_inlinequeryresult(
         .to_code(DeckCodeFormat::F1)
         .expect("serialized deck to deserialize properly");
 
+    let message_text = display_deck(index, deck, &code, &name);
+
     InlineQueryResult::Article(InlineQueryResultArticle {
         id: format!("{}:{:x}", &crystal, md5::compute(&code)),
         title: match &name {

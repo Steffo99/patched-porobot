@@ -32,22 +32,15 @@ pub enum CardRegion {
     /// Runeterra.
     Runeterra,
 
-    /// Origin: The Virtuoso.
-    Jhin,
-    /// Origin: Agony's Embrace.
-    Evelynn,
-    /// Origin: The Wandering Caretaker.
-    Bard,
-
     /// Unsupported region.
     #[serde(other)]
     Unsupported,
 }
 
 impl CardRegion {
-    /// Get the [LocalizedCardRegion] associated with this [CardRegion].
+    /// Get the [`LocalizedCardRegion`] associated with this [`CardRegion`].
     ///
-    /// Returns [Option::None] if no matching [LocalizedCardRegion] was found, for example for [CardRegion::Unsupported] regions.
+    /// Returns [`None`] if no matching [`LocalizedCardRegion`] was found, for example for [`CardRegion::Unsupported`] regions.
     ///
     /// Equivalent to calling [LocalizedCardRegionIndex::get].
     pub fn localized<'hm>(
@@ -79,7 +72,7 @@ impl CardRegion {
 
     /// Get the short code of this [`CardRegion`].
     ///
-    /// If the region has no short code, it will return [`Option::None`].
+    /// If the region has no short code, it will return [`None`].
     pub fn to_code(&self) -> Option<String> {
         match self {
             Self::Demacia => Some("DE".to_string()),
@@ -122,7 +115,7 @@ impl From<u32> for CardRegion {
 
 /// Get the internal id of this [`CardRegion`].
 ///
-/// If the region has no internal id, it will return [`Result::Err`].
+/// If the region has no internal id, it will return [`Err`].
 impl TryFrom<CardRegion> for u32 {
     type Error = ();
 
@@ -169,8 +162,5 @@ mod tests {
     test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardRegion::PiltoverZaun);
     test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardRegion::BandleCity);
     test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardRegion::Runeterra);
-    test_deserialization!(deserialize_jhin, r#""Jhin""#, CardRegion::Jhin);
-    test_deserialization!(deserialize_evelynn, r#""Evelynn""#, CardRegion::Evelynn);
-    test_deserialization!(deserialize_bard, r#""Bard""#, CardRegion::Bard);
     test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardRegion::Unsupported);
 }

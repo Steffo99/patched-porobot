@@ -2,7 +2,7 @@
 
 use crate::data::setbundle::card::{Card, CardIndex};
 
-/// The internal code of a [Card](super::card::Card).
+/// The internal code of a [`Card`].
 ///
 /// It is a ASCII string composed of the following segments:
 /// - `0..2`: set;
@@ -96,5 +96,12 @@ impl From<CardCode> for String {
 impl From<String> for CardCode {
     fn from(full: String) -> Self {
         CardCode { full }
+    }
+}
+
+/// Extract the card code from a [`Card`].
+impl From<Card> for CardCode {
+    fn from(c: Card) -> Self {
+        c.code
     }
 }

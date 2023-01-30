@@ -2,6 +2,8 @@
 //!
 //! [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 
+use std::cmp::Ordering::{Equal, Greater, Less};
+use std::collections::HashSet;
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::corebundle::keyword::LocalizedCardKeywordIndex;
 use crate::data::corebundle::region::LocalizedCardRegionIndex;
@@ -161,33 +163,79 @@ fn display_levelup(levelup: &String) -> String {
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&str>) -> String {
-    // TODO: optimize this
     let cards = deck
         .contents
         .keys()
-        .sorted_by(|a, b| {
-            let card_a = index.get(a).expect("card to exist in the index");
-            let card_b = index.get(b).expect("card to exist in the index");
+        .map(|k| (
+            index.get(k),
+            deck.contents.get(k).expect("CardCode from Deck to have a quantity"),
+        ))
+        .sorted_by(|(opt_a, _), (opt_b, _)| {
+            if opt_a.is_none() && opt_b.is_none() {
+                return Equal;
+            }
+            if opt_b.is_none() {
+                return Greater;
+            }
+            else if opt_a.is_none() {
+                return Less;
+            }
+
+            let card_a = opt_a.expect("opt_a to be Some");
+            let card_b = opt_b.expect("opt_b to be Some");
 
             card_a
                 .cost
                 .cmp(&card_b.cost)
                 .then(card_a.name.cmp(&card_b.name))
         })
-        .map(|k| {
-            let card = index.get(k).expect("card to exist in the index");
-            let quantity = deck.contents.get(k).unwrap();
+        .map(|(card, quantity)| {
+            let name = match card {
+                None => "<i>Unknown Card</i>".to_string(),
+                Some(card) => match card.supertype {
+                    CardSupertype::Champion => format!("<u>{}</u>", escape(&card.name)),
+                    _                       => escape(&card.name),
+                }
+            };
 
-            if card.supertype == CardSupertype::Champion {
-                format!("<b>{}×</b> <u>{}</u>", &quantity, &card.name)
-            } else {
-                format!("<b>{}×</b> {}", &quantity, &card.name)
-            }
+            format!("<b>{}×</b> {}", &quantity, &name)
         })
         .join("\n");
 
+    let mut tags: Vec<&'static str> = vec![];
+
+    let regions = if let Some(regions) = deck.standard(&index) {
+        tags.push("#Standard");
+        regions
+    } else if let Some(regions) = deck.singleton(&index) {
+        tags.push("#Singleton");
+        regions
+    } else {
+        HashSet::new()
+    };
+
+    for region in regions {
+        tags.push(match region {
+            CardRegion::Noxus => "#Noxus",
+            CardRegion::Demacia => "#Demacia",
+            CardRegion::Freljord => "#Freljord",
+            CardRegion::ShadowIsles => "#ShadowIsles",
+            CardRegion::Targon => "#Targon",
+            CardRegion::Ionia => "#Ionia",
+            CardRegion::Bilgewater => "#Bilgewater",
+            CardRegion::Shurima => "#Shurima",
+            CardRegion::PiltoverZaun => "#PiltoverZaun",
+            CardRegion::BandleCity => "#BandleCity",
+            CardRegion::Runeterra => "#Runeterra",
+            CardRegion::Unsupported => "<i>Unknown</i>",
+        })
+    }
+
+    let tags = tags.join(", ");
+    let tags = if tags.len() > 0 { format!("{}\n", &tags) } else { "".to_string() };
+
     match name {
-        Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n\n{}", &name, &code, &cards),
-        None => format!("<code>{}</code>\n\n{}", &code, &cards),
+        Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n{}\n{}", &name, &code, &tags, &cards),
+        None => format!("<code>{}</code>\n{}\n{}", &code, &tags, &cards),
     }
 }
