@@ -481,35 +481,30 @@ impl Deck {
             .sum()
     }
 
-    pub fn regions(&self, cards: &CardIndex) -> HashSet<CardRegion> {
-        let champions = self.champions(cards);
-
-        todo!()
-    }
-
-    /// Find the best ("smaller") set of regions that covers all given [`Card`]s.
+    /// Find the first possible set of regions that the [`Deck`] fits in.
     ///
-    /// This function is *recursive*: the `cards` parameter holds the [`Card`]s left to process, while the `regions` parameter holds the regions found so far.
+    /// Lower amounts of regions are preferred: the limit will be increased from 1 up to `limit` until a valid solution is found.
     ///
     /// # Warning
     ///
-    /// This method traverses the whole tree of possible region selections.
+    /// This method traverses the tree of possible region selections until one is found.
     ///
-    /// The time required to run this function grows exponentially with the size of `cards`!
-    fn regions_recursive_best<'a>(cards: &[Card], regions: &'a HashSet<CardRegion>) -> Option<&'a HashSet<CardRegion>> {
-        match cards.get(0) {
-            None => Some(regions),
-            Some(card) => {
-                card.regions.iter()
-                    .map(|region| {
-                        let mut regions = regions.clone();
-                        regions.insert(*region);
-                        Self::regions_recursive_best(&cards[1..], &regions)
-                    })
-                    .filter_map(|opt| opt)
-                    .min_by_key(|set| set.len())
-            },
+    /// The time required to run this function may grow exponentially with the amount of cards in the deck!
+    pub fn regions(&self, card_index: &CardIndex, limit: usize) -> Option<HashSet<CardRegion>> {
+        let cards: Vec<&Card> = self.contents.keys()
+            .map(|cc| cc.to_card(&card_index))
+            .filter_map(|opt| opt)
+            .collect();
+
+        for n in 1..=limit {
+            let result = Self::regions_recursive_first_limit(cards.as_slice(), HashSet::new(), n);
+
+            if result.is_some() {
+                return result;
+            }
         }
+
+        None
     }
 
     /// Find the first possible set of regions that covers all given [`Card`]s.
@@ -521,7 +516,7 @@ impl Deck {
     /// This method traverses the tree of possible region selections until one is found.
     ///
     /// The time required to run this function may grow exponentially with the size of `cards`!
-    fn regions_recursive_first_limit<'a>(cards: &[Card], regions: &'a HashSet<CardRegion>, limit: usize) -> Option<&'a HashSet<CardRegion>> {
+    fn regions_recursive_first_limit<'a>(cards: &[&Card], regions: HashSet<CardRegion>, limit: usize) -> Option<HashSet<CardRegion>> {
         match cards.get(0) {
             None => Some(regions),
             Some(card) => {
@@ -531,33 +526,44 @@ impl Deck {
                         let inserted = regions.insert(*region);
                         match inserted && regions.len() > limit {
                             true => None,
-                            false => Self::regions_recursive_first_limit(&cards[1..], &regions, limit)
+                            false => Self::regions_recursive_first_limit(&cards[1..], regions, limit)
                         }
                     })
                     .find(Option::is_some)
-                    .expect("cards to have at least 1 region")
+                    .unwrap_or(None)
             },
         }
     }
 
     /// Check if the [`Deck`] is legal for play in the *Standard* format.
-    pub fn is_standard(&self, cards: &CardIndex) -> bool {
+    ///
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Standard* play.
+    /// - `Some(regions)` if the deck is legal for *Standard* play considering the specified region set.
+    pub fn standard(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.card_count() == 40;
         let champions_limit = self.champions_count(cards) <= 6;
-        let regions_limit = self.regions(cards, 2).is_some();
+        let regions = self.regions(cards, 2);
 
-        copies_limit && cards_limit && champions_limit && regions_limit
+        match copies_limit && cards_limit && champions_limit {
+            false => None,
+            true => regions,
+        }
     }
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
-    pub fn is_singleton(&self, cards: &CardIndex) -> bool {
+    pub fn singleton(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.card_count() == 40;
         let champions_limit = self.champions_count(cards) <= 6;
-        let regions_limit = self.regions(cards, 3).is_some();
+        let regions = self.regions(cards, 3);
 
-        copies_limit && cards_limit && champions_limit && regions_limit
+        match copies_limit && cards_limit && champions_limit {
+            false => None,
+            true => regions,
+        }
     }
 }
 
@@ -842,47 +848,47 @@ mod tests {
     test_legality!(
         test_legality_standard_lonelyporo1,
         deck!("CEAAAAIBAEAQQ"),
-        Deck::is_standard, false
+        Deck::standard, false
     );
     test_legality!(
         test_legality_standard_twistedshrimp,
         deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
-        Deck::is_standard, true
+        Deck::standard, true
     );
     test_legality!(
         test_legality_standard_poros,
         deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
-        Deck::is_standard, true
+        Deck::standard, true
     );
     test_legality!(
         test_legality_standard_sand,
         deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
-        Deck::is_standard, true
+        Deck::standard, true
     );
 
     test_legality!(
         test_legality_singleton_lonelyporo1,
         deck!("CEAAAAIBAEAQQ"),
-        Deck::is_singleton, false
+        Deck::singleton, false
     );
     test_legality!(
         test_legality_singleton_twistedshrimp,
         deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
-        Deck::is_singleton, false
+        Deck::singleton, false
     );
     test_legality!(
         test_legality_singleton_poros,
         deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
-        Deck::is_singleton, false
+        Deck::singleton, false
     );
     test_legality!(
         test_legality_singleton_sand,
         deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
-        Deck::is_singleton, false
+        Deck::singleton, false
     );
     test_legality!(
         test_legality_singleton_paltri,
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
-        Deck::is_singleton, true
+        Deck::singleton, true
     );
 }

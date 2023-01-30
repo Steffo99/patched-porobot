@@ -2,6 +2,7 @@
 //!
 //! [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 
+use std::collections::HashSet;
 use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
 use crate::data::corebundle::keyword::LocalizedCardKeywordIndex;
 use crate::data::corebundle::region::LocalizedCardRegionIndex;
@@ -191,34 +192,34 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
 
     let mut tags: Vec<&'static str> = vec![];
 
-    if let Some(regions) = deck.regions(&index, 3) {
-        if deck.is_standard(&index, &regions) {
-            tags.push("#Standard")
-        }
+    let regions = if let Some(regions) = deck.standard(&index) {
+        tags.push("#Standard");
+        regions
+    } else if let Some(regions) = deck.singleton(&index) {
+        tags.push("#Singleton");
+        regions
+    } else {
+        HashSet::new()
+    };
 
-        if deck.is_singleton(&index, &regions) {
-            tags.push("#Singleton")
-        }
-
-        for region in regions {
-            tags.push(match region {
-                CardRegion::Noxus => "#Noxus",
-                CardRegion::Demacia => "#Demacia",
-                CardRegion::Freljord => "#Freljord",
-                CardRegion::ShadowIsles => "#ShadowIsles",
-                CardRegion::Targon => "#Targon",
-                CardRegion::Ionia => "#Ionia",
-                CardRegion::Bilgewater => "#Bilgewater",
-                CardRegion::Shurima => "#Shurima",
-                CardRegion::PiltoverZaun => "#PiltoverZaun",
-                CardRegion::BandleCity => "#BandleCity",
-                CardRegion::Runeterra => "#Runeterra",
-                CardRegion::Jhin => "",
-                CardRegion::Evelynn => "",
-                CardRegion::Bard => "",
-                CardRegion::Unsupported => "[unknown]",
-            })
-        }
+    for region in regions {
+        tags.push(match region {
+            CardRegion::Noxus => "#Noxus",
+            CardRegion::Demacia => "#Demacia",
+            CardRegion::Freljord => "#Freljord",
+            CardRegion::ShadowIsles => "#ShadowIsles",
+            CardRegion::Targon => "#Targon",
+            CardRegion::Ionia => "#Ionia",
+            CardRegion::Bilgewater => "#Bilgewater",
+            CardRegion::Shurima => "#Shurima",
+            CardRegion::PiltoverZaun => "#PiltoverZaun",
+            CardRegion::BandleCity => "#BandleCity",
+            CardRegion::Runeterra => "#Runeterra",
+            CardRegion::Jhin => "",
+            CardRegion::Evelynn => "",
+            CardRegion::Bard => "",
+            CardRegion::Unsupported => "[unknown]",
+        })
     }
 
     let tags = tags.join(", ");
