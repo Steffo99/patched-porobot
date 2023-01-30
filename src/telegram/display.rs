@@ -178,7 +178,7 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
             let card = index.get(k).expect("card to exist in the index");
             let quantity = deck.contents.get(k).unwrap();
 
-            if card.supertype == "Champion" {
+            if card.supertype == CardSupertype::Champion {
                 format!("<b>{}×</b> <u>{}</u>", &quantity, &card.name)
             } else {
                 format!("<b>{}×</b> {}", &quantity, &card.name)

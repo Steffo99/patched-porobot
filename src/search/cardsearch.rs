@@ -109,7 +109,7 @@ impl CardSearchEngine {
     /// |---------------|----------------------------------|-------------|
     /// | `code`        | [code](Self::options_code)       | The internal [card code](Card::code), such as `01IO012`. |
     /// | `name`        | [text](Self::options_text)       | The [name of the card](Card::name). |
-    /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::type), such as `Unit`. |
+    /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::r#type), such as `Unit`. |
     /// | `set`         | [keyword](Self::options_keyword) | The [set the card belongs to](Card::set), such as `Beyond the Bandlewood`. |
     /// | `rarity`      | [keyword](Self::options_keyword) | The [rarity of the card](Card::rarity), such as `Rare`, or `Champion`. |
     /// | `collectible` | [number](Self::options_number)   | `1` if the [card is collectible](Card::collectible), `0` otherwise. |
@@ -123,6 +123,7 @@ impl CardSearchEngine {
     /// | `levelup`     | [text](Self::options_text)       | The [level up text of the champion](Card::localized_levelup_text). |
     /// | `flavor`      | [text](Self::options_text)       | The [flavor text of the card](Card::localized_flavor_text). |
     /// | `artist`      | [text](Self::options_text)       | The [artist(s) of the card's illustration](Card::artist_name). |
+    /// | `subtypes`    | [text](Self::options_text)       | The [subtypes of the card](Card::subtypes), such as `Poro` or `Yordle`. |
     ///
     /// Use [Self::schema_fields] to create the [CardSchemaFields] object containing all of them.
     ///
@@ -153,7 +154,6 @@ impl CardSearchEngine {
         schema_builder.add_text_field("flavor", options_text.clone());
         schema_builder.add_text_field("artist", options_text);
         schema_builder.add_text_field("subtypes", options_keyword.clone());
-        schema_builder.add_text_field("supertype", options_keyword);
 
         schema_builder.build()
     }
@@ -212,9 +212,6 @@ impl CardSearchEngine {
             subtypes: schema
                 .get_field("subtypes")
                 .expect("schema to have a 'subtypes' field"),
-            supertype: schema
-                .get_field("supertype")
-                .expect("schema to have a 'supertype' field"),
         }
     }
 
@@ -286,7 +283,6 @@ impl CardSearchEngine {
             fields.flavor => card.localized_flavor_text,
             fields.artist => card.artist_name,
             fields.subtypes => card.subtypes.join(" "),
-            fields.supertype => card.supertype,
         )
     }
 
@@ -303,7 +299,6 @@ impl CardSearchEngine {
                 fields.flavor,
                 fields.artist,
                 fields.subtypes,
-                fields.supertype,
             ],
         );
         parser.set_conjunction_by_default();
@@ -381,7 +376,7 @@ struct CardSchemaFields {
     pub code: Field,
     /// [Card::name].
     pub name: Field,
-    /// English [Card::type].
+    /// English [Card::r#type].
     pub r#type: Field,
     /// Localized [Card::set].
     pub set: Field,
@@ -411,6 +406,4 @@ struct CardSchemaFields {
     pub artist: Field,
     /// Space-separated [Card::subtypes].
     pub subtypes: Field,
-    /// [Card::supertype].
-    pub supertype: Field,
 }
