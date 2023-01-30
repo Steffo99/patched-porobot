@@ -1,14 +1,10 @@
 //! This module defines the [`main`] function for `patched_porobot_telegram`.
 
-use crate::data::corebundle::globals::LocalizedGlobalsIndexes;
-use crate::data::corebundle::{CoreBundle, create_globalindexes_from_wd};
-use crate::data::setbundle::card::{Card, CardIndex};
-use crate::data::setbundle::{create_cardindex_from_wd, SetBundle};
+use crate::data::corebundle::create_globalindexes_from_wd;
+use crate::data::setbundle::create_cardindex_from_wd;
 use crate::search::cardsearch::CardSearchEngine;
 use crate::telegram::handler::{inline_query_handler, message_handler};
-use glob::glob;
 use log::*;
-use std::path::PathBuf;
 use rand::Rng;
 use teloxide::prelude::*;
 

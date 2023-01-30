@@ -481,63 +481,62 @@ impl Deck {
             .sum()
     }
 
-    /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
+    pub fn regions(&self, cards: &CardIndex) -> HashSet<CardRegion> {
+        let champions = self.champions(cards);
+
+        todo!()
+    }
+
+    /// Find the best ("smaller") set of regions that covers all given [`Card`]s.
     ///
-    /// # Returns
-    ///
-    /// - [`None`] if the deck exceeds the number of regions specified in `max`.
-    /// - [`Some`] wrapping a [`HashSet`] of [`CardRegion`]s otherwise.
+    /// This function is *recursive*: the `cards` parameter holds the [`Card`]s left to process, while the `regions` parameter holds the regions found so far.
     ///
     /// # Warning
     ///
-    /// Horribly inefficient, as it performs a recursive computation with many clones over all possible region combinations of the deck.
+    /// This method traverses the whole tree of possible region selections.
     ///
-    /// To avoid denial of service attacks, limit the `max` value to a very low number.
-    pub fn regions(&self, cards: &CardIndex, max: usize) -> Option<HashSet<CardRegion>> {
-        let cards_regions: Vec<&Vec<CardRegion>> = self.contents.keys()
-            .filter_map(|cc| cc.to_card(cards))
-            .map(|c| &c.regions)
-            .sorted_by(|a, b| a.len().cmp(&b.len()))
-            .collect();
-
-        Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
+    /// The time required to run this function grows exponentially with the size of `cards`!
+    fn regions_recursive_best<'a>(cards: &[Card], regions: &'a HashSet<CardRegion>) -> Option<&'a HashSet<CardRegion>> {
+        match cards.get(0) {
+            None => Some(regions),
+            Some(card) => {
+                card.regions.iter()
+                    .map(|region| {
+                        let mut regions = regions.clone();
+                        regions.insert(*region);
+                        Self::regions_recursive_best(&cards[1..], &regions)
+                    })
+                    .filter_map(|opt| opt)
+                    .min_by_key(|set| set.len())
+            },
+        }
     }
 
-    /// Recursive part of [`regions`]. Horribly inefficient.
-    fn regions_recursive(cards_regions: &[&Vec<CardRegion>], regions: &HashSet<CardRegion>, max: usize) -> Option<HashSet<CardRegion>> {
-        // Clone the HashSet to gain ownership for the current combination
-        let mut regions = regions.clone();
-
-        // Try to extract a vector of regions
-        if let Some(card_regions) = cards_regions.get(0) {
-
-            // Select a region from the ones available in the card
-            for card_region in card_regions.iter() {
-
-                // Try to insert the region in the HashSet
-                let inserted = regions.insert(*card_region);
-
-                // If the insertion caused the length of the HashSet to exceed the maximum possible, then this selection is not possible
-                // Requiring inserted to be true is a performance optimization
-                if inserted && regions.len() > max {
-                    continue;
-                }
-
-                // Recursion:  repeat the cycle for a new card!
-                let regions = Deck::regions_recursive(&cards_regions[1..], &regions, max);
-
-                // Propagation: if the Some limit case was reached, bubble it upwards
-                if regions.is_some() {
-                    return regions;
-                }
-            }
-
-            // Limit case: if none of the card regions allow staying below the maximum, then this selection is not possible
-            None
-        }
-        else {
-            // Limit case: if there are no more cards left, we are done!
-            Some(regions)
+    /// Find the first possible set of regions that covers all given [`Card`]s.
+    ///
+    /// This function is *recursive*: the `cards` parameter holds the [`Card`]s left to process, while the `regions` parameter holds the regions found so far, and the `limit` parameter holds the size of the `regions` set to stop the recursion at.
+    ///
+    /// # Warning
+    ///
+    /// This method traverses the tree of possible region selections until one is found.
+    ///
+    /// The time required to run this function may grow exponentially with the size of `cards`!
+    fn regions_recursive_first_limit<'a>(cards: &[Card], regions: &'a HashSet<CardRegion>, limit: usize) -> Option<&'a HashSet<CardRegion>> {
+        match cards.get(0) {
+            None => Some(regions),
+            Some(card) => {
+                card.regions.iter()
+                    .map(|region| {
+                        let mut regions = regions.clone();
+                        let inserted = regions.insert(*region);
+                        match inserted && regions.len() > limit {
+                            true => None,
+                            false => Self::regions_recursive_first_limit(&cards[1..], &regions, limit)
+                        }
+                    })
+                    .find(Option::is_some)
+                    .expect("cards to have at least 1 region")
+            },
         }
     }
 
