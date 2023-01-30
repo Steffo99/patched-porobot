@@ -521,11 +521,21 @@ impl Deck {
             Some(card) => {
                 card.regions.iter()
                     .map(|region| {
-                        let mut regions = regions.clone();
-                        let inserted = regions.insert(*region);
-                        match inserted && regions.len() > limit {
-                            true => None,
-                            false => Self::regions_recursive_first_limit(&cards[1..], regions, limit)
+                        match region {
+                            CardRegion::Unsupported => {
+                                None
+                            }
+                            CardRegion::Runeterra => {
+                                Self::regions_recursive_first_limit(&cards[1..], regions, limit)
+                            }
+                            _ => {
+                                let mut regions = regions.clone();
+                                let inserted = regions.insert(*region);
+                                match inserted && regions.len() > limit {
+                                    true => None,
+                                    false => Self::regions_recursive_first_limit(&cards[1..], regions, limit)
+                                }
+                            }
                         }
                     })
                     .find(Option::is_some)
