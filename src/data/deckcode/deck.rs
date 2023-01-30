@@ -452,7 +452,7 @@ impl Deck {
     ///
     /// let index: CardIndex = create_cardindex_from_wd();
     /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
-    /// assert_eq!(d.card_count(&index), 40);
+    /// assert_eq!(deck.card_count(), 40);
     ///
     pub fn card_count(&self) -> u32 {
         self.contents.values().sum()
@@ -472,7 +472,7 @@ impl Deck {
     ///
     /// let index: CardIndex = create_cardindex_from_wd();
     /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
-    /// assert_eq!(d.champions_count(&index), 6);
+    /// assert_eq!(deck.champions_count(&index), 6);
     /// ```
     pub fn champions_count(&self, cards: &CardIndex) -> u32 {
         self.champions(cards)
