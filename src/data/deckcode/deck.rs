@@ -839,7 +839,7 @@ mod tests {
             fn $id() {
                 let index = $crate::data::setbundle::create_cardindex_from_wd();
                 let deck: Deck = $deck;
-                let result = $check(&deck, &index);
+                let result = $check(&deck, &index).is_some();
                 assert_eq!(result, $assert);
             }
         }

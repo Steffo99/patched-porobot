@@ -162,8 +162,5 @@ mod tests {
     test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardRegion::PiltoverZaun);
     test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardRegion::BandleCity);
     test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardRegion::Runeterra);
-    test_deserialization!(deserialize_jhin, r#""Jhin""#, CardRegion::Jhin);
-    test_deserialization!(deserialize_evelynn, r#""Evelynn""#, CardRegion::Evelynn);
-    test_deserialization!(deserialize_bard, r#""Bard""#, CardRegion::Bard);
     test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardRegion::Unsupported);
 }
