@@ -180,7 +180,6 @@ impl Hash for Card {
 /// An index of [Card]s, with [CardCode]s as keys.
 pub type CardIndex = HashMap<CardCode, Card>;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
