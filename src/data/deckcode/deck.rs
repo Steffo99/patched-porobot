@@ -492,8 +492,7 @@ impl Deck {
     /// The time required to run this function may grow exponentially with the amount of cards in the deck!
     pub fn regions(&self, card_index: &CardIndex, limit: usize) -> Option<HashSet<CardRegion>> {
         let cards: Vec<&Card> = self.contents.keys()
-            .map(|cc| cc.to_card(&card_index))
-            .filter_map(|opt| opt)
+            .flat_map(|cc| cc.to_card(card_index))
             .collect();
 
         for n in 1..=limit {
@@ -516,7 +515,7 @@ impl Deck {
     /// This method traverses the tree of possible region selections until one is found.
     ///
     /// The time required to run this function may grow exponentially with the size of `cards`!
-    fn regions_recursive_first_limit<'a>(cards: &[&Card], regions: HashSet<CardRegion>, limit: usize) -> Option<HashSet<CardRegion>> {
+    fn regions_recursive_first_limit(cards: &[&Card], regions: HashSet<CardRegion>, limit: usize) -> Option<HashSet<CardRegion>> {
         match cards.get(0) {
             None => Some(regions),
             Some(card) => {
