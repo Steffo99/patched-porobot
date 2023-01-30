@@ -10,6 +10,7 @@ use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::io::{Cursor, Read, Write};
 use varint_rs::{VarintReader, VarintWriter};
+use crate::data::setbundle::supertype::CardSupertype;
 
 /// A unshuffled Legends of Runeterra card deck.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -410,6 +411,13 @@ impl Deck {
         Ok(Self::encode_code(&cursor.into_inner()))
     }
 
+    /// Get an [`Iterator`] of all Champion [`Card`]s in the deck.
+    pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
+        self.contents.keys()
+            .filter_map(|cc| cc.to_card(cards))
+            .filter(|c| c.supertype == CardSupertype::Champion)
+    }
+
     /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
     ///
     /// ### Returns
@@ -433,11 +441,50 @@ impl Deck {
         Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
     }
 
-    /// Get an [`Iterator`] of all Champion [`Card`]s in the deck.
-    pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
-        self.contents.keys()
-            .filter_map(|cc| cc.to_card(cards))
-            .filter(|c| c.supertype == "CHAMPION")
+    /// Count the number of copies of the given card present in this deck.
+    ///
+    /// ### Example
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::setbundle::code::CardCode;
+    ///
+    /// let d: Deck = deck![
+    ///     "01DE002": 40,
+    /// ];
+    ///
+    /// let copies = d.copies_of(&CardCode::from("01DE002".to_string()));
+    /// assert_eq!(copies, 40);
+    /// ```
+    pub fn copies_of(&self, code: &CardCode) -> u32 {
+        self.contents.get(code).map_or(0, ToOwned::to_owned)
+    }
+
+    /// Get the number of cards in the deck.
+    ///
+    /// In the *Standard* and *Singleton* formats, this is never more than 40.
+    pub fn card_count(&self) -> u32 {
+        self.contents.values().sum()
+    }
+
+    /// Get the number of champion cards in the deck.
+    ///
+    /// In the *Standard* and *Singleton* format, this is never more than 6.
+    ///
+    /// ### Example
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    ///
+    /// let d: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// ```
+    pub fn champions_count(&self, cards: &CardIndex) -> u32 {
+        self.champions(cards)
+            .map(|c| &c.code)
+            .map(|cc| self.copies_of(cc))
+            .sum()
     }
 
     /// Recursive part of [`regions`]. Horribly inefficient.
@@ -478,30 +525,22 @@ impl Deck {
         }
     }
 
-    pub fn card_count(&self) -> u32 {
-        self.contents.values().sum()
-    }
-
-    pub fn champions_count(&self, cards: &CardIndex) -> u32 {
-        self.champions(cards).map(|c| self.contents.get(&c.code).expect("Card from champions() to be in the Deck")).sum()
-    }
-
     /// Check if the [`Deck`] is legal for play in the *Standard* format.
     pub fn is_standard(&self, cards: &CardIndex) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.card_count() == 40;
-        let champions_limit = self.champions_count(&cards) <= 6;
-        let regions_limit = self.regions(&cards, 2).is_some() || regions.contains(&CardRegion::Runeterra);
+        let champions_limit = self.champions_count(cards) <= 6;
+        let regions_limit = self.regions(cards, 2).is_some();
 
         copies_limit && cards_limit && champions_limit && regions_limit
     }
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
-    pub fn is_singleton(&self, cards: &CardIndex, regions: &HashSet<CardRegion>) -> bool {
+    pub fn is_singleton(&self, cards: &CardIndex) -> bool {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.card_count() == 40;
-        let champions_limit = self.champions_count(&cards) <= 6;
-        let regions_limit = self.regions(&cards, 3).is_some() || regions.contains(&CardRegion::Runeterra);
+        let champions_limit = self.champions_count(cards) <= 6;
+        let regions_limit = self.regions(cards, 3).is_some();
 
         copies_limit && cards_limit && champions_limit && regions_limit
     }
@@ -545,9 +584,26 @@ pub type DeckDecodingResult<T> = Result<T, DeckDecodingError>;
 /// The [`Result`] of a [`Deck`] **encoding** operation, for example [`Deck::to_code`].
 pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 
-/// Macro to build a deck from card code strings and quantities.
+/// Macro to build a deck.
 ///
-/// # Example
+/// Useful to quickly build [`Deck`]s from trusted input, such as when creating tests.
+///
+/// It can build a deck:
+///
+/// - from a deck code;
+/// - from card code strings and quantities.
+///
+/// ### Panics
+///
+/// If the deck code is not valid.
+///
+/// ### Examples
+///
+/// ```rust
+/// use patched_porobot::deck;
+///
+/// let _my_deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+/// ```
 ///
 /// ```rust
 /// use patched_porobot::deck;
@@ -577,13 +633,17 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 /// ```
 #[macro_export]
 macro_rules! deck {
-    [$($cd:literal: $qty:literal),* $(,)?] => {
+    [ $($cd:literal: $qty:expr),* $(,)? ] => {
         $crate::data::deckcode::deck::Deck {
             contents: std::collections::HashMap::from([
                 $(($crate::data::setbundle::code::CardCode { full: $cd.to_string() }, $qty),)*
             ])
         }
-    }
+    };
+
+    ( $code:expr ) => {
+        $crate::data::deckcode::deck::Deck::from_code($code).expect("deck code created with deck!() to be valid")
+    };
 }
 
 #[rustfmt::skip::macros(test_de_ser, test_ser_de)]
@@ -751,4 +811,63 @@ mod tests {
     ]);
 
     // test_ser_de!(test_ser_de_, deck![]);
+
+    macro_rules! test_legality {
+        ( $id:ident, $deck:expr, $check:path, $assert:expr ) => {
+            #[test]
+            fn $id() {
+                let index = $crate::data::setbundle::create_cardindex_from_wd();
+                let deck: Deck = $deck;
+                let result = $check(&deck, &index);
+                assert_eq!(result, $assert);
+            }
+        }
+    }
+
+    test_legality!(
+        test_legality_standard_lonelyporo1,
+        deck!("CEAAAAIBAEAQQ"),
+        Deck::is_standard, false
+    );
+    test_legality!(
+        test_legality_standard_twistedshrimp,
+        deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
+        Deck::is_standard, true
+    );
+    test_legality!(
+        test_legality_standard_poros,
+        deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
+        Deck::is_standard, true
+    );
+    test_legality!(
+        test_legality_standard_sand,
+        deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
+        Deck::is_standard, true
+    );
+
+    test_legality!(
+        test_legality_singleton_lonelyporo1,
+        deck!("CEAAAAIBAEAQQ"),
+        Deck::is_singleton, false
+    );
+    test_legality!(
+        test_legality_singleton_twistedshrimp,
+        deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
+        Deck::is_singleton, false
+    );
+    test_legality!(
+        test_legality_singleton_poros,
+        deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
+        Deck::is_singleton, false
+    );
+    test_legality!(
+        test_legality_singleton_sand,
+        deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
+        Deck::is_singleton, false
+    );
+    test_legality!(
+        test_legality_singleton_paltri,
+        deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
+        Deck::is_singleton, true
+    );
 }
