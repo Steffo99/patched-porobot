@@ -64,7 +64,7 @@ pub fn deck_to_inlinequeryresult(
             None => format!("Deck with {} cards", deck.contents.len())
         },
         input_message_content: InputMessageContent::Text(InputMessageContentText {
-            message_text,
+            message_text: display_deck(index, deck, &code, &name),
             parse_mode: Some(ParseMode::Html),
             entities: None,
             disable_web_page_preview: Some(true),
