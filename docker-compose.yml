@@ -4,7 +4,7 @@ version: "3.9"
 
 services:
   telegram:
-    image: "ghcr.io/steffo99/patched-porobot:0-"
+    image: "ghcr.io/steffo99/patched-porobot:latest-amd64"
     command: "patched_porobot_telegram"
     restart: unless-stopped
     volumes:
