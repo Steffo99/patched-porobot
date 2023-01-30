@@ -74,13 +74,13 @@ impl SetBundle {
 
 /// Create a [`card::CardIndex`] from set bundles in the given paths.
 ///
-/// ### Panics
+/// # Panics
 ///
 /// If any of the required files cannot be loaded (see [`SetBundle::load`]).
-pub(crate) fn create_cardindex_from_paths(paths: impl Iterator<Item = PathBuf>) -> card::CardIndex {
+pub fn create_cardindex_from_paths(paths: impl Iterator<Item = PathBuf>) -> card::CardIndex {
     let mut index = card::CardIndex::new();
     for path in paths {
-        let set = SetBundle::load(&path).expect(&format!("to be able to load {path:?} as a SetBundle"));
+        let set = SetBundle::load(&path).expect("to be able to load SetBundle");
         for card in set.cards {
             index.insert(card.code.clone(), card);
         }
@@ -92,10 +92,10 @@ pub(crate) fn create_cardindex_from_paths(paths: impl Iterator<Item = PathBuf>) 
 ///
 /// This function tries to load data from any directory matching the [glob] `./data/set*-*`.
 ///
-/// ### Panics
+/// # Panics
 ///
 /// See [`create_cardindex_from_paths`].
-pub(crate) fn create_cardindex_from_wd() -> card::CardIndex {
+pub fn create_cardindex_from_wd() -> card::CardIndex {
     let paths = glob::glob("./data/set*-*")
         .expect("glob to be a valid glob")
         .filter_map(Some)

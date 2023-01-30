@@ -418,32 +418,9 @@ impl Deck {
             .filter(|c| c.supertype == CardSupertype::Champion)
     }
 
-    /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
-    ///
-    /// ### Returns
-    ///
-    /// - [`None`] if the deck exceeds the number of regions specified in `max`.
-    /// - [`Some`] wrapping a [`HashSet`] of [`CardRegion`]s otherwise.
-    ///
-    /// ### Warning
-    ///
-    /// Horribly inefficient, as it performs a recursive computation with many clones over all possible region combinations of the deck.
-    ///
-    /// To avoid denial of service attacks, limit the `max` value to a very low number.
-    ///
-    pub fn regions(&self, cards: &CardIndex, max: usize) -> Option<HashSet<CardRegion>> {
-        let cards_regions: Vec<&Vec<CardRegion>> = self.contents.keys()
-            .filter_map(|cc| cc.to_card(cards))
-            .map(|c| &c.regions)
-            .sorted_by(|a, b| a.len().cmp(&b.len()))
-            .collect();
-
-        Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
-    }
-
     /// Count the number of copies of the given card present in this deck.
     ///
-    /// ### Example
+    /// # Example
     ///
     /// ```rust
     /// use patched_porobot::deck;
@@ -464,6 +441,19 @@ impl Deck {
     /// Get the number of cards in the deck.
     ///
     /// In the *Standard* and *Singleton* formats, this is never more than 40.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::setbundle::card::CardIndex;
+    /// use patched_porobot::data::setbundle::create_cardindex_from_wd;
+    ///
+    /// let index: CardIndex = create_cardindex_from_wd();
+    /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// assert_eq!(d.card_count(&index), 40);
+    ///
     pub fn card_count(&self) -> u32 {
         self.contents.values().sum()
     }
@@ -472,19 +462,45 @@ impl Deck {
     ///
     /// In the *Standard* and *Singleton* format, this is never more than 6.
     ///
-    /// ### Example
+    /// # Example
     ///
     /// ```rust
     /// use patched_porobot::deck;
     /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::setbundle::card::CardIndex;
+    /// use patched_porobot::data::setbundle::create_cardindex_from_wd;
     ///
-    /// let d: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// let index: CardIndex = create_cardindex_from_wd();
+    /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// assert_eq!(d.champions_count(&index), 6);
     /// ```
     pub fn champions_count(&self, cards: &CardIndex) -> u32 {
         self.champions(cards)
             .map(|c| &c.code)
             .map(|cc| self.copies_of(cc))
             .sum()
+    }
+
+    /// Determine which [`CardRegion`]s this [`Deck`] belongs to.
+    ///
+    /// # Returns
+    ///
+    /// - [`None`] if the deck exceeds the number of regions specified in `max`.
+    /// - [`Some`] wrapping a [`HashSet`] of [`CardRegion`]s otherwise.
+    ///
+    /// # Warning
+    ///
+    /// Horribly inefficient, as it performs a recursive computation with many clones over all possible region combinations of the deck.
+    ///
+    /// To avoid denial of service attacks, limit the `max` value to a very low number.
+    pub fn regions(&self, cards: &CardIndex, max: usize) -> Option<HashSet<CardRegion>> {
+        let cards_regions: Vec<&Vec<CardRegion>> = self.contents.keys()
+            .filter_map(|cc| cc.to_card(cards))
+            .map(|c| &c.regions)
+            .sorted_by(|a, b| a.len().cmp(&b.len()))
+            .collect();
+
+        Deck::regions_recursive(&cards_regions, &HashSet::new(), max)
     }
 
     /// Recursive part of [`regions`]. Horribly inefficient.
@@ -593,11 +609,11 @@ pub type DeckEncodingResult<T> = Result<T, DeckEncodingError>;
 /// - from a deck code;
 /// - from card code strings and quantities.
 ///
-/// ### Panics
+/// # Panics
 ///
 /// If the deck code is not valid.
 ///
-/// ### Examples
+/// # Examples
 ///
 /// ```rust
 /// use patched_porobot::deck;

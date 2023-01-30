@@ -63,7 +63,7 @@ impl CoreBundle {
 /// Create [`globals::LocalizedGlobalsIndexes`] from the core bundle in the current working directory.
 ///
 /// This function tries to load data from the first directory matching the [glob] `./data/core-*`.
-pub(crate) fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
+pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
     let path = glob::glob("./data/core-*")
         .expect("glob to be a valid glob")
         .filter_map(Some)
