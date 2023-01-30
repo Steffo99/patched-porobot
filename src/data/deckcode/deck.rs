@@ -526,7 +526,7 @@ impl Deck {
                                 None
                             }
                             CardRegion::Runeterra => {
-                                Self::regions_recursive_first_limit(&cards[1..], regions, limit)
+                                Self::regions_recursive_first_limit(&cards[1..], regions.clone(), limit)
                             }
                             _ => {
                                 let mut regions = regions.clone();
