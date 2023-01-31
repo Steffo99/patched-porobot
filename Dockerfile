@@ -7,6 +7,9 @@ RUN cargo install --path . --all-features --bins
 
 FROM debian:buster AS system
 COPY --from=build /usr/local/cargo/bin/patched_porobot_telegram /usr/local/bin/patched_porobot_telegram
+RUN apt update
+RUN apt upgrade -y
+RUN apt install -y libssl1.1
 
 FROM system AS entrypoint
 ENTRYPOINT ["patched_porobot_telegram"]
