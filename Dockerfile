@@ -1,17 +1,14 @@
-FROM rust:1.64 AS files
+FROM rust:1.64-buster AS files
 WORKDIR /usr/src/patched_porobot
 COPY . .
 
-FROM files AS build
-RUN cargo install --path . --all-features --bins
-
-FROM debian:buster AS system
-COPY --from=build /usr/local/cargo/bin/patched_porobot_telegram /usr/local/bin/patched_porobot_telegram
-RUN apt update
-RUN apt upgrade -y
+FROM files AS system
 RUN apt install -y libssl1.1
 
-FROM system AS entrypoint
+FROM system AS build
+RUN cargo install --path . --all-features --bins
+
+FROM build AS entrypoint
 ENTRYPOINT ["patched_porobot_telegram"]
 CMD []
 
