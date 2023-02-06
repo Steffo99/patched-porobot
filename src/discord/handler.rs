@@ -22,7 +22,37 @@ use crate::search::cardsearch::CardSearchEngine;
 /// Contains the functions that process events received by Discord.
 pub struct EventHandler;
 
+const WELCOME_MESSAGE: &str = r#"
+👋 Hi! I'm a robotic poro who can search for Legends of Runeterra cards to send them in chats!
+
+To search for a card, enter `/card` in a channel where I am enabled, then specify **your search query** as the `query` parameter, like this:
+```text
+/card query:mighty poro
+```
+After a while, I'll send in the channel the best match I can find for your query!
+
+You can also perform more **complex queries**, such as this one:
+```text
+/card query:cost:4 AND attack:7 AND health:7
+```
+To read all details on the queries you can ask me to perform, visit the documentation at: <https://docs.rs/patched_porobot/latest/patched_porobot_telegram>
+
+Additionally, you can send me the `/deck` command together with a deck code to send the full deck details in chat, like this:
+```
+/deck code:CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA
+```
+Have a fun time playing Legends of Runeterra!
+
+_Patched Porobot isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc._
+"#;
+
 impl EventHandler {
+    /// Handle the `/help` command.
+    pub fn command_help(response: &mut EditInteractionResponse) -> &mut EditInteractionResponse {
+        response.content(WELCOME_MESSAGE);
+        response
+    }
+
     /// Handle the `/card` command.
     pub fn command_card<'r>(ctx: &Context, response: &'r mut EditInteractionResponse, options: HashMap<String, Option<CommandDataOptionValue>>) -> &'r mut EditInteractionResponse {
         let typemap = ctx.data.try_read().expect("to be able to acquire read lock on CardSearchEngine");
@@ -331,11 +361,7 @@ impl serenity::client::EventHandler for EventHandler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
         match interaction {
             Interaction::ApplicationCommand(command) => {
-                command.create_interaction_response(&ctx.http, |r| r
-                    .kind(InteractionResponseType::DeferredChannelMessageWithSource)
-                ).await.expect("to be able to defer the response");
-
-                let cmd_name = &command.data.name.as_str();
+                let cmd_name = command.data.name.as_str();
                 let cmd_opts: HashMap<String, Option<CommandDataOptionValue>> = command.data.options
                     .clone()
                     .into_iter()
@@ -344,11 +370,19 @@ impl serenity::client::EventHandler for EventHandler {
 
                 log::info!("Received command: {}", &cmd_name);
 
+                command.create_interaction_response(&ctx.http, |r| r
+                    .interaction_response_data(|d| d
+                        .ephemeral(cmd_name == "help")
+                    )
+                    .kind(InteractionResponseType::DeferredChannelMessageWithSource)
+                ).await.expect("to be able to defer the response");
+
                 command.edit_original_interaction_response(
                     &ctx.http,
-                    |response| match *cmd_name {
+                    |response| match cmd_name {
                         "card" => Self::command_card(&ctx, response, cmd_opts),
                         "deck" => Self::command_deck(&ctx, response, cmd_opts),
+                        "help" => Self::command_help(response),
                         _ => response.content(":warning: Unknown command."),
                     }
                 ).await.expect("to be able to update the deferred response");
