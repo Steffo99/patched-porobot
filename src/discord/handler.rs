@@ -211,10 +211,6 @@ impl EventHandler {
         };
 
         response.embed(|e| {
-            if let Some(name) = name {
-                e.title(name);
-            }
-
             e.description(
                 deck.contents.iter()
                     .map(|(cc, qty)| {
