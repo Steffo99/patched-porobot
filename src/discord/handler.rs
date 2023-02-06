@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use itertools::Itertools;
 use serenity::builder::EditInteractionResponse;
@@ -7,6 +7,9 @@ use serenity::model::prelude::*;
 use serenity::model::application::interaction::*;
 use serenity::model::application::interaction::{InteractionResponseType, Interaction};
 use serenity::model::application::interaction::application_command::CommandDataOptionValue;
+use crate::data::deckcode::deck::{Deck, DeckDecodingResult};
+use crate::data::deckcode::format::DeckCodeFormat;
+use crate::data::setbundle::card::Card;
 use crate::data::setbundle::r#type::CardType;
 use crate::data::setbundle::rarity::CardRarity;
 use crate::data::setbundle::region::CardRegion;
@@ -125,7 +128,7 @@ impl EventHandler {
                     e.color(match card.supertype {
                         CardSupertype::Champion => 0x81541f,
                         _ => match card.rarity {
-                            CardRarity::None => 0x000000,
+                            CardRarity::None => 0x202225,
                             CardRarity::Common => 0x1e6a49,
                             CardRarity::Rare => 0x244778,
                             CardRarity::Epic => 0x502970,
@@ -154,7 +157,97 @@ impl EventHandler {
     }
 
     pub fn command_deck<'r>(ctx: &Context, response: &'r mut EditInteractionResponse, options: HashMap<String, Option<CommandDataOptionValue>>) -> &'r mut EditInteractionResponse {
-        response.content(":warning: `/deck` is not yet implemented")
+        let typemap = ctx.data.try_read().expect("to be able to acquire read lock on CardSearchEngine");
+        let engine = typemap.get::<CardSearchEngine>().expect("CardSearchEngine to be in the TypeMap");
+
+        let code = match options.get("code") {
+            Some(c) => c,
+            None => return response.content(":warning: Missing `code` parameter."),
+        };
+
+        let code = match code {
+            Some(c) => c,
+            None => return response.content(":warning: Empty `code` parameter."),
+        };
+
+        let code = match code {
+            CommandDataOptionValue::String(c) => c,
+            _ => return response.content(":warning: Invalid `code` parameter type."),
+        };
+
+        let deck = match Deck::from_code(code) {
+            Ok(deck) => deck,
+            _ => return response.content(":warning: Invalid deck code."),
+        };
+
+        let name = match options.get("name") {
+            Some(Some(name)) => {
+                match name {
+                    CommandDataOptionValue::String(n) => Some(n),
+                    _ => None,
+                }
+            }
+            Some(None) => None,
+            None => None,
+        };
+
+        response.content(
+            match name {
+                Some(name) => format!("__**{}**__\n```text\n{}\n```", name, deck.to_code(DeckCodeFormat::F1).expect("to be able to serialize the deck code")),
+                None => format!("```text\n{}\n```", deck.to_code(DeckCodeFormat::F1).expect("to be able to serialize the deck code")),
+            });
+
+        let mut format = "";
+
+        let regions = if let Some(regions) = deck.standard(&engine.cards) {
+            format = "<:neutral:1056022926660481094> Standard";
+            regions
+        } else if let Some(regions) = deck.singleton(&engine.cards) {
+            format = "<:neutral:1056022926660481094> Singleton";
+            regions
+        } else {
+            format = "<:invaliddeck:1056022952396730438> Unknown";
+            HashSet::new()
+        };
+
+        response.embed(|e| {
+            if let Some(name) = name {
+                e.title(name);
+            }
+
+            e.description(
+                deck.contents.iter()
+                    .map(|(cc, qty)| {
+                        (cc.to_card(&engine.cards), qty)
+                    })
+                    .map(|(c, qty)| {
+                        let name = match c {
+                            None => String::from("<:invaliddeck:1056022952396730438> Unknown card"),
+                            Some(c) => c.name.clone(),
+                        };
+                        format!("**{}×** {}", qty, name)
+                    })
+                    .join("\n")
+            );
+
+            e.field("Format", format, true);
+
+            if regions.len() > 0 {
+                e.field("Regions",
+                    regions
+                        .iter()
+                        .map(|region| format!(
+                            "{} {}",
+                            region.discord_emoji(),
+                            region.localized(&engine.globals.regions)
+                                .map_or_else(|| String::from("Missing translation"), |l| l.name.clone())
+                        ))
+                        .join(", "),
+                    false);
+            }
+
+            e
+        })
     }
 
     pub async fn register_commands(ctx: &Context) -> anyhow::Result<()> {
@@ -171,7 +264,8 @@ impl EventHandler {
                         .name("query")
                         .description("The query to send to the card search engine.")
                         .required(true)
-                    )).await?;
+                    )
+                ).await?;
                 guild.create_application_command(&ctx.http, |c| c
                     .name("deck")
                     .description("Send a deck in the chat.")
@@ -180,7 +274,14 @@ impl EventHandler {
                         .name("code")
                         .description("The code of the deck to send.")
                         .required(true)
-                    )).await?;
+                    )
+                    .create_option(|o| o
+                        .kind(command::CommandOptionType::String)
+                        .name("name")
+                        .description("The name of the deck.")
+                        .required(false)
+                    )
+                ).await?;
             }
             Err(_) => {
                 command::Command::create_global_application_command(&ctx.http, |c| c
@@ -191,7 +292,8 @@ impl EventHandler {
                         .name("query")
                         .description("The query to send to the card search engine.")
                         .required(true)
-                    )).await?;
+                    )
+                ).await?;
                 command::Command::create_global_application_command(&ctx.http, |c| c
                     .name("deck")
                     .description("Send a deck in the chat.")
@@ -200,7 +302,14 @@ impl EventHandler {
                         .name("code")
                         .description("The code of the deck to send.")
                         .required(true)
-                    )).await?;
+                    )
+                    .create_option(|o| o
+                        .kind(command::CommandOptionType::String)
+                        .name("name")
+                        .description("The name of the deck.")
+                        .required(false)
+                    )
+                ).await?;
             }
         };
 
