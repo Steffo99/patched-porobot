@@ -1,14 +1,14 @@
+//! Module defining the [`main`] function for `patched_porobot_discord`.
+
 use std::env;
 use log::*;
 use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::model::application::interaction::*;
 use crate::data::corebundle::create_globalindexes_from_wd;
 use crate::data::setbundle::create_cardindex_from_wd;
 use crate::discord::handler::EventHandler;
 use crate::search::cardsearch::CardSearchEngine;
 
-
+/// The function that `patched_porobot_discord` should run when it's started.
 pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");

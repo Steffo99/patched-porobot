@@ -1,15 +1,15 @@
+//! Module containing the [`EventHandler`] and its associated functions.
+
 use std::collections::{HashMap, HashSet};
 use std::env;
 use itertools::Itertools;
 use serenity::builder::EditInteractionResponse;
 use serenity::prelude::*;
 use serenity::model::prelude::*;
-use serenity::model::application::interaction::*;
 use serenity::model::application::interaction::{InteractionResponseType, Interaction};
 use serenity::model::application::interaction::application_command::CommandDataOptionValue;
-use crate::data::deckcode::deck::{Deck, DeckDecodingResult};
+use crate::data::deckcode::deck::Deck;
 use crate::data::deckcode::format::DeckCodeFormat;
-use crate::data::setbundle::card::Card;
 use crate::data::setbundle::r#type::CardType;
 use crate::data::setbundle::rarity::CardRarity;
 use crate::data::setbundle::region::CardRegion;
@@ -17,9 +17,13 @@ use crate::data::setbundle::set::CardSet;
 use crate::data::setbundle::supertype::CardSupertype;
 use crate::search::cardsearch::CardSearchEngine;
 
+/// Event handler for the bot.
+///
+/// Contains the functions that process events received by Discord.
 pub struct EventHandler;
 
 impl EventHandler {
+    /// Handle the `/card` command.
     pub fn command_card<'r>(ctx: &Context, response: &'r mut EditInteractionResponse, options: HashMap<String, Option<CommandDataOptionValue>>) -> &'r mut EditInteractionResponse {
         let typemap = ctx.data.try_read().expect("to be able to acquire read lock on CardSearchEngine");
         let engine = typemap.get::<CardSearchEngine>().expect("CardSearchEngine to be in the TypeMap");
@@ -39,7 +43,7 @@ impl EventHandler {
             _ => return response.content(":warning: Invalid `query` parameter type."),
         };
 
-        let result = match engine.query(&query, 1) {
+        let result = match engine.query(query, 1) {
             Ok(r) => r,
             Err(_) => return response.content(":warning: Invalid card search query syntax."),
         };
@@ -55,11 +59,11 @@ impl EventHandler {
                 let response = response.embed(|e| {
                     e.title(card.name.clone());
 
-                    if card.localized_description_text.len() > 0 {
+                    if !card.localized_description_text.is_empty() {
                         e.description(card.localized_description_text.clone());
                     }
 
-                    if card.keywords.len() > 0 {
+                    if !card.keywords.is_empty() {
                         e.field("Keywords", card.keywords.iter().map(|r|
                             format!(
                                 "{} {}",
@@ -136,7 +140,7 @@ impl EventHandler {
                         }
                     });
 
-                    if card.localized_flavor_text.len() > 0 {
+                    if !card.localized_flavor_text.is_empty() {
                         e.footer(|f| f.text(card.localized_flavor_text.clone()));
                     }
 
@@ -156,6 +160,7 @@ impl EventHandler {
         }
     }
 
+    /// Handle the `/deck` command.
     pub fn command_deck<'r>(ctx: &Context, response: &'r mut EditInteractionResponse, options: HashMap<String, Option<CommandDataOptionValue>>) -> &'r mut EditInteractionResponse {
         let typemap = ctx.data.try_read().expect("to be able to acquire read lock on CardSearchEngine");
         let engine = typemap.get::<CardSearchEngine>().expect("CardSearchEngine to be in the TypeMap");
@@ -181,14 +186,8 @@ impl EventHandler {
         };
 
         let name = match options.get("name") {
-            Some(Some(name)) => {
-                match name {
-                    CommandDataOptionValue::String(n) => Some(n),
-                    _ => None,
-                }
-            }
-            Some(None) => None,
-            None => None,
+            Some(Some(CommandDataOptionValue::String(n))) => Some(n),
+            _ => None,
         };
 
         response.content(
@@ -197,17 +196,12 @@ impl EventHandler {
                 None => format!("```text\n{}\n```", deck.to_code(DeckCodeFormat::F1).expect("to be able to serialize the deck code")),
             });
 
-        let mut format = "";
-
-        let regions = if let Some(regions) = deck.standard(&engine.cards) {
-            format = "<:neutral:1056022926660481094> Standard";
-            regions
+        let (format, regions) = if let Some(regions) = deck.standard(&engine.cards) {
+            ("<:neutral:1056022926660481094> Standard", regions)
         } else if let Some(regions) = deck.singleton(&engine.cards) {
-            format = "<:neutral:1056022926660481094> Singleton";
-            regions
+            ("<:neutral:1056022926660481094> Singleton", regions)
         } else {
-            format = "<:invaliddeck:1056022952396730438> Unknown";
-            HashSet::new()
+            ("<:invaliddeck:1056022952396730438> Unknown", HashSet::new())
         };
 
         response.embed(|e| {
@@ -228,7 +222,7 @@ impl EventHandler {
 
             e.field("Format", format, true);
 
-            if regions.len() > 0 {
+            if !regions.is_empty() {
                 e.field("Regions",
                     regions
                         .iter()
@@ -246,6 +240,9 @@ impl EventHandler {
         })
     }
 
+    /// Register the Slash Commands supported by this bot.
+    ///
+    /// If `SERENITY_DEV_GUILD_ID` is set, register them as guild commands to avoid caching, otherwise, register them as global commands.
     pub async fn register_commands(ctx: &Context) -> anyhow::Result<()> {
         match env::var("SERENITY_DEV_GUILD_ID") {
             Ok(guild) => {
@@ -278,6 +275,10 @@ impl EventHandler {
                         .required(false)
                     )
                 ).await?;
+                guild.create_application_command(&ctx.http, |c| c
+                    .name("help")
+                    .description("View the help message.")
+                ).await?;
             }
             Err(_) => {
                 command::Command::create_global_application_command(&ctx.http, |c| c
@@ -306,6 +307,10 @@ impl EventHandler {
                         .required(false)
                     )
                 ).await?;
+                command::Command::create_global_application_command(&ctx.http, |c| c
+                    .name("help")
+                    .description("View the help message.")
+                ).await?;
             }
         };
 
@@ -326,7 +331,7 @@ impl serenity::client::EventHandler for EventHandler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
         match interaction {
             Interaction::ApplicationCommand(command) => {
-                let response = command.create_interaction_response(&ctx.http, |r| r
+                command.create_interaction_response(&ctx.http, |r| r
                     .kind(InteractionResponseType::DeferredChannelMessageWithSource)
                 ).await.expect("to be able to defer the response");
 

@@ -1,6 +1,5 @@
 //! Module defining [CardCode].
 
-use tantivy::HasLen;
 use crate::data::setbundle::card::{Card, CardIndex};
 
 /// The internal code of a [`Card`].

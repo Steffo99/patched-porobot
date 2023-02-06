@@ -156,7 +156,7 @@ impl CardSearchEngine {
         schema_builder.add_text_field("levelup", options_text.clone());
         schema_builder.add_text_field("flavor", options_text.clone());
         schema_builder.add_text_field("artist", options_text);
-        schema_builder.add_text_field("subtypes", options_keyword.clone());
+        schema_builder.add_text_field("subtypes", options_keyword);
         schema_builder.add_u64_field("level", options_number);
 
         schema_builder.build()
@@ -265,7 +265,7 @@ impl CardSearchEngine {
                 .localized(&globals.rarities)
                 .map(|cr| cr.name.to_owned())
                 .unwrap_or_else(String::new),
-            fields.collectible => if card.collectible {1u64} else {0u64},
+            fields.collectible => u64::from(card.collectible),
             fields.regions => card.regions.iter()
                 .map(|region| region
                     .localized(&globals.regions)
@@ -297,17 +297,15 @@ impl CardSearchEngine {
                 else if card.subtypes.contains(&"ASCENDED".to_string()) {
                     if card.localized_levelup_text.contains(&"Sun Disc".to_string()) {
                         2u64
-                    } else if card.localized_levelup_text == "" {
+                    } else if card.localized_levelup_text.is_empty() {
                         3u64
                     } else {
                         1u64
                     }
+                } else if card.localized_levelup_text.is_empty() {
+                    2u64
                 } else {
-                    if card.localized_levelup_text == "" {
-                        2u64
-                    } else {
-                        1u64
-                    }
+                    1u64
                 }
             }
         )
@@ -316,7 +314,7 @@ impl CardSearchEngine {
     /// Build the [QueryParser] of the search engine.
     fn parser(index: &Index, fields: CardSchemaFields) -> QueryParser {
         let mut parser = QueryParser::for_index(
-            &index,
+            index,
             vec![
                 fields.code,
                 fields.name,
