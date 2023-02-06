@@ -2,6 +2,8 @@
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/Steffo99/patched-porobot/main/icon.png")]
 
-fn main() {
-    todo!();
+#[doc(hidden)]
+#[tokio::main]
+async fn main() {
+    patched_porobot::discord::main::main().await;
 }
