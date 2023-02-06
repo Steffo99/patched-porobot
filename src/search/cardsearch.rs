@@ -407,3 +407,8 @@ struct CardSchemaFields {
     /// Space-separated [Card::subtypes].
     pub subtypes: Field,
 }
+
+#[cfg(feature = "discord")]
+impl serenity::prelude::TypeMapKey for CardSearchEngine {
+    type Value = CardSearchEngine;
+}
