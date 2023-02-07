@@ -35,7 +35,7 @@ You can also perform more **complex queries**, such as this one:
 ```text
 /card query:cost:4 AND attack:7 AND health:7
 ```
-To read all details on the queries you can ask me to perform, visit the documentation at: <https://docs.rs/patched_porobot/latest/patched_porobot_telegram>
+To read all details on the queries you can ask me to perform, visit the documentation at: <https://docs.rs/patched_porobot/latest/patched_porobot_discord>
 
 Additionally, you can send me the `/deck` command together with a deck code to send the full deck details in chat, like this:
 ```
