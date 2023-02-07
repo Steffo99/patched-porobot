@@ -9,7 +9,7 @@ FROM system AS build
 RUN cargo install --path . --all-features --bins
 
 FROM build AS entrypoint
-ENTRYPOINT ["patched_porobot_telegram"]
+ENTRYPOINT []
 CMD []
 
 FROM entrypoint AS final
