@@ -3,7 +3,7 @@ WORKDIR /usr/src/patched_porobot
 COPY . .
 
 FROM files AS system
-RUN apt install -y libssl1.1
+RUN apt-get install -y libssl1.1
 
 FROM system AS build
 RUN cargo install --path . --all-features --bins
