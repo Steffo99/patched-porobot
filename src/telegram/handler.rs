@@ -157,7 +157,7 @@ pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, 
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
-            message_thread_id: message.thread_id,
+            message_thread_id: None,
         };
 
         async move {
