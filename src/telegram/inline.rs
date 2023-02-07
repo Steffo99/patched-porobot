@@ -21,7 +21,7 @@ pub fn card_to_inlinequeryresult(
     InlineQueryResult::Photo(InlineQueryResultPhoto {
         id: format!("{}:{}", &crystal, &card.code.full),
         title: Some(card.name.to_owned()),
-        caption: Some(display_card(&globals, &card)),
+        caption: Some(display_card(globals, card)),
         parse_mode: Some(ParseMode::Html),
         photo_url: card
             .main_art()
@@ -55,8 +55,6 @@ pub fn deck_to_inlinequeryresult(
         .to_code(DeckCodeFormat::F1)
         .expect("serialized deck to deserialize properly");
 
-    let message_text = display_deck(index, deck, &code, &name);
-
     InlineQueryResult::Article(InlineQueryResultArticle {
         id: format!("{}:{:x}", &crystal, md5::compute(&code)),
         title: match &name {
@@ -64,7 +62,7 @@ pub fn deck_to_inlinequeryresult(
             None => format!("Deck with {} cards", deck.contents.len())
         },
         input_message_content: InputMessageContent::Text(InputMessageContentText {
-            message_text: display_deck(index, deck, &code, &name),
+            message_text: display_deck(index, deck, &code, name),
             parse_mode: Some(ParseMode::Html),
             entities: None,
             disable_web_page_preview: Some(true),

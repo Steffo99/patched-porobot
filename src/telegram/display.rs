@@ -106,14 +106,14 @@ fn display_types(r#type: &CardType, supertype: &CardSupertype, subtypes: &[CardS
         }
     );
 
-    result.push_str(&*format!("<i>{}</i>", escape(&*String::from(r#type)),));
+    result.push_str(&format!("<i>{}</i>", escape(&String::from(r#type)),));
 
-    if subtypes.len() > 0 {
-        result.push_str(&*format!(
+    if !subtypes.is_empty() {
+        result.push_str(&format!(
             " › {}",
             subtypes
                 .iter()
-                .map(|subtype| format!("<i>{}</i>", escape(&subtype)))
+                .map(|subtype| format!("<i>{}</i>", escape(subtype)))
                 .join(", ")
         ))
     }
@@ -141,10 +141,10 @@ fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) ->
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 fn display_description(description: &String) -> String {
-    if description == "" {
+    if description.is_empty() {
         "".to_string()
     } else {
-        format!("{}\n\n", escape(&description))
+        format!("{}\n\n", escape(description))
     }
 }
 
@@ -152,10 +152,10 @@ fn display_description(description: &String) -> String {
 ///
 /// [Telegram Bot HTML]: https://core.telegram.org/bots/api#html-style
 fn display_levelup(levelup: &String) -> String {
-    if levelup == "" {
+    if levelup.is_empty() {
         "".to_string()
     } else {
-        format!("<u>Level up</u>: {}\n\n", escape(&levelup))
+        format!("<u>Level up</u>: {}\n\n", escape(levelup))
     }
 }
 
@@ -204,10 +204,10 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
 
     let mut tags: Vec<&'static str> = vec![];
 
-    let regions = if let Some(regions) = deck.standard(&index) {
+    let regions = if let Some(regions) = deck.standard(index) {
         tags.push("#Standard");
         regions
-    } else if let Some(regions) = deck.singleton(&index) {
+    } else if let Some(regions) = deck.singleton(index) {
         tags.push("#Singleton");
         regions
     } else {
@@ -232,7 +232,7 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
     }
 
     let tags = tags.join(", ");
-    let tags = if tags.len() > 0 { format!("{}\n", &tags) } else { "".to_string() };
+    let tags = if !tags.is_empty() { format!("{}\n", &tags) } else { "".to_string() };
 
     match name {
         Some(name) => format!("<b><u>{}</u></b>\n<code>{}</code>\n{}\n{}", &name, &code, &tags, &cards),

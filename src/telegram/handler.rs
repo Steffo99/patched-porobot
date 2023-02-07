@@ -14,6 +14,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 /// Handle inline queries by searching cards on the [CardSearchEngine].
+#[allow(clippy::never_loop)]
 pub fn inline_query_handler(
     crystal: String,
     engine: CardSearchEngine,
@@ -23,10 +24,10 @@ pub fn inline_query_handler(
 
         // It's not a real loop, it's just to make the code flow more tolerable.
         let payload: AnswerInlineQuery = loop {
-            if query.query.len() == 0 {
+            if query.query.is_empty() {
                 debug!("Empty query specified.");
                 break AnswerInlineQuery {
-                    inline_query_id: query.id.clone(),
+                    inline_query_id: query.id,
                     results: vec![],
                     cache_time: None,
                     is_personal: Some(false),
@@ -42,7 +43,7 @@ pub fn inline_query_handler(
             
             if let Some(deck_captures) = DECK_RE.captures(&query.query) {
                 if let Some(deck_code) = deck_captures.name("code") {
-                    if let Ok(deck) = Deck::from_code(&deck_code.as_str()) {
+                    if let Ok(deck) = Deck::from_code(deck_code.as_str()) {
                         
                         debug!("Parsed deck successfully!");
                         let name = deck_captures.name("name").map(|m| m.as_str());
@@ -63,7 +64,7 @@ pub fn inline_query_handler(
             debug!("Querying the card search engine...");
             let results = engine.query(&query.query, 50);
 
-            if let Err(_) = results {
+            if results.is_err() {
                 debug!("Invalid card search query syntax.");
                 break AnswerInlineQuery {
                     inline_query_id: query.id.clone(),
@@ -118,7 +119,7 @@ pub fn inline_query_handler(
     }))
 }
 
-const WELCOME_MESSAGE: &'static str = r#"
+const WELCOME_MESSAGE: &str = r#"
 👋 Hi! I'm a robotic poro who can search for Legends of Runeterra cards to send them in chats!
 
 To search for a card, enter <b>my username</b> in any chat, followed by <b>your search query</b>, like this:
@@ -146,7 +147,7 @@ pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, 
         info!("Handling private message: `{:?}`", &message.text());
 
         let payload = SendMessage {
-            chat_id: Recipient::Id(message.chat.id.clone()),
+            chat_id: Recipient::Id(message.chat.id),
             text: WELCOME_MESSAGE.to_string(),
             parse_mode: Some(ParseMode::Html),
             entities: None,
@@ -156,6 +157,7 @@ pub fn message_handler() -> Handler<'static, DependencyMap, ResponseResult<()>, 
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
+            message_thread_id: None,
         };
 
         async move {

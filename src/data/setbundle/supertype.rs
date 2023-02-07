@@ -15,6 +15,22 @@ pub enum CardSupertype {
     Unsupported,
 }
 
+impl From<&CardSupertype> for &'static str {
+    fn from(cs: &CardSupertype) -> Self {
+        match cs {
+            CardSupertype::None => "",
+            CardSupertype::Champion => "Champion",
+            CardSupertype::Unsupported => "Unknown",
+        }
+    }
+}
+
+impl From<&CardSupertype> for String {
+    fn from(cs: &CardSupertype) -> Self {
+        <&CardSupertype as Into<&'static str>>::into(cs).to_string()
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

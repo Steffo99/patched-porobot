@@ -1,4 +1,4 @@
-//! This module defines the [`main`] function for `patched_porobot_telegram`.
+//! Module defining the [`main`] function for `patched_porobot_telegram`.
 
 use crate::data::corebundle::create_globalindexes_from_wd;
 use crate::data::setbundle::create_cardindex_from_wd;
@@ -8,7 +8,7 @@ use log::*;
 use rand::Rng;
 use teloxide::prelude::*;
 
-/// The main function that `patched_porobot_telegram` should run when it's started.
+/// The function that `patched_porobot_telegram` should run when it's started.
 pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");

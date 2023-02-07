@@ -67,8 +67,13 @@ impl CardCode {
     /// The token segment of the code.
     ///
     /// In valid codes, it may either be an empty string, or 2-ASCII-characters long.
-    pub fn token(&self) -> &str {
-        &self.full[7..9]
+    pub fn token(&self) -> Option<&str> {
+        if self.full.len() >= 9 {
+            Some(&self.full[7..9])
+        }
+        else {
+            None
+        }
     }
 
     /// Create a new card code given the set and region strings and the card number.

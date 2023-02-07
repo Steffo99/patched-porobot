@@ -89,6 +89,24 @@ impl CardRegion {
             _ => None,
         }
     }
+
+    /// Get the Discord emoji code associated with this [`CardRegion`].
+    pub fn discord_emoji(&self) -> &'static str {
+        match self {
+            CardRegion::Noxus => "<:noxus:1056022924169064498>",
+            CardRegion::Demacia => "<:demacia:1056023014128484412>",
+            CardRegion::Freljord => "<:freljord:1056024331437735936>",
+            CardRegion::ShadowIsles => "<:shadowisles:1056022886848135292>",
+            CardRegion::Targon => "<:targon:1056022866174418944>",
+            CardRegion::Ionia => "<:ionia:1056022949569777708>",
+            CardRegion::Bilgewater => "<:bilgewater:1056024288215437484>",
+            CardRegion::Shurima => "<:shurima:1056022884616765500>",
+            CardRegion::PiltoverZaun => "<:piltoverzaun:1056022918959734835>",
+            CardRegion::BandleCity => "<:bandlecity:1056024280493735976>",
+            CardRegion::Runeterra => "<:runeterra:1056022895031238727>",
+            CardRegion::Unsupported => "<:invaliddeck:1056022952396730438>",
+        }
+    }
 }
 
 /// Get the [`CardRegion`] from its internal id.
