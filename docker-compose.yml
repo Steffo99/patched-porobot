@@ -15,3 +15,16 @@ services:
       resources:
         limits:
           memory: 64M
+
+  discord:
+    image: "ghcr.io/steffo99/patched-porobot:latest"
+    command: "patched_porobot_discord"
+    restart: unless-stopped
+    volumes:
+      - "$PORO_CARDS_DIR:/usr/src/patched_porobot/data"
+    env_file:
+      - stack.env
+    deploy:
+      resources:
+        limits:
+          memory: 64M
