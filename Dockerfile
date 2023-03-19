@@ -6,13 +6,13 @@ RUN apt-get update && \
     apt-get upgrade --assume-yes
 
 RUN \
-    if [ ${TARGETPLATFORM} = "linux/amd64" ]; then \
+    if [ ${BUILDPLATFORM} = "linux/amd64" ] || [ ${TARGETPLATFORM} = "linux/amd64" ]; then \
         apt-get install --assume-yes gcc-x86-64-linux-gnu; \
     fi && \
-    if [ ${TARGETPLATFORM} = "linux/arm64" ]; then \
+    if [ ${BUILDPLATFORM} = "linux/arm64" ] || [ ${TARGETPLATFORM} = "linux/arm64" ]; then \
         apt-get install --assume-yes gcc-aarch64-linux-gnu; \
     fi && \
-    if [ ${TARGETPLATFORM} = "linux/arm/v7" ]; then \
+    if [ ${BUILDPLATFORM} = "linux/arm/v7" ] || [ ${TARGETPLATFORM} = "linux/arm/v7" ]; then \
         apt-get install --assume-yes gcc-arm-linux-gnueabihf; \
     fi
 
