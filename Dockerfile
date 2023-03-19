@@ -1,4 +1,5 @@
 FROM --platform=${BUILDPLATFORM} rust:1.68-bullseye AS builder
+ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 ARG RUSTTARGET
 
@@ -6,21 +7,37 @@ RUN apt-get update && \
     apt-get upgrade --assume-yes
 
 RUN \
-    if [ ${BUILDPLATFORM} = "linux/amd64" ] || [ ${TARGETPLATFORM} = "linux/amd64" ]; then \
+    if [ "${TARGETPLATFORM}" = "linux/amd64" ]; then \
         apt-get install --assume-yes gcc-x86-64-linux-gnu; \
     fi && \
-    if [ ${BUILDPLATFORM} = "linux/arm64" ] || [ ${TARGETPLATFORM} = "linux/arm64" ]; then \
+    if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
         apt-get install --assume-yes gcc-aarch64-linux-gnu; \
     fi && \
-    if [ ${BUILDPLATFORM} = "linux/arm/v7" ] || [ ${TARGETPLATFORM} = "linux/arm/v7" ]; then \
+    if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
         apt-get install --assume-yes gcc-arm-linux-gnueabihf; \
+    fi
+
+RUN \
+    mkdir .cargo && \
+    echo '[net]' >> .cargo/config.toml && \
+    echo 'git-fetch-with-cli = true' >> .cargo/config.toml && \
+    if [ "${TARGETPLATFORM}" = "linux/amd64" ]; then \
+        echo '[target.x86_64-unknown-linux-gnu]' >> .cargo/config.toml; \
+        echo 'linker = "x86-64-linux-gnu-gcc"' >> .cargo/config.toml; \
+    fi && \
+    if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        echo '[target.aarch64-unknown-linux-gnu]' >> .cargo/config.toml; \
+        echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml; \
+    fi && \
+    if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
+        echo '[target.armv7-unknown-linux-gnueabihf]' >> .cargo/config.toml; \
+        echo 'linker = "arm-linux-gnueabihf-gcc"' >> .cargo/config.toml; \
     fi
 
 RUN rustup target add ${RUSTTARGET}
 
 WORKDIR /usr/src/patched_porobot/
 COPY ./ ./
-RUN mv ./.cargo/config-docker.toml ./.cargo/config.toml
 
 RUN cargo build --all-features --bins --release --target=${RUSTTARGET}
 
