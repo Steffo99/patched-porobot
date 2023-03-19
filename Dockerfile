@@ -21,17 +21,19 @@ RUN \
     mkdir .cargo && \
     echo '[net]' >> .cargo/config.toml && \
     echo 'git-fetch-with-cli = true' >> .cargo/config.toml && \
-    if [ "${TARGETPLATFORM}" = "linux/amd64" ]; then \
-        echo '[target.x86_64-unknown-linux-gnu]' >> .cargo/config.toml; \
-        echo 'linker = "x86-64-linux-gnu-gcc"' >> .cargo/config.toml; \
-    fi && \
-    if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
-        echo '[target.aarch64-unknown-linux-gnu]' >> .cargo/config.toml; \
-        echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml; \
-    fi && \
-    if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
-        echo '[target.armv7-unknown-linux-gnueabihf]' >> .cargo/config.toml; \
-        echo 'linker = "arm-linux-gnueabihf-gcc"' >> .cargo/config.toml; \
+    if [ "${BUILDPLATFORM}" != "${TARGETPLATFORM}" ]; then \
+        if [ "${TARGETPLATFORM}" = "linux/amd64" ]; then \
+            echo '[target.x86_64-unknown-linux-gnu]' >> .cargo/config.toml; \
+            echo 'linker = "x86-64-linux-gnu-gcc"' >> .cargo/config.toml; \
+        fi && \
+        if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+            echo '[target.aarch64-unknown-linux-gnu]' >> .cargo/config.toml; \
+            echo 'linker = "aarch64-linux-gnu-gcc"' >> .cargo/config.toml; \
+        fi && \
+        if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
+            echo '[target.armv7-unknown-linux-gnueabihf]' >> .cargo/config.toml; \
+            echo 'linker = "arm-linux-gnueabihf-gcc"' >> .cargo/config.toml; \
+        fi \
     fi
 
 RUN rustup target add ${RUSTTARGET}
