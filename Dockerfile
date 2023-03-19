@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 rust:1.68-bullseye AS builder
+FROM --platform=${BUILDPLATFORM} rust:1.68-bullseye AS builder
 ARG TARGETPLATFORM
 ARG RUSTTARGET
 
@@ -7,6 +7,9 @@ RUN apt-get update && \
 
 RUN \
     echo "Building for ${TARGETPLATFORM}." && \
+    if [ ${TARGETPLATFORM} = "linux/amd64" ]; then \
+        apt-get install --assume-yes gcc-x86-64-linux-gnu; \
+    fi && \
     if [ ${TARGETPLATFORM} = "linux/arm64" ]; then \
         apt-get install --assume-yes gcc-aarch64-linux-gnu; \
     fi && \

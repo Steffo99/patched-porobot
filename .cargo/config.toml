@@ -1,6 +1,9 @@
 [net]
 git-fetch-with-cli = true
 
+[target.x86_64-unknown-linux-gnu]
+linker = "x86-64-linux-gnu-gcc"
+
 [target.aarch64-unknown-linux-gnu]
 linker = "aarch64-linux-gnu-gcc"
 
