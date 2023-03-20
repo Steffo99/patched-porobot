@@ -922,4 +922,26 @@ mod tests {
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
         Deck::singleton, true
     );
+
+    // From https://lor.cardsrealm.com/en-us/articles/new-game-modes-in-lor-unlimited-and-free-decks-to-discover
+    test_legality!(
+        test_legality_unlchamp_gwenkataelise,
+        deck!("CUCACAIDFIAQEAYJAMDAKDAQBYCACBJVCYUDCAQCAEBRGOAEAYCSMHANEAAQCAIDFY"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_norraveigarsenna,
+        deck!("CUCQCBIFBEAQMBIUAIAQKKABAMDAUDYVCECAKCS5MIY2MAICAECQVGABAECQKCADAECQVVIBAECQKCQBAYFBO"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_poros,
+        deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_paltri,
+        deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
+        Deck::unlimited_champions, false
+    );    
 }
