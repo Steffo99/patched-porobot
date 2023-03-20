@@ -226,8 +226,8 @@ impl EventHandler {
                 None => format!("```text\n{}\n```", deck.to_code(DeckCodeFormat::F1).expect("to be able to serialize the deck code")),
             });
 
-        let (format, regions) = if let Some(regions) = deck.standard(&engine.cards) {
-            ("<:neutral:1056022926660481094> Standard", regions)
+        let (format, regions) = if let Some(regions) = deck.eternal(&engine.cards) {
+            ("<:neutral:1056022926660481094> Eternal", regions)
         } else if let Some(regions) = deck.singleton(&engine.cards) {
             ("<:neutral:1056022926660481094> Singleton", regions)
         } else {
