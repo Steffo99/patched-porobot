@@ -228,6 +228,8 @@ impl EventHandler {
 
         let (format, regions) = if let Some(regions) = deck.eternal(&engine.cards) {
             ("<:neutral:1056022926660481094> Eternal", regions)
+        } else if let Some(regions) = deck.unlimited_champions(&engine.cards) {
+            ("<:neutral:1056022926660481094> Unlimited Champions", regions)
         } else if let Some(regions) = deck.singleton(&engine.cards) {
             ("<:neutral:1056022926660481094> Singleton", regions)
         } else {
