@@ -77,8 +77,6 @@ impl SetBundle {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     macro_rules! test_fetch {
         ( $id:ident, $version:literal, $locale:literal, $set:literal ) => {
             #[cfg(feature = "fetch")]

@@ -80,8 +80,6 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     macro_rules! test_fetch {
         ( $id:ident, $version:literal, $locale:literal ) => {
             #[cfg(feature = "fetch")]
