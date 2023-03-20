@@ -563,6 +563,11 @@ impl Deck {
     }
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
+    ///
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Standard* play.
+    /// - `Some(regions)` if the deck is legal for *Standard* play considering the specified region set.
     pub fn singleton(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.card_count() == 40;
