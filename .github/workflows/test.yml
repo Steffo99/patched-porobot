@@ -1,0 +1,37 @@
+﻿name: "Test suite"
+
+on:
+  # Modification of a project file in the main branch
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "benches/**"
+      - "examples/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  # Pull request to the main branch modifying a project file
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "benches/**"
+      - "examples/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  # Triggered by a new release
+  workflow_call:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  clippy:
+    uses: Steffo99/.github/.github/workflows/test-cargo-clippy.yml@main
+
+  test:
+    uses: Steffo99/.github/.github/workflows/test-cargo-test.yml@main

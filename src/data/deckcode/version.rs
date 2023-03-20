@@ -77,9 +77,6 @@ impl DeckCodeVersioned for CardRegion {
             CardRegion::BandleCity => Some(DeckCodeVersion::V4),
 
             CardRegion::Runeterra => Some(DeckCodeVersion::V5),
-            CardRegion::Jhin => Some(DeckCodeVersion::V5),
-            CardRegion::Evelynn => Some(DeckCodeVersion::V5),
-            CardRegion::Bard => Some(DeckCodeVersion::V5),
 
             _ => None,
         }

@@ -9,6 +9,8 @@ use tantivy::query::{QueryParser, QueryParserError};
 use tantivy::schema::{Field, NumericOptions, Schema, TextOptions};
 use tantivy::tokenizer::TextAnalyzer;
 use tantivy::{Document, Index, IndexReader, IndexWriter};
+use crate::data::setbundle::r#type::CardType;
+use crate::data::setbundle::supertype::CardSupertype;
 
 /// The search engine.
 ///
@@ -109,7 +111,7 @@ impl CardSearchEngine {
     /// |---------------|----------------------------------|-------------|
     /// | `code`        | [code](Self::options_code)       | The internal [card code](Card::code), such as `01IO012`. |
     /// | `name`        | [text](Self::options_text)       | The [name of the card](Card::name). |
-    /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::type), such as `Unit`. |
+    /// | `type`        | [keyword](Self::options_keyword) | The [type of the card](Card::r#type), such as `Unit`. |
     /// | `set`         | [keyword](Self::options_keyword) | The [set the card belongs to](Card::set), such as `Beyond the Bandlewood`. |
     /// | `rarity`      | [keyword](Self::options_keyword) | The [rarity of the card](Card::rarity), such as `Rare`, or `Champion`. |
     /// | `collectible` | [number](Self::options_number)   | `1` if the [card is collectible](Card::collectible), `0` otherwise. |
@@ -123,6 +125,8 @@ impl CardSearchEngine {
     /// | `levelup`     | [text](Self::options_text)       | The [level up text of the champion](Card::localized_levelup_text). |
     /// | `flavor`      | [text](Self::options_text)       | The [flavor text of the card](Card::localized_flavor_text). |
     /// | `artist`      | [text](Self::options_text)       | The [artist(s) of the card's illustration](Card::artist_name). |
+    /// | `subtypes`    | [text](Self::options_text)       | The [subtypes of the card](Card::subtypes), such as `Poro` or `Yordle`. |
+    /// | `level`       | [number](Self::options_number)   | `0` if a non-champion, `1` if not leveled, `2` if leveled, `3` if ascended. |
     ///
     /// Use [Self::schema_fields] to create the [CardSchemaFields] object containing all of them.
     ///
@@ -145,15 +149,15 @@ impl CardSearchEngine {
         schema_builder.add_text_field("regions", options_keyword.clone());
         schema_builder.add_u64_field("attack", options_number.clone());
         schema_builder.add_u64_field("cost", options_number.clone());
-        schema_builder.add_u64_field("health", options_number);
+        schema_builder.add_u64_field("health", options_number.clone());
         schema_builder.add_text_field("spellspeed", options_keyword.clone());
         schema_builder.add_text_field("keywords", options_keyword.clone());
         schema_builder.add_text_field("description", options_text.clone());
         schema_builder.add_text_field("levelup", options_text.clone());
         schema_builder.add_text_field("flavor", options_text.clone());
         schema_builder.add_text_field("artist", options_text);
-        schema_builder.add_text_field("subtypes", options_keyword.clone());
-        schema_builder.add_text_field("supertype", options_keyword);
+        schema_builder.add_text_field("subtypes", options_keyword);
+        schema_builder.add_u64_field("level", options_number);
 
         schema_builder.build()
     }
@@ -212,9 +216,9 @@ impl CardSearchEngine {
             subtypes: schema
                 .get_field("subtypes")
                 .expect("schema to have a 'subtypes' field"),
-            supertype: schema
-                .get_field("supertype")
-                .expect("schema to have a 'supertype' field"),
+            level: schema
+                .get_field("level")
+                .expect("schema to have a 'level' field"),
         }
     }
 
@@ -250,7 +254,7 @@ impl CardSearchEngine {
         use tantivy::doc;
 
         doc!(
-            fields.code => card.code.full,
+            fields.code => card.code.clone().full,
             fields.name => card.name,
             fields.r#type => String::from(&card.r#type),
             fields.set => card.set
@@ -261,7 +265,7 @@ impl CardSearchEngine {
                 .localized(&globals.rarities)
                 .map(|cr| cr.name.to_owned())
                 .unwrap_or_else(String::new),
-            fields.collectible => if card.collectible {1u64} else {0u64},
+            fields.collectible => u64::from(card.collectible),
             fields.regions => card.regions.iter()
                 .map(|region| region
                     .localized(&globals.regions)
@@ -282,18 +286,35 @@ impl CardSearchEngine {
                     .unwrap_or_else(String::new))
                 .join(" "),
             fields.description => card.localized_description_text,
-            fields.levelup => card.localized_levelup_text,
+            fields.levelup => card.localized_levelup_text.clone(),
             fields.flavor => card.localized_flavor_text,
             fields.artist => card.artist_name,
             fields.subtypes => card.subtypes.join(" "),
-            fields.supertype => card.supertype,
+            fields.level => {
+                if card.r#type != CardType::Unit || card.supertype != CardSupertype::Champion {
+                    0u64
+                }
+                else if card.subtypes.contains(&"ASCENDED".to_string()) {
+                    if card.localized_levelup_text.contains(&"Sun Disc".to_string()) {
+                        2u64
+                    } else if card.localized_levelup_text.is_empty() {
+                        3u64
+                    } else {
+                        1u64
+                    }
+                } else if card.localized_levelup_text.is_empty() {
+                    2u64
+                } else {
+                    1u64
+                }
+            }
         )
     }
 
     /// Build the [QueryParser] of the search engine.
     fn parser(index: &Index, fields: CardSchemaFields) -> QueryParser {
         let mut parser = QueryParser::for_index(
-            &index,
+            index,
             vec![
                 fields.code,
                 fields.name,
@@ -303,7 +324,6 @@ impl CardSearchEngine {
                 fields.flavor,
                 fields.artist,
                 fields.subtypes,
-                fields.supertype,
             ],
         );
         parser.set_conjunction_by_default();
@@ -381,7 +401,7 @@ struct CardSchemaFields {
     pub code: Field,
     /// [Card::name].
     pub name: Field,
-    /// English [Card::type].
+    /// English [Card::r#type].
     pub r#type: Field,
     /// Localized [Card::set].
     pub set: Field,
@@ -411,6 +431,11 @@ struct CardSchemaFields {
     pub artist: Field,
     /// Space-separated [Card::subtypes].
     pub subtypes: Field,
-    /// [Card::supertype].
-    pub supertype: Field,
+    /// Level of the champion. 0 if not a champion. 1 if not leveled. 2 if leveled. 3 if ascended.
+    pub level: Field,
+}
+
+#[cfg(feature = "discord")]
+impl serenity::prelude::TypeMapKey for CardSearchEngine {
+    type Value = CardSearchEngine;
 }

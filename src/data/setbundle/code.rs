@@ -2,7 +2,7 @@
 
 use crate::data::setbundle::card::{Card, CardIndex};
 
-/// The internal code of a [Card](super::card::Card).
+/// The internal code of a [`Card`].
 ///
 /// It is a ASCII string composed of the following segments:
 /// - `0..2`: set;
@@ -67,8 +67,13 @@ impl CardCode {
     /// The token segment of the code.
     ///
     /// In valid codes, it may either be an empty string, or 2-ASCII-characters long.
-    pub fn token(&self) -> &str {
-        &self.full[7..9]
+    pub fn token(&self) -> Option<&str> {
+        if self.full.len() >= 9 {
+            Some(&self.full[7..9])
+        }
+        else {
+            None
+        }
     }
 
     /// Create a new card code given the set and region strings and the card number.
@@ -96,5 +101,12 @@ impl From<CardCode> for String {
 impl From<String> for CardCode {
     fn from(full: String) -> Self {
         CardCode { full }
+    }
+}
+
+/// Extract the card code from a [`Card`].
+impl From<Card> for CardCode {
+    fn from(c: Card) -> Self {
+        c.code
     }
 }

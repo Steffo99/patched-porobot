@@ -14,13 +14,14 @@ use teloxide::types::{
 
 /// Convert a [Card] into a [InlineQueryResult].
 pub fn card_to_inlinequeryresult(
+    crystal: &str,
     globals: &LocalizedGlobalsIndexes,
     card: &Card,
 ) -> InlineQueryResult {
     InlineQueryResult::Photo(InlineQueryResultPhoto {
-        id: card.code.full.to_owned(),
+        id: format!("{}:{}", &crystal, &card.code.full),
         title: Some(card.name.to_owned()),
-        caption: Some(display_card(&globals, &card)),
+        caption: Some(display_card(globals, card)),
         parse_mode: Some(ParseMode::Html),
         photo_url: card
             .main_art()
@@ -44,19 +45,24 @@ pub fn card_to_inlinequeryresult(
 }
 
 /// Convert a [Deck] with an optional name into a [InlineQueryResult].
-pub fn deck_to_inlinequeryresult(index: &CardIndex, deck: &Deck, name: &Option<&str>) -> InlineQueryResult {
+pub fn deck_to_inlinequeryresult(
+    crystal: &str,
+    index: &CardIndex,
+    deck: &Deck,
+    name: &Option<&str>
+) -> InlineQueryResult {
     let code = deck
         .to_code(DeckCodeFormat::F1)
         .expect("serialized deck to deserialize properly");
 
     InlineQueryResult::Article(InlineQueryResultArticle {
-        id: format!("{:x}", md5::compute(&code)),
+        id: format!("{}:{:x}", &crystal, md5::compute(&code)),
         title: match &name {
             Some(name) => format!(r#"Deck "{}" with {} cards"#, name, deck.contents.len()),
             None => format!("Deck with {} cards", deck.contents.len())
         },
         input_message_content: InputMessageContent::Text(InputMessageContentText {
-            message_text: display_deck(index, deck, &code, &name),
+            message_text: display_deck(index, deck, &code, name),
             parse_mode: Some(ParseMode::Html),
             entities: None,
             disable_web_page_preview: Some(true),

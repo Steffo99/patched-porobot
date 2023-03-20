@@ -30,16 +30,22 @@ pub enum CardType {
     Unsupported,
 }
 
-impl From<&CardType> for String {
+impl From<&CardType> for &'static str {
     fn from(r#type: &CardType) -> Self {
         match r#type {
-            CardType::Spell => String::from("Spell"),
-            CardType::Unit => String::from("Unit"),
-            CardType::Ability => String::from("Ability"),
-            CardType::Landmark => String::from("Landmark"),
-            CardType::Trap => String::from("Trap"),
-            CardType::Unsupported => String::from("Unknown"),
+            CardType::Spell => "Spell",
+            CardType::Unit => "Unit",
+            CardType::Ability => "Ability",
+            CardType::Landmark => "Landmark",
+            CardType::Trap => "Trap",
+            CardType::Unsupported => "Unknown",
         }
+    }
+}
+
+impl From<&CardType> for String {
+    fn from(cs: &CardType) -> Self {
+        <&CardType as Into<&'static str>>::into(cs).to_string()
     }
 }
 

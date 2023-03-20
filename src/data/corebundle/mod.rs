@@ -33,7 +33,7 @@ impl CoreBundle {
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
         let globals_path = &bundle_path
-            .join(&locale)
+            .join(locale)
             .join("data")
             .join(format!("globals-{}.json", &locale));
 
@@ -58,6 +58,23 @@ impl CoreBundle {
 
         Ok(Self {globals})
     }
+}
+
+
+/// Create [`globals::LocalizedGlobalsIndexes`] from the core bundle in the current working directory.
+///
+/// This function tries to load data from the first directory matching the [glob] `./data/core-*`.
+pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
+    let path = glob::glob("./data/core-*")
+        .expect("glob to be a valid glob")
+        .filter_map(Some)
+        .find_map(Result::ok)
+        .expect("a valid core bundle to exist");
+
+    let core = CoreBundle::load(&path)
+        .expect("to be able to load `core-en_us` bundle");
+
+    globals::LocalizedGlobalsIndexes::from(core.globals)
 }
 
 

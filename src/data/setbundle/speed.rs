@@ -2,7 +2,7 @@
 
 use crate::data::corebundle::speed::{LocalizedSpellSpeed, LocalizedSpellSpeedIndex};
 
-/// A possible [Spell](super::type::CardType::Spell) speed.
+/// A possible [`Spell`](super::type::CardType::Spell) speed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum SpellSpeed {
     /// Non-spell cards have this speed.
@@ -17,11 +17,11 @@ pub enum SpellSpeed {
 }
 
 impl SpellSpeed {
-    /// Get the [LocalizedSpellSpeed] associated with this [SpellSpeed].
+    /// Get the [`LocalizedSpellSpeed`] associated with this [`SpellSpeed`].
     ///
-    /// Returns [Option::None] if no matching [LocalizedSpellSpeed] was found, for example spell speeds missing from the index.
+    /// Returns [`None`] if no matching [`LocalizedSpellSpeed`] was found, for example spell speeds missing from the index.
     ///
-    /// Equivalent to calling [LocalizedSpellSpeedIndex::get].
+    /// Equivalent to calling [`LocalizedSpellSpeedIndex::get`].
     pub fn localized<'hm>(
         &self,
         hm: &'hm LocalizedSpellSpeedIndex,

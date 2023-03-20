@@ -1,6 +1,6 @@
 [package]
 name = "patched_porobot"
-version = "0.7.0"
+version = "0.9.2"
 authors = ["Stefano Pigozzi <me@steffo.eu>"]
 edition = "2021"
 description = "Legends of Runeterra card database utilities and bots"
@@ -9,39 +9,46 @@ license = "AGPL-3.0-or-later"
 keywords = ["game", "deserialization", "legends-of-runeterra", "bot", "search"]
 categories = ["games", "parser-implementations"]
 
+
 [package.metadata.docs.rs]
 all-features = true
-cargo-args = ["--bins", "--lib"]
+cargo-args = ["--bins"]
 rustdoc-args = ["--document-private-items"]
 
 
 [dependencies]
-# required
+# base
 log = { version = "0.4.17" }
 itertools = { version = "0.10.3" }
 regex = { version = "1.6.0" }
 lazy_static = { version = "1.4.0" }
 data-encoding = { version = "2.3.2" }
 varint-rs = { version = "2.2.0" }
+glob = { version = "0.3.0" }
+reqwest = { version = "0.11.11", features = ["rustls-tls", "json"], default-features = false }
+# exec
+pretty_env_logger = { version = "0.4.0", optional = true }
+# data
 serde = { version = "1.0.140", features = ["derive"] }
 serde_json = { version = "1.0.82" }
-# optional
-reqwest = { version = "0.11.11", features = ["json"], optional = true }
-pretty_env_logger = { version = "0.4.0", optional = true }
-glob = { version = "0.3.0", optional = true }
-tantivy = { version = "0.18.0", optional = true }
-teloxide = { version = "0.10.1", optional = true }
-tokio = { version =  "1.20.1", features = ["rt-multi-thread", "macros"], optional = true }
+# search
+tantivy = { version = "0.19.1", optional = true }
+# telegram
+teloxide = { version = "0.12.0", features = ["rustls", "ctrlc_handler", "auto-send"], default-features = false, optional = true }
+tokio = { version =  "1.20.3", features = ["rt-multi-thread", "macros"], optional = true }
 md5 = { version = "0.7.0", optional = true }
+rand = { version = "0.8.5", optional = true }
+# discord
+serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
+anyhow = { version = "^1.0.68", optional = true }
+# matrix
 
 
 [features]
-# data = []  # Always included
-fetch = ["reqwest"]
-exec = ["pretty_env_logger", "glob"]
+exec = ["pretty_env_logger"]
 search = ["tantivy"]
-telegram = ["exec", "search", "teloxide", "reqwest", "tokio", "md5"]
-discord = ["exec", "search"]
+telegram = ["exec", "search", "teloxide", "tokio", "md5", "rand"]
+discord = ["exec", "search", "serenity", "tokio", "anyhow"]
 matrix = ["exec", "search"]
 
 
