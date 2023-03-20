@@ -579,6 +579,23 @@ impl Deck {
             true => regions,
         }
     }
+
+    /// Check if the [`Deck`] is legal to play in the *Unlimited Champions* format.
+    /// 
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Unlimited Champions* play.
+    /// - `Some(regions)` if the deck is legal for *Unlimited Champions* play considering the specified region set.
+    pub fn unlimited_champions(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
+        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let cards_limit = self.card_count() == 40;
+        let regions = self.regions(cards, 2);
+
+        match copies_limit && cards_limit {
+            false => None,
+            true => regions,
+        }
+    }
 }
 
 /// An error occoured while decoding a [`Deck`] from a code.
