@@ -45,7 +45,6 @@ impl CoreBundle {
     }
 
     /// Fetch from `base_url` the Core Bundle data with the given `locale`.
-    #[cfg(feature = "fetch")]
     pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str) -> LoadingResult<Self> {
         let globals = client
             .get(format!("{base_url}/core/{locale}/data/globals-{locale}.json"))
@@ -82,7 +81,6 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 mod tests {
     macro_rules! test_fetch {
         ( $id:ident, $version:literal, $locale:literal ) => {
-            #[cfg(feature = "fetch")]
             #[tokio::test]
             async fn $id() {
                 let client = reqwest::Client::new();

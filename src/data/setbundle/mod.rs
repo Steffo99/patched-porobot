@@ -59,7 +59,6 @@ impl SetBundle {
     }
 
     /// Fetch from `base_url` the Set Bundle data of the given `set` with the given `locale`.
-    #[cfg(feature = "fetch")]
     pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str, set: &str) -> LoadingResult<Self> {
         let cards = client
             .get(format!("{base_url}/{set}/{locale}/data/{set}-{locale}.json"))
@@ -79,7 +78,6 @@ impl SetBundle {
 mod tests {
     macro_rules! test_fetch {
         ( $id:ident, $version:literal, $locale:literal, $set:literal ) => {
-            #[cfg(feature = "fetch")]
             #[tokio::test]
             async fn $id() {
                 let client = reqwest::Client::new();
