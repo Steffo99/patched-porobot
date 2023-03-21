@@ -83,8 +83,12 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 pub async fn create_globalindexes_from_dd_latest_en_us() -> globals::LocalizedGlobalsIndexes {
     let client = reqwest::Client::new();
 
+    log::debug!("Fetching latest CoreBundle from Data Dragon...");
+
     let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us").await
         .expect("to be able to fetch `core-en_us` bundle");
+
+    log::debug!("Fetched latest CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", &core.globals.regions.len(), &core.globals.keywords.len(), &core.globals.rarities.len(), &core.globals.sets.len(), &core.globals.spell_speeds.len(), &core.globals.vocab_terms.len());
 
     globals::LocalizedGlobalsIndexes::from(core.globals)
 }

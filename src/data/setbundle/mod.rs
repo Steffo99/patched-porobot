@@ -168,8 +168,13 @@ pub async fn create_cardindex_from_dd_latest_en_us() -> card::CardIndex {
     let mut index = card::CardIndex::new();
 
     for set_code in DD_KNOWN_SET_CODES {
+        log::debug!("Fetching SetBundle with code {} from Data Dragon...", &set_code);
+
         let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us", set_code).await
             .expect("to be able to fetch set bundle");
+
+        log::debug!("Fetched SetBundle with code {}: it defines {} cards!", &set_code, set.cards.len());
+
         for card in set.cards {
             index.insert(card.code.clone(), card);
         }
