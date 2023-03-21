@@ -3,8 +3,8 @@
 use std::env;
 use log::*;
 use serenity::prelude::*;
-use crate::data::corebundle::create_globalindexes_from_wd;
-use crate::data::setbundle::create_cardindex_from_wd;
+use crate::data::corebundle::{create_globalindexes_from_dd_latest_en_us, create_globalindexes_from_wd};
+use crate::data::setbundle::{create_cardindex_from_dd_latest_en_us, create_cardindex_from_wd};
 use crate::discord::handler::EventHandler;
 use crate::search::cardsearch::CardSearchEngine;
 
@@ -14,11 +14,11 @@ pub async fn main() {
     debug!("Logger initialized successfully!");
 
     debug!("Creating LocalizedGlobalIndexes...");
-    let globals = create_globalindexes_from_wd();
+    let globals = create_globalindexes_from_dd_latest_en_us().await;
     debug!("Created LocalizedGlobalIndexes!");
 
     debug!("Creating CardIndex...");
-    let cards = create_cardindex_from_wd();
+    let cards = create_cardindex_from_dd_latest_en_us().await;
     debug!("Created CardIndex!");
 
     debug!("Creating CardSearchEngine...");
