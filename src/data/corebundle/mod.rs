@@ -77,6 +77,19 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 }
 
 
+/// Create [`globals::LocalizedGlobalsIndexes`] from the latest english data in Data Dragon.
+///
+/// This function tries to load data from `https://dd.b.pvp.net/latest`.
+pub async fn create_globalindexes_from_dd_latest_en_us() -> globals::LocalizedGlobalsIndexes {
+    let client = reqwest::Client::new();
+
+    let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us").await
+        .expect("to be able to fetch `core-en_us` bundle");
+
+    globals::LocalizedGlobalsIndexes::from(core.globals)
+}
+
+
 #[cfg(test)]
 mod tests {
     macro_rules! test_fetch {
