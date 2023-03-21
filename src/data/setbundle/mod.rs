@@ -145,3 +145,35 @@ pub fn create_cardindex_from_wd() -> card::CardIndex {
     create_cardindex_from_paths(paths)
 }
 
+/// List of all known Data Dragon set codes.
+///
+/// See [the Riot Developer Portal](https://developer.riotgames.com/docs/lor#data-dragon_set-bundles) for more details.
+///
+/// Not related with [`set::CardSet`].
+pub const DD_KNOWN_SET_CODES: [&str; 7] = [
+    "set1",
+    "set2",
+    "set3",
+    "set4",
+    "set5",
+    "set6",
+    "set6cde",
+];
+
+/// Create a [`card::CardIndex`] from the latest known english data in Data Dragon.
+///
+/// This function tries to load data from `https://dd.b.pvp.net/latest`.
+pub async fn create_cardindex_from_dd_latest_en_us() -> card::CardIndex {
+    let client = reqwest::Client::new();
+    let mut index = card::CardIndex::new();
+
+    for set_code in DD_KNOWN_SET_CODES {
+        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us", set_code).await
+            .expect("to be able to fetch set bundle");
+        for card in set.cards {
+            index.insert(card.code.clone(), card);
+        }
+    };
+
+    index
+}
