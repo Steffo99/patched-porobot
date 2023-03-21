@@ -3,8 +3,8 @@
 use std::env;
 use log::*;
 use serenity::prelude::*;
-use crate::data::corebundle::{create_globalindexes_from_dd_latest_en_us, create_globalindexes_from_wd};
-use crate::data::setbundle::{create_cardindex_from_dd_latest_en_us, create_cardindex_from_wd};
+use crate::data::corebundle::create_globalindexes_from_dd_latest_en_us;
+use crate::data::setbundle::create_cardindex_from_dd_latest_en_us;
 use crate::discord::handler::EventHandler;
 use crate::search::cardsearch::CardSearchEngine;
 

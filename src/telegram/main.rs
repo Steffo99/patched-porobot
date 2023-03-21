@@ -1,7 +1,7 @@
 //! Module defining the [`main`] function for `patched_porobot_telegram`.
 
-use crate::data::corebundle::{create_globalindexes_from_dd_latest_en_us, create_globalindexes_from_wd};
-use crate::data::setbundle::{create_cardindex_from_dd_latest_en_us, create_cardindex_from_wd};
+use crate::data::corebundle::create_globalindexes_from_dd_latest_en_us;
+use crate::data::setbundle::create_cardindex_from_dd_latest_en_us;
 use crate::search::cardsearch::CardSearchEngine;
 use crate::telegram::handler::{inline_query_handler, message_handler};
 use log::*;
