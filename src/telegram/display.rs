@@ -204,8 +204,11 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
 
     let mut tags: Vec<&'static str> = vec![];
 
-    let regions = if let Some(regions) = deck.standard(index) {
-        tags.push("#Standard");
+    let regions = if let Some(regions) = deck.eternal(index) {
+        tags.push("#Eternal");
+        regions
+    } else if let Some(regions) = deck.unlimited_champions(index) {
+        tags.push("#UnlimitedChampions");
         regions
     } else if let Some(regions) = deck.singleton(index) {
         tags.push("#Singleton");
