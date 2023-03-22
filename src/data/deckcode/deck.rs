@@ -440,7 +440,7 @@ impl Deck {
 
     /// Get the number of cards in the deck.
     ///
-    /// In the *Standard* and *Singleton* formats, this is never more than 40.
+    /// In the *Eternal* and *Singleton* formats, this is never more than 40.
     ///
     /// # Example
     ///
@@ -460,7 +460,7 @@ impl Deck {
 
     /// Get the number of champion cards in the deck.
     ///
-    /// In the *Standard* and *Singleton* format, this is never more than 6.
+    /// In the *Eternal* and *Singleton* format, this is never more than 6.
     ///
     /// # Example
     ///
@@ -544,13 +544,13 @@ impl Deck {
         }
     }
 
-    /// Check if the [`Deck`] is legal for play in the *Standard* format.
+    /// Check if the [`Deck`] is legal for play in the *Eternal* format.
     ///
     /// # Returns
     ///
-    /// - `None` if the deck is not legal for *Standard* play.
-    /// - `Some(regions)` if the deck is legal for *Standard* play considering the specified region set.
-    pub fn standard(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
+    /// - `None` if the deck is not legal for *Eternal* play.
+    /// - `Some(regions)` if the deck is legal for *Eternal* play considering the specified region set.
+    pub fn eternal(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.card_count() == 40;
         let champions_limit = self.champions_count(cards) <= 6;
@@ -563,6 +563,11 @@ impl Deck {
     }
 
     /// Check if the [`Deck`] is legal for play in the *Singleton* format.
+    ///
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Singleton* play.
+    /// - `Some(regions)` if the deck is legal for *Singleton* play considering the specified region set.
     pub fn singleton(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.card_count() == 40;
@@ -570,6 +575,23 @@ impl Deck {
         let regions = self.regions(cards, 3);
 
         match copies_limit && cards_limit && champions_limit {
+            false => None,
+            true => regions,
+        }
+    }
+
+    /// Check if the [`Deck`] is legal to play in the *Unlimited Champions* format.
+    /// 
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Unlimited Champions* play.
+    /// - `Some(regions)` if the deck is legal for *Unlimited Champions* play considering the specified region set.
+    pub fn unlimited_champions(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
+        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let cards_limit = self.card_count() == 40;
+        let regions = self.regions(cards, 2);
+
+        match copies_limit && cards_limit {
             false => None,
             true => regions,
         }
@@ -855,24 +877,24 @@ mod tests {
     }
 
     test_legality!(
-        test_legality_standard_lonelyporo1,
+        test_legality_eternal_lonelyporo1,
         deck!("CEAAAAIBAEAQQ"),
-        Deck::standard, false
+        Deck::eternal, false
     );
     test_legality!(
-        test_legality_standard_twistedshrimp,
+        test_legality_eternal_twistedshrimp,
         deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
-        Deck::standard, true
+        Deck::eternal, true
     );
     test_legality!(
-        test_legality_standard_poros,
+        test_legality_eternal_poros,
         deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
-        Deck::standard, true
+        Deck::eternal, true
     );
     test_legality!(
-        test_legality_standard_sand,
+        test_legality_eternal_sand,
         deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
-        Deck::standard, true
+        Deck::eternal, true
     );
 
     test_legality!(
@@ -900,4 +922,26 @@ mod tests {
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
         Deck::singleton, true
     );
+
+    // From https://lor.cardsrealm.com/en-us/articles/new-game-modes-in-lor-unlimited-and-free-decks-to-discover
+    test_legality!(
+        test_legality_unlchamp_gwenkataelise,
+        deck!("CUCACAIDFIAQEAYJAMDAKDAQBYCACBJVCYUDCAQCAEBRGOAEAYCSMHANEAAQCAIDFY"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_norraveigarsenna,
+        deck!("CUCQCBIFBEAQMBIUAIAQKKABAMDAUDYVCECAKCS5MIY2MAICAECQVGABAECQKCADAECQVVIBAECQKCQBAYFBO"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_poros,
+        deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
+        Deck::unlimited_champions, true
+    );
+    test_legality!(
+        test_legality_unlchamp_paltri,
+        deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
+        Deck::unlimited_champions, false
+    );    
 }
