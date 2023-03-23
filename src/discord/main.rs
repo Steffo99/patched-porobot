@@ -3,8 +3,8 @@
 use std::env;
 use log::*;
 use serenity::prelude::*;
-use crate::data::corebundle::create_globalindexes_from_dd_latest_en_us;
-use crate::data::setbundle::create_cardindex_from_dd_latest_en_us;
+use crate::data::corebundle::create_globalindexes_from_dd_latest;
+use crate::data::setbundle::create_cardindex_from_dd_latest;
 use crate::discord::handler::EventHandler;
 use crate::search::cardsearch::CardSearchEngine;
 
@@ -13,12 +13,17 @@ pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");
 
+    debug!("Detecting locale to use...");
+    let locale = env::var("DATA_DRAGON_LOCALE")
+        .expect("DATA_DRAGON_LOCALE to be set");
+    debug!("Using {} locale!", &locale);
+
     debug!("Creating LocalizedGlobalIndexes...");
-    let globals = create_globalindexes_from_dd_latest_en_us().await;
+    let globals = create_globalindexes_from_dd_latest(&locale).await;
     debug!("Created LocalizedGlobalIndexes!");
 
     debug!("Creating CardIndex...");
-    let cards = create_cardindex_from_dd_latest_en_us().await;
+    let cards = create_cardindex_from_dd_latest(&locale).await;
     debug!("Created CardIndex!");
 
     debug!("Creating CardSearchEngine...");

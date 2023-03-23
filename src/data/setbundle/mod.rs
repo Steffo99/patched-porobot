@@ -163,17 +163,17 @@ pub const DD_KNOWN_SET_CODES: [&str; 7] = [
 /// Create a [`card::CardIndex`] from the latest known english data in Data Dragon.
 ///
 /// This function tries to load data from `https://dd.b.pvp.net/latest`.
-pub async fn create_cardindex_from_dd_latest_en_us() -> card::CardIndex {
+pub async fn create_cardindex_from_dd_latest(locale: &str) -> card::CardIndex {
     let client = reqwest::Client::new();
     let mut index = card::CardIndex::new();
 
     for set_code in DD_KNOWN_SET_CODES {
-        log::debug!("Fetching SetBundle with code {} from Data Dragon...", &set_code);
+        log::debug!("Fetching {} SetBundle with code {} from Data Dragon...", locale, &set_code);
 
-        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us", set_code).await
+        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale, set_code).await
             .expect("to be able to fetch set bundle");
 
-        log::debug!("Fetched SetBundle with code {}: it defines {} cards!", &set_code, set.cards.len());
+        log::debug!("Fetched {} SetBundle with code {}: it defines {} cards!", locale, &set_code, set.cards.len());
 
         for card in set.cards {
             index.insert(card.code.clone(), card);

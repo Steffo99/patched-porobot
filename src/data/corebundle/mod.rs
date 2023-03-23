@@ -71,7 +71,7 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
         .expect("a valid core bundle to exist");
 
     let core = CoreBundle::load(&path)
-        .expect("to be able to load `core-en_us` bundle");
+        .expect("to be able to load CoreBundle bundle");
 
     globals::LocalizedGlobalsIndexes::from(core.globals)
 }
@@ -80,15 +80,15 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 /// Create [`globals::LocalizedGlobalsIndexes`] from the latest english data in Data Dragon.
 ///
 /// This function tries to load data from `https://dd.b.pvp.net/latest`.
-pub async fn create_globalindexes_from_dd_latest_en_us() -> globals::LocalizedGlobalsIndexes {
+pub async fn create_globalindexes_from_dd_latest(locale: &str) -> globals::LocalizedGlobalsIndexes {
     let client = reqwest::Client::new();
 
-    log::debug!("Fetching latest CoreBundle from Data Dragon...");
+    log::debug!("Fetching {} CoreBundle from Data Dragon...", locale);
 
-    let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", "en_us").await
-        .expect("to be able to fetch `core-en_us` bundle");
+    let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale).await
+        .expect("to be able to fetch CoreBundle");
 
-    log::debug!("Fetched latest CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", &core.globals.regions.len(), &core.globals.keywords.len(), &core.globals.rarities.len(), &core.globals.sets.len(), &core.globals.spell_speeds.len(), &core.globals.vocab_terms.len());
+    log::debug!("Fetched {} CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", locale, &core.globals.regions.len(), &core.globals.keywords.len(), &core.globals.rarities.len(), &core.globals.sets.len(), &core.globals.spell_speeds.len(), &core.globals.vocab_terms.len());
 
     globals::LocalizedGlobalsIndexes::from(core.globals)
 }

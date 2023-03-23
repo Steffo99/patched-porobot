@@ -1,7 +1,8 @@
 //! Module defining the [`main`] function for `patched_porobot_telegram`.
 
-use crate::data::corebundle::create_globalindexes_from_dd_latest_en_us;
-use crate::data::setbundle::create_cardindex_from_dd_latest_en_us;
+use std::env;
+use crate::data::corebundle::create_globalindexes_from_dd_latest;
+use crate::data::setbundle::create_cardindex_from_dd_latest;
 use crate::search::cardsearch::CardSearchEngine;
 use crate::telegram::handler::{inline_query_handler, message_handler};
 use log::*;
@@ -13,12 +14,17 @@ pub async fn main() {
     pretty_env_logger::init();
     debug!("Logger initialized successfully!");
 
+    debug!("Detecting locale to use...");
+    let locale = env::var("DATA_DRAGON_LOCALE")
+        .expect("DATA_DRAGON_LOCALE to be set");
+    debug!("Using {} locale!", &locale);
+
     debug!("Creating LocalizedGlobalIndexes...");
-    let globals = create_globalindexes_from_dd_latest_en_us().await;
+    let globals = create_globalindexes_from_dd_latest(&locale).await;
     debug!("Created LocalizedGlobalIndexes!");
 
     debug!("Creating CardIndex...");
-    let cards = create_cardindex_from_dd_latest_en_us().await;
+    let cards = create_cardindex_from_dd_latest(&locale).await;
     debug!("Created CardIndex!");
 
     debug!("Creating CardSearchEngine...");
