@@ -155,7 +155,7 @@ pub fn create_cardindex_from_wd() -> card::CardIndex {
 /// Create a [`card::CardIndex`] from the latest known data in Data Dragon.
 ///
 /// This function tries to load data from `https://dd.b.pvp.net/latest`.
-pub async fn create_cardindex_from_dd_latest(locale: &str, known_set_codes: &Vec<String>) -> card::CardIndex {
+pub async fn create_cardindex_from_dd_latest(locale: &str, known_set_codes: impl Iterator<Item = &str>) -> card::CardIndex {
     let client = reqwest::Client::new();
     let mut index = card::CardIndex::new();
 
