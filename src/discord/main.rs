@@ -18,12 +18,19 @@ pub async fn main() {
         .expect("DATA_DRAGON_LOCALE to be set");
     debug!("Using {} locale!", &locale);
 
+    debug!("Detecting set codes to fetch...");
+    let known_set_codes: Vec<String> = env::var("DATA_DRAGON_SET_CODES")
+        .expect("DATA_DRAGON_SET_CODES to be set")
+        .split(",")
+        .into();
+    debug!("Using set codes: {:#?}", &known_set_codes);
+
     debug!("Creating LocalizedGlobalIndexes...");
     let globals = create_globalindexes_from_dd_latest(&locale).await;
     debug!("Created LocalizedGlobalIndexes!");
 
     debug!("Creating CardIndex...");
-    let cards = create_cardindex_from_dd_latest(&locale).await;
+    let cards = create_cardindex_from_dd_latest(&known_set_codes, &locale).await;
     debug!("Created CardIndex!");
 
     debug!("Creating CardSearchEngine...");
