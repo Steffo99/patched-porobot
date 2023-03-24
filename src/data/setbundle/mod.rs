@@ -33,8 +33,9 @@ pub struct SetBundle {
 impl SetBundle {
     /// Load a Set Bundle directory to create a [SetBundle] instance.
     pub fn load(bundle_path: &Path) -> LoadingResult<Self> {
-        let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
+        log::debug!("Loading SetBundle from: {}", bundle_path.as_os_str().to_string_lossy());
 
+        let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
         let name = bundle_path
@@ -60,14 +61,20 @@ impl SetBundle {
 
     /// Fetch from `base_url` the Set Bundle data of the given `set` with the given `locale`.
     pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str, set: &str) -> LoadingResult<Self> {
+        let url = format!("{}/{}/{}/data/{}-{}.json", base_url, set, locale, set, locale);
+
+        log::debug!("Fetching SetBundle from {} ...", url);
+
         let cards = client
-            .get(format!("{base_url}/{set}/{locale}/data/{set}-{locale}.json"))
+            .get(url)
             .send()
             .await
             .map_err(LoadingError::RemoteFetching)?
             .json::<Vec<card::Card>>()
             .await
             .map_err(LoadingError::RemoteDeserializing)?;
+
+        log::debug!("Fetched SetBundle: it defines {} cards!", cards.len());
 
         Ok(Self {cards})
     }
@@ -153,12 +160,8 @@ pub async fn create_cardindex_from_dd_latest(locale: &str, known_set_codes: &Vec
     let mut index = card::CardIndex::new();
 
     for set_code in known_set_codes {
-        log::debug!("Fetching {} SetBundle with code {} from Data Dragon...", locale, &set_code);
-
         let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale, &set_code).await
             .expect("to be able to fetch set bundle");
-
-        log::debug!("Fetched {} SetBundle with code {}: it defines {} cards!", locale, &set_code, set.cards.len());
 
         for card in set.cards {
             index.insert(card.code.clone(), card);

@@ -28,6 +28,8 @@ pub struct CoreBundle {
 impl CoreBundle {
     /// Load a Core Bundle directory to create a [CoreBundle] instance.
     pub fn load(bundle_path: &Path) -> LoadingResult<Self> {
+        log::debug!("Loading CoreBundle from: {}", bundle_path.as_os_str().to_string_lossy());
+
         let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
 
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
@@ -46,14 +48,20 @@ impl CoreBundle {
 
     /// Fetch from `base_url` the Core Bundle data with the given `locale`.
     pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str) -> LoadingResult<Self> {
+        let url = format!("{}/core/{}/data/globals-{}.json", base_url, locale, locale);
+
+        log::debug!("Fetching CoreBundle from {} ...", &url);
+
         let globals = client
-            .get(format!("{base_url}/core/{locale}/data/globals-{locale}.json"))
+            .get(url)
             .send()
             .await
             .map_err(LoadingError::RemoteFetching)?
             .json::<globals::LocalizedGlobalsVecs>()
             .await
             .map_err(LoadingError::RemoteDeserializing)?;
+
+        log::debug!("Fetched CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", &globals.regions.len(), &globals.keywords.len(), &globals.rarities.len(), &globals.sets.len(), &globals.spell_speeds.len(), &globals.vocab_terms.len());
 
         Ok(Self {globals})
     }
@@ -83,12 +91,8 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 pub async fn create_globalindexes_from_dd_latest(locale: &str) -> globals::LocalizedGlobalsIndexes {
     let client = reqwest::Client::new();
 
-    log::debug!("Fetching {} CoreBundle from Data Dragon...", locale);
-
     let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale).await
         .expect("to be able to fetch CoreBundle");
-
-    log::debug!("Fetched {} CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", locale, &core.globals.regions.len(), &core.globals.keywords.len(), &core.globals.rarities.len(), &core.globals.sets.len(), &core.globals.spell_speeds.len(), &core.globals.vocab_terms.len());
 
     globals::LocalizedGlobalsIndexes::from(core.globals)
 }
