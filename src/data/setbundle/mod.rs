@@ -145,7 +145,7 @@ pub fn create_cardindex_from_wd() -> card::CardIndex {
     create_cardindex_from_paths(paths)
 }
 
-/// Create a [`card::CardIndex`] from the latest known english data in Data Dragon.
+/// Create a [`card::CardIndex`] from the latest known data in Data Dragon.
 ///
 /// This function tries to load data from `https://dd.b.pvp.net/latest`.
 pub async fn create_cardindex_from_dd_latest(known_set_codes: &Vec<String>, locale: &str) -> card::CardIndex {

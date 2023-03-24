@@ -77,7 +77,7 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
 }
 
 
-/// Create [`globals::LocalizedGlobalsIndexes`] from the latest english data in Data Dragon.
+/// Create [`globals::LocalizedGlobalsIndexes`] from the latest data in Data Dragon.
 ///
 /// This function tries to load data from `https://dd.b.pvp.net/latest`.
 pub async fn create_globalindexes_from_dd_latest(locale: &str) -> globals::LocalizedGlobalsIndexes {
