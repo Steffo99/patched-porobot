@@ -1,9 +1,5 @@
 //! Module defining [CardArt].
 
-use base64::Engine;
-use hmac::Mac;
-use std::env;
-
 /// The illustration of a [Card](super::card::Card), also referred to as an *art asset*.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
@@ -35,6 +31,8 @@ impl CardArt {
     /// Get the URL to convert the image at the given URL into JPG using imgproxy.
     #[cfg(feature = "jpg")]
     fn imgproxy_convert_to_jpg(url: &str) -> String {
+        use base64::Engine;
+
         let url = base64::prelude::BASE64_URL_SAFE.encode(url);
         let url = format!("/{url}.jpg");
 
@@ -51,6 +49,10 @@ impl CardArt {
     ///
     #[cfg(feature = "jpg")]
     fn imgproxy_authenticate_url(url: &str) -> String {
+        use base64::Engine;
+        use hmac::Mac;
+        use std::env;
+
         let key = env::var("POROXY_KEY")
             .expect("POROXY_KEY to be set");
         let key = hex::decode(key)
@@ -84,6 +86,8 @@ impl CardArt {
     ///
     #[cfg(feature = "jpg")]
     pub fn card_jpg(&self) -> String {
+        use std::env;
+
         let host = env::var("POROXY_HOST")
             .expect("POROXY_HOST to be set");
 
@@ -107,6 +111,8 @@ impl CardArt {
     ///
     #[cfg(feature = "jpg")]
     pub fn full_jpg(&self) -> String {
+        use std::env;
+
         let host = env::var("POROXY_HOST")
             .expect("POROXY_HOST to be set");
 
