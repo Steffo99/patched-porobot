@@ -51,6 +51,7 @@ anyhow = { version = "^1.0.68", optional = true }
 
 [features]
 jpg = ["hmac", "sha2", "base64", "hex"]
+test = ["tokio"]
 exec = ["pretty_env_logger"]
 search = ["tantivy"]
 telegram = ["exec", "search", "jpg", "teloxide", "tokio", "md5", "rand"]

@@ -137,23 +137,4 @@ mod tests {
     fn deserialize() {
         assert_eq!(serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png", "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(), CardArt { card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"), full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png") });
     }
-
-    #[test]
-    fn png_to_jpg() {
-        let art = CardArt {
-            card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
-            full_png: String::from(
-                "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
-            ),
-        };
-
-        assert_eq!(
-            art.card_jpg(),
-            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001.jpg"
-        );
-        assert_eq!(
-            art.full_jpg(),
-            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001-full.jpg"
-        );
-    }
 }

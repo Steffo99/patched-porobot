@@ -101,7 +101,7 @@ mod tests {
             #[tokio::test]
             async fn $id() {
                 let client = reqwest::Client::new();
-                let result = CoreBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale).await;
+                let result = crate::data::corebundle::CoreBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale).await;
                 assert!(result.is_ok());
             }
         };
