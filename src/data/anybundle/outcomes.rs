@@ -9,12 +9,14 @@ pub enum LoadingError {
     GettingLocale,
     /// Could not get the bundle name from the operating system.
     GettingBundleName,
-    /// Could not convert the bundle name from a [OsString](std::ffi::OsString) to a [String].
-    ConvertingBundleName,
     /// Could not use [File::open](std::fs::File::open) on a data file.
     OpeningFile(std::io::Error),
     /// Could not deserialize a data file.
     Deserializing(serde_json::Error),
+    /// Could not fetch a data file from a remote location.
+    RemoteFetching(reqwest::Error),
+    /// Could not deserialize a data file from a remote location.
+    RemoteDeserializing(reqwest::Error),
 }
 
 /// The result of the loading of a Legends of Runeterra bundle.

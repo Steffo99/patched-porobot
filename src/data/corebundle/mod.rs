@@ -21,12 +21,6 @@ pub mod vocabterm;
 /// [Core Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_core-bundles
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CoreBundle {
-    /// The name of the root directory of the bundle.
-    pub name: String,
-
-    /// The contents of the `metadata.json` file.
-    pub metadata: BundleMetadata,
-
     /// The contents of the `[locale]/data/globals-[locale].json` file.
     pub globals: globals::LocalizedGlobalsVecs,
 }
@@ -35,13 +29,6 @@ impl CoreBundle {
     /// Load a Core Bundle directory to create a [CoreBundle] instance.
     pub fn load(bundle_path: &Path) -> LoadingResult<Self> {
         let metadata = BundleMetadata::load(&bundle_path.join("metadata.json"))?;
-
-        let name = bundle_path
-            .file_name()
-            .ok_or(LoadingError::GettingBundleName)?
-            .to_str()
-            .ok_or(LoadingError::ConvertingBundleName)?
-            .to_string();
 
         let locale = metadata.locale().ok_or(LoadingError::GettingLocale)?;
 
@@ -53,12 +40,25 @@ impl CoreBundle {
         let globals = globals::LocalizedGlobalsVecs::load(globals_path)?;
 
         Ok(CoreBundle {
-            name,
-            metadata,
             globals,
         })
     }
+
+    /// Fetch from `base_url` the Core Bundle data with the given `locale`.
+    pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str) -> LoadingResult<Self> {
+        let globals = client
+            .get(format!("{base_url}/core/{locale}/data/globals-{locale}.json"))
+            .send()
+            .await
+            .map_err(LoadingError::RemoteFetching)?
+            .json::<globals::LocalizedGlobalsVecs>()
+            .await
+            .map_err(LoadingError::RemoteDeserializing)?;
+
+        Ok(Self {globals})
+    }
 }
+
 
 /// Create [`globals::LocalizedGlobalsIndexes`] from the core bundle in the current working directory.
 ///
@@ -71,7 +71,43 @@ pub fn create_globalindexes_from_wd() -> globals::LocalizedGlobalsIndexes {
         .expect("a valid core bundle to exist");
 
     let core = CoreBundle::load(&path)
-        .expect("to be able to load `core-en_us` bundle");
+        .expect("to be able to load CoreBundle bundle");
 
     globals::LocalizedGlobalsIndexes::from(core.globals)
+}
+
+
+/// Create [`globals::LocalizedGlobalsIndexes`] from the latest english data in Data Dragon.
+///
+/// This function tries to load data from `https://dd.b.pvp.net/latest`.
+pub async fn create_globalindexes_from_dd_latest(locale: &str) -> globals::LocalizedGlobalsIndexes {
+    let client = reqwest::Client::new();
+
+    log::debug!("Fetching {} CoreBundle from Data Dragon...", locale);
+
+    let core = CoreBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale).await
+        .expect("to be able to fetch CoreBundle");
+
+    log::debug!("Fetched {} CoreBundle: it defines {} regions, {} keywords, {} rarities, {} sets, {} spell speeds, and {} vocab terms!", locale, &core.globals.regions.len(), &core.globals.keywords.len(), &core.globals.rarities.len(), &core.globals.sets.len(), &core.globals.spell_speeds.len(), &core.globals.vocab_terms.len());
+
+    globals::LocalizedGlobalsIndexes::from(core.globals)
+}
+
+
+#[cfg(test)]
+mod tests {
+    macro_rules! test_fetch {
+        ( $id:ident, $version:literal, $locale:literal ) => {
+            #[tokio::test]
+            async fn $id() {
+                let client = reqwest::Client::new();
+                let result = crate::data::corebundle::CoreBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale).await;
+                assert!(result.is_ok());
+            }
+        };
+    }
+
+    test_fetch!(test_fetch_3_17_0_en_us, "3_17_0", "en_us");
+    test_fetch!(test_fetch_3_17_0_it_it, "3_17_0", "it_it");
+    test_fetch!(test_fetch_latest_en_us, "latest", "en_us");
 }

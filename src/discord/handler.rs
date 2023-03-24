@@ -360,6 +360,7 @@ impl serenity::client::EventHandler for EventHandler {
         log::info!("{} is ready!", &ready.user.name);
     }
 
+    #[allow(clippy::single_match)]
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
         match interaction {
             Interaction::ApplicationCommand(command) => {

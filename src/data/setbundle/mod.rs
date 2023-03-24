@@ -24,15 +24,10 @@ pub mod r#type;
 ///
 /// [Data Dragon]: https://developer.riotgames.com/docs/lor#data-dragon
 /// [Set Bundle]: https://developer.riotgames.com/docs/lor#data-dragon_set-bundles
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct SetBundle {
-    /// The contents of the `metadata.json` file.
-    pub metadata: BundleMetadata,
-
     /// The contents of the `[locale]/data/globals-[locale].json` file.
     pub cards: Vec<card::Card>,
-
-    /// The name of the root directory of the bundle.
-    pub name: String,
 }
 
 impl SetBundle {
@@ -53,22 +48,68 @@ impl SetBundle {
             &bundle_path.join(locale).join("data").join(&json_filename)
         };
 
-        let name = name
-            .to_str()
-            .ok_or(LoadingError::ConvertingBundleName)?
-            .to_string();
-
         let cards = File::open(data_path).map_err(LoadingError::OpeningFile)?;
 
         let cards = serde_json::de::from_reader::<File, Vec<card::Card>>(cards)
             .map_err(LoadingError::Deserializing)?;
 
         Ok(SetBundle {
-            metadata,
             cards,
-            name,
         })
     }
+
+    /// Fetch from `base_url` the Set Bundle data of the given `set` with the given `locale`.
+    pub async fn fetch(client: &reqwest::Client, base_url: &str, locale: &str, set: &str) -> LoadingResult<Self> {
+        let cards = client
+            .get(format!("{base_url}/{set}/{locale}/data/{set}-{locale}.json"))
+            .send()
+            .await
+            .map_err(LoadingError::RemoteFetching)?
+            .json::<Vec<card::Card>>()
+            .await
+            .map_err(LoadingError::RemoteDeserializing)?;
+
+        Ok(Self {cards})
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    macro_rules! test_fetch {
+        ( $id:ident, $version:literal, $locale:literal, $set:literal ) => {
+            #[tokio::test]
+            async fn $id() {
+                let client = reqwest::Client::new();
+                let result = crate::data::setbundle::SetBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale, $set).await;
+                assert!(result.is_ok());
+            }
+        };
+    }
+
+    test_fetch!(test_fetch_3_17_0_en_us_set1, "3_17_0", "en_us", "set1");
+    test_fetch!(test_fetch_3_17_0_en_us_set2, "3_17_0", "en_us", "set2");
+    test_fetch!(test_fetch_3_17_0_en_us_set3, "3_17_0", "en_us", "set3");
+    test_fetch!(test_fetch_3_17_0_en_us_set4, "3_17_0", "en_us", "set4");
+    test_fetch!(test_fetch_3_17_0_en_us_set5, "3_17_0", "en_us", "set5");
+    test_fetch!(test_fetch_3_17_0_en_us_set6, "3_17_0", "en_us", "set6");
+    test_fetch!(test_fetch_3_17_0_en_us_set6cde, "3_17_0", "en_us", "set6cde");
+    
+    test_fetch!(test_fetch_3_17_0_it_it_set1, "3_17_0", "it_it", "set1");
+    test_fetch!(test_fetch_3_17_0_it_it_set2, "3_17_0", "it_it", "set2");
+    test_fetch!(test_fetch_3_17_0_it_it_set3, "3_17_0", "it_it", "set3");
+    test_fetch!(test_fetch_3_17_0_it_it_set4, "3_17_0", "it_it", "set4");
+    test_fetch!(test_fetch_3_17_0_it_it_set5, "3_17_0", "it_it", "set5");
+    test_fetch!(test_fetch_3_17_0_it_it_set6, "3_17_0", "it_it", "set6");
+    test_fetch!(test_fetch_3_17_0_it_it_set6cde, "3_17_0", "it_it", "set6cde");
+
+    test_fetch!(test_fetch_latest_en_us_set1, "latest", "en_us", "set1");
+    test_fetch!(test_fetch_latest_en_us_set2, "latest", "en_us", "set2");
+    test_fetch!(test_fetch_latest_en_us_set3, "latest", "en_us", "set3");
+    test_fetch!(test_fetch_latest_en_us_set4, "latest", "en_us", "set4");
+    test_fetch!(test_fetch_latest_en_us_set5, "latest", "en_us", "set5");
+    test_fetch!(test_fetch_latest_en_us_set6, "latest", "en_us", "set6");
+    test_fetch!(test_fetch_latest_en_us_set6cde, "latest", "en_us", "set6cde");
 }
 
 
@@ -104,3 +145,40 @@ pub fn create_cardindex_from_wd() -> card::CardIndex {
     create_cardindex_from_paths(paths)
 }
 
+/// List of all known Data Dragon set codes.
+///
+/// See [the Riot Developer Portal](https://developer.riotgames.com/docs/lor#data-dragon_set-bundles) for more details.
+///
+/// Not related with [`set::CardSet`].
+pub const DD_KNOWN_SET_CODES: [&str; 7] = [
+    "set1",
+    "set2",
+    "set3",
+    "set4",
+    "set5",
+    "set6",
+    "set6cde",
+];
+
+/// Create a [`card::CardIndex`] from the latest known english data in Data Dragon.
+///
+/// This function tries to load data from `https://dd.b.pvp.net/latest`.
+pub async fn create_cardindex_from_dd_latest(locale: &str) -> card::CardIndex {
+    let client = reqwest::Client::new();
+    let mut index = card::CardIndex::new();
+
+    for set_code in DD_KNOWN_SET_CODES {
+        log::debug!("Fetching {} SetBundle with code {} from Data Dragon...", locale, &set_code);
+
+        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale, set_code).await
+            .expect("to be able to fetch set bundle");
+
+        log::debug!("Fetched {} SetBundle with code {}: it defines {} cards!", locale, &set_code, set.cards.len());
+
+        for card in set.cards {
+            index.insert(card.code.clone(), card);
+        }
+    };
+
+    index
+}

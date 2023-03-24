@@ -1,8 +1,5 @@
 //! Module defining [CardArt].
 
-use lazy_static::lazy_static;
-use regex::Regex;
-
 /// The illustration of a [Card](super::card::Card), also referred to as an *art asset*.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct CardArt {
@@ -30,52 +27,105 @@ pub struct CardArt {
 }
 
 impl CardArt {
-    /// URL to the `.jpg` image of the `en_us` locale of the rendered card, via my custom S3 mirror.
-    ///
-    /// # Example
-    ///
-    /// ```text
-    /// https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001.jpg
-    /// ```
-    ///
-    pub fn card_jpg(&self) -> String {
-        lazy_static! {
-            static ref GET_JPG: Regex = Regex::new(
-                r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
-            )
-            .unwrap();
-        }
 
-        GET_JPG
-            .replace_all(
-                &self.card_png,
-                "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/$bundle-$locale/$locale/img/cards/$code.jpg",
-            )
-            .to_string()
+    /// Get the URL to convert the image at the given URL into JPG using imgproxy.
+    #[cfg(feature = "jpg")]
+    fn imgproxy_convert_to_jpg(url: &str) -> String {
+        use base64::Engine;
+
+        let url = base64::prelude::BASE64_URL_SAFE.encode(url);
+        let url = format!("/{url}.jpg");
+
+        log::trace!("Created JPG conversion URL: {url}");
+
+        url
     }
 
-    /// URL to the `.jpg` image of the `en_us` locale  of the full card art, via my custom S3 mirror.
+    /// Add the HMAC required by imgproxy to authenticate the source of the image requester to the URL.
     ///
-    /// # Example
+    /// # Panics
     ///
-    /// ```text
-    /// https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001-full.jpg
-    /// ```
+    /// If the `POROXY_KEY` or `POROXY_SALT` variables are not defined.
     ///
-    pub fn full_jpg(&self) -> String {
-        lazy_static! {
-            static ref GET_JPG: Regex = Regex::new(
-                r#"https?://dd[.]b[.]pvp[.]net/[^/]+/(?P<bundle>[^/]+)/(?P<locale>[^/]+)/img/cards/(?P<code>.+)[.]png$"#
-            )
-            .unwrap();
-        }
+    #[cfg(feature = "jpg")]
+    fn imgproxy_authenticate_url(url: &str) -> String {
+        use base64::Engine;
+        use hmac::Mac;
+        use std::env;
 
-        GET_JPG
-            .replace_all(
-                &self.full_png,
-                "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/$bundle-$locale/$locale/img/cards/$code.jpg",
+        let key = env::var("POROXY_KEY")
+            .expect("POROXY_KEY to be set");
+        let key = hex::decode(key)
+            .expect("POROXY_KEY to be a valid hex code");
+
+        let salt = env::var("POROXY_SALT")
+            .expect("POROXY_SALT to be set");
+        let salt = hex::decode(salt)
+            .expect("POROXY_SALT to be a valid hex code");
+        let salt: String = String::from_utf8(salt)
+            .expect("salt to be a valid UTF-8 string");
+
+        let mut hmac = hmac::Hmac::<sha2::Sha256>::new_from_slice(key.as_slice())
+            .expect("HMAC to be initialized successfully");
+        hmac.update(&format!("{salt}{url}").into_bytes());
+        let hmac = hmac.finalize().into_bytes();
+        let hmac = base64::prelude::BASE64_URL_SAFE_NO_PAD.encode(hmac);
+
+        let url = format!("/{hmac}{url}");
+
+        log::trace!("Created authenticated URL: {url}");
+
+        url
+    }
+
+    /// URL to the `.jpg` image of the rendered card, via imgproxy.
+    ///
+    /// # Panics
+    ///
+    /// If the `POROXY_HOST`, `POROXY_KEY` and `POROXY_SALT` variables are not defined.
+    ///
+    #[cfg(feature = "jpg")]
+    pub fn card_jpg(&self) -> String {
+        use std::env;
+
+        let host = env::var("POROXY_HOST")
+            .expect("POROXY_HOST to be set");
+
+        let url = Self::imgproxy_authenticate_url(
+            &Self::imgproxy_convert_to_jpg(
+                &self.card_png
             )
-            .to_string()
+        );
+
+        let url = format!("{host}{url}");
+        log::trace!("Accessed card_jpg: {url}");
+
+        url
+    }
+
+    /// URL to the `.jpg` image of the rendered card, via imgproxy.
+    ///
+    /// # Panics
+    ///
+    /// If the `POROXY_HOST`, `POROXY_KEY` and `POROXY_SALT` variables are not defined.
+    ///
+    #[cfg(feature = "jpg")]
+    pub fn full_jpg(&self) -> String {
+        use std::env;
+
+        let host = env::var("POROXY_HOST")
+            .expect("POROXY_HOST to be set");
+
+        let url = Self::imgproxy_authenticate_url(
+            &Self::imgproxy_convert_to_jpg(
+                &self.full_png
+            )
+        );
+
+        let url = format!("{host}{url}");
+        log::trace!("Accessed full_jpg: {url}");
+
+        url
     }
 }
 
@@ -86,24 +136,5 @@ mod tests {
     #[test]
     fn deserialize() {
         assert_eq!(serde_json::de::from_str::<'static, CardArt>(r#"{"gameAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png", "fullAbsolutePath": "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png"}"#).unwrap(), CardArt { card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"), full_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png") });
-    }
-
-    #[test]
-    fn png_to_jpg() {
-        let art = CardArt {
-            card_png: String::from("https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001.png"),
-            full_png: String::from(
-                "https://dd.b.pvp.net/latest/set1/en_us/img/cards/01DE001-full.png",
-            ),
-        };
-
-        assert_eq!(
-            art.card_jpg(),
-            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001.jpg"
-        );
-        assert_eq!(
-            art.full_jpg(),
-            "https://objectstorage.eu-milan-1.oraclecloud.com/n/axxdmk4y92aq/b/porobot-storage/o/set1-en_us/en_us/img/cards/01DE001-full.jpg"
-        );
     }
 }
