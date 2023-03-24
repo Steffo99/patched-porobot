@@ -36,6 +36,10 @@ pub enum CardSet {
     #[serde(rename = "Set6cde")]
     TheDarkinSaga,
 
+    /// Glory in Navori.
+    #[serde(rename = "Set7")]
+    GloryInNavori,
+
     /// Events, cards released "outside" a set.
     #[serde(rename = "SetEvent")]
     Events,
