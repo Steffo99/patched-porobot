@@ -30,7 +30,7 @@ pub async fn main() {
     debug!("Created LocalizedGlobalIndexes!");
 
     debug!("Creating CardIndex...");
-    let cards = create_cardindex_from_dd_latest(&known_set_codes, &locale).await;
+    let cards = create_cardindex_from_dd_latest(&locale, &known_set_codes).await;
     debug!("Created CardIndex!");
 
     debug!("Creating CardSearchEngine...");
