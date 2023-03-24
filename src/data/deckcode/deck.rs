@@ -896,6 +896,11 @@ mod tests {
         deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
         Deck::eternal, true
     );
+    test_legality!(
+        test_legality_eternal_paltri,
+        deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
+        Deck::eternal, false
+    );
 
     test_legality!(
         test_legality_singleton_lonelyporo1,
