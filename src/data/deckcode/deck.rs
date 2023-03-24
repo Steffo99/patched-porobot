@@ -453,7 +453,7 @@ impl Deck {
     /// let index: CardIndex = create_cardindex_from_wd();
     /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
     /// assert_eq!(deck.card_count(), 40);
-    ///
+    /// ```
     pub fn card_count(&self) -> u32 {
         self.contents.values().sum()
     }
