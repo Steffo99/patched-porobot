@@ -412,6 +412,22 @@ impl Deck {
     }
 
     /// Get an [`Iterator`] of all Champion [`Card`]s in the deck.
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::setbundle::card::CardIndex;
+    /// use patched_porobot::data::setbundle::code::CardCode;
+    /// use patched_porobot::data::setbundle::create_cardindex_from_wd;
+    ///
+    /// let index: CardIndex = create_cardindex_from_wd();
+    /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// let champions = deck.champions(&index);
+    ///
+    /// let champion_codes: Vec<&str> = champions.map(|c| c.code.full.as_str()).collect();
+    /// const EXPECTED_CODES: [&str; 2] = ["01IO015", "02NX007"];
+    /// assert_eq!(champion_codes, EXPECTED_CODES)
+    /// ```
     pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
         self.contents.keys()
             .filter_map(|cc| cc.to_card(cards))
