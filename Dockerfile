@@ -69,7 +69,7 @@ COPY --from=builder \
     /usr/src/patched_porobot/target/*/release/patched_porobot_matrix \
     /usr/bin/
 
-USER ${UID}:${GID}
+USER ${UID:-1000}:${GID:-1000}
 ENTRYPOINT []
 CMD []
 
