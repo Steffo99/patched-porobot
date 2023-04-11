@@ -144,7 +144,8 @@ impl EventHandler {
                         CardSet::BeyondTheBandlewood => "<:beyond_the_bandlewood:1071644742640750734> Beyond the Bandlewood",
                         CardSet::Worldwalker => "<:worldwalker:1071644743798370315> Worldwalker",
                         CardSet::TheDarkinSaga => "<:the_darkin_saga:1071644746411417610> The Darkin Saga",
-                        CardSet::GloryInNavori => "Glory in Navori", // TODO: Add icon
+                        CardSet::GloryInNavori => "<:glory_in_navori:1095363395890458756>
+ Glory in Navori",
                         CardSet::Events => "Events", // TODO: Add icon
                         CardSet::Unsupported => "<:invaliddeck:1056022952396730438> Unknown",
                     }, true);
