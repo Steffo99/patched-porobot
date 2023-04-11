@@ -112,6 +112,11 @@ pub enum CardKeyword {
     /// ???
     Runeterra,
 
+    /// Brash.
+    ///
+    /// > Can only be blocked by enemies with 3 or more Health.
+    Brash,
+
     /// Recall.
     ///
     /// > Return a unit to hand and remove all effects applied to it.
@@ -401,6 +406,7 @@ impl CardKeyword {
             CardKeyword::AuraVisualFakeKeyword => "<:aura:1056024278212038756>",
             CardKeyword::Barrier => "<:barrier:1056024286177013900>",
             CardKeyword::Burst => "<:burst:1056024291457638492>",
+            CardKeyword::Brash => "<:brash:1095361992547635310>",
             // CardKeyword::??? => "<:capture:1056024295190577153>",
             CardKeyword::Challenger => "<:challenger:1056024299179347988>",
             CardKeyword::Deep => "<:deep:1056024321593720923>",
@@ -479,6 +485,7 @@ mod tests {
     test_deserialization!(deserialize_fast, r#""Fast""#, CardKeyword::Fast);
     test_deserialization!(deserialize_bilgewater, r#""Bilgewater""#, CardKeyword::Bilgewater);
     test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardKeyword::Runeterra);
+    test_deserialization!(deserialize_brash, r#""Brash""#, CardKeyword::Brash);
     test_deserialization!(deserialize_recall, r#""Recall""#, CardKeyword::Recall);
     test_deserialization!(deserialize_weakest, r#""Weakest""#, CardKeyword::Weakest);
     test_deserialization!(deserialize_support, r#""Support""#, CardKeyword::Support);
