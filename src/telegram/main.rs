@@ -23,7 +23,7 @@ pub async fn main() {
     let known_set_codes: String = env::var("DATA_DRAGON_SET_CODES")
         .expect("DATA_DRAGON_SET_CODES to be set");
     let known_set_codes: Vec<&str> = known_set_codes
-        .rsplit(",")
+        .rsplit(',')
         .collect();
     debug!("Detected set codes: {:?}", &known_set_codes);
 
