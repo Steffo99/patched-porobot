@@ -160,7 +160,7 @@ pub async fn create_cardindex_from_dd_latest(locale: &str, known_set_codes: impl
     let mut index = card::CardIndex::new();
 
     for set_code in known_set_codes {
-        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale, &set_code).await
+        let set = SetBundle::fetch(&client, "https://dd.b.pvp.net/latest", locale, set_code).await
             .expect("to be able to fetch set bundle");
 
         for card in set.cards {
