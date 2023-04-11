@@ -127,6 +127,7 @@ impl CardSearchEngine {
     /// | `artist`      | [text](Self::options_text)       | The [artist(s) of the card's illustration](Card::artist_name). |
     /// | `subtypes`    | [text](Self::options_text)       | The [subtypes of the card](Card::subtypes), such as `Poro` or `Yordle`. |
     /// | `level`       | [number](Self::options_number)   | `0` if a non-champion, `1` if not leveled, `2` if leveled, `3` if ascended. |
+    /// | `formats`     | [keyword](Self::options_keyword) | The [formats the card is legal in](Card::formats), such as `Eternal` or `Standard`. |
     ///
     /// Use [Self::schema_fields] to create the [CardSchemaFields] object containing all of them.
     ///
@@ -156,8 +157,9 @@ impl CardSearchEngine {
         schema_builder.add_text_field("levelup", options_text.clone());
         schema_builder.add_text_field("flavor", options_text.clone());
         schema_builder.add_text_field("artist", options_text);
-        schema_builder.add_text_field("subtypes", options_keyword);
+        schema_builder.add_text_field("subtypes", options_keyword.clone());
         schema_builder.add_u64_field("level", options_number);
+        schema_builder.add_text_field("formats", options_keyword);
 
         schema_builder.build()
     }
@@ -219,6 +221,9 @@ impl CardSearchEngine {
             level: schema
                 .get_field("level")
                 .expect("schema to have a 'level' field"),
+            formats: schema
+                .get_field("formats")
+                .expect("schema to have a 'formats' field"),
         }
     }
 
@@ -307,7 +312,13 @@ impl CardSearchEngine {
                 } else {
                     1u64
                 }
-            }
+            },
+            fields.formats => card.formats.iter()
+                .map(|format| format
+                    .localized(&globals.formats)
+                    .map(|cr| cr.name.to_owned())
+                    .unwrap_or_else(String::new)
+                ).join(" "),
         )
     }
 
@@ -324,6 +335,7 @@ impl CardSearchEngine {
                 fields.flavor,
                 fields.artist,
                 fields.subtypes,
+                fields.formats,
             ],
         );
         parser.set_conjunction_by_default();
@@ -433,6 +445,8 @@ struct CardSchemaFields {
     pub subtypes: Field,
     /// Level of the champion. 0 if not a champion. 1 if not leveled. 2 if leveled. 3 if ascended.
     pub level: Field,
+    /// Space-separated [Card::formats].
+    pub formats: Field,
 }
 
 #[cfg(feature = "discord")]
