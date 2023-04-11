@@ -12,6 +12,7 @@ use crate::data::setbundle::subtype::CardSubtype;
 use crate::data::setbundle::supertype::CardSupertype;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
+use crate::data::setbundle::format::CardFormat;
 
 /// A single Legends of Runeterra card, as represented in a `set*.json` file.
 ///
@@ -144,6 +145,10 @@ pub struct Card {
 
     /// The supertype the card belongs to, such as [`Champion`](CardSupertype::Champion) or [`None`](CardSupertype::None).
     pub supertype: CardSupertype,
+
+    /// The formats the card can be played in, such as [`Standard`](CardFormat::Standard) and [`Eternal`](CardFormat::Eternal).
+    #[serde(rename = "formatRefs")]
+    pub formats: Vec<CardFormat>
 }
 
 impl Card {
@@ -192,14 +197,14 @@ mod tests {
             {
                 "associatedCards": [],
                 "associatedCardRefs": [
-                  "06RU025T14",
-                  "06RU025T6",
-                  "06RU025T5"
+                    "06RU025T14",
+                    "06RU025T6",
+                    "06RU025T5"
                 ],
                 "assets": [
                     {
-                        "gameAbsolutePath": "http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025.png",
-                        "fullAbsolutePath": "http://dd.b.pvp.net/3_11_0/set6/en_us/img/cards/06RU025-full.png"
+                        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set6/en_us/img/cards/06RU025.png",
+                        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set6/en_us/img/cards/06RU025-full.png"
                     }
                 ],
                 "regions": [
@@ -213,8 +218,8 @@ mod tests {
                 "health": 5,
                 "description": "<link=vocab.Origin><style=Vocab>Origin</style></link>: <link=card.origin><style=AssociatedCard>Agony's Embrace</style></link>.\r\nWhen I'm summoned, summon a random Husk.",
                 "descriptionRaw": "Origin: Agony's Embrace.\r\nWhen I'm summoned, summon a random Husk.",
-                "levelupDescription": "When you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
-                "levelupDescriptionRaw": "When you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
+                "levelupDescription": "When I see you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
+                "levelupDescriptionRaw": "When I see you or an ally kill an allied Husk, give me its positive keywords this round and I level up.",
                 "flavorText": "The priestess' pupils were blown wide, and her hand trembled with nervous excitement. She was ready. This was the single moment Evelynn craved more than any other. She grinned, and slowly shed her visage. Then, as always, the screaming began.",
                 "artistName": "Kudos Productions",
                 "name": "Evelynn",
@@ -229,8 +234,18 @@ mod tests {
                 "supertype": "Champion",
                 "type": "Unit",
                 "collectible": true,
-                "set": "Set6"
-            }
+                "set": "Set6",
+                "formats": [
+                    "Commons Only",
+                    "Eternal",
+                    "Standard"
+                ],
+                "formatRefs": [
+                    "client_Formats_CommonsOnly_name",
+                    "client_Formats_Eternal_name",
+                    "client_Formats_Standard_name"
+                ]
+              }
             "#).unwrap(),
             Card {
                 code: CardCode::from("06RU025".to_string()),
@@ -272,6 +287,11 @@ mod tests {
                 artist_name: String::from("Kudos Productions"),
                 subtypes: vec![],
                 supertype: CardSupertype::Champion,
+                formats: vec![
+                    CardFormat::CommonsOnly,
+                    CardFormat::Eternal,
+                    CardFormat::Standard,
+                ],
             }
         )
     }

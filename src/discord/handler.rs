@@ -229,13 +229,15 @@ impl EventHandler {
             });
 
         let (format, regions) = if let Some(regions) = deck.eternal(&engine.cards) {
-            ("<:neutral:1056022926660481094> Eternal", regions)
+            ("<:eternal:1095374779130839151> Eternal", regions)
+        } else if let Some(regions) = deck.standard(&engine.cards) {
+            ("<:standard:1095374776492638208> Standard", regions)
         } else if let Some(regions) = deck.unlimited_champions(&engine.cards) {
-            ("<:neutral:1056022926660481094> Unlimited Champions", regions)
+            ("Unlimited Champions", regions)
         } else if let Some(regions) = deck.singleton(&engine.cards) {
-            ("<:neutral:1056022926660481094> Singleton", regions)
+            ("Singleton", regions)
         } else {
-            ("<:invaliddeck:1056022952396730438> Unknown", HashSet::new())
+            ("Unknown", HashSet::new())
         };
 
         response.embed(|e| {

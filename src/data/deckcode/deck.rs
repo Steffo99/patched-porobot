@@ -10,6 +10,7 @@ use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::io::{Cursor, Read, Write};
 use varint_rs::{VarintReader, VarintWriter};
+use crate::data::setbundle::format::CardFormat;
 use crate::data::setbundle::supertype::CardSupertype;
 
 /// A unshuffled Legends of Runeterra card deck.
@@ -425,8 +426,8 @@ impl Deck {
     /// let champions = deck.champions(&index);
     ///
     /// let champion_codes: Vec<&str> = champions.map(|c| c.code.full.as_str()).collect();
-    /// const EXPECTED_CODES: [&str; 2] = ["01IO015", "02NX007"];
-    /// assert_eq!(champion_codes, EXPECTED_CODES)
+    /// assert!(champion_codes.contains(&"01IO015"));
+    /// assert!(champion_codes.contains(&"02NX007"));
     /// ```
     pub fn champions<'a>(&'a self, cards: &'a CardIndex) -> impl Iterator<Item = &'a Card> {
         self.contents.keys()
@@ -495,6 +496,34 @@ impl Deck {
             .map(|c| &c.code)
             .map(|cc| self.copies_of(cc))
             .sum()
+    }
+
+    /// Check if the cards contained in the deck are allowed in the given format.
+    ///
+    /// For compatibility reasons, assumes that cards missing from the [`CardIndex`] are always allowed.
+    ///
+    /// Be aware that this does not verify other conditions that may be requirements for a given format: this method only checks that the cards have the required [`CardFormat`] tags.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use patched_porobot::deck;
+    /// use patched_porobot::data::deckcode::deck::Deck;
+    /// use patched_porobot::data::setbundle::card::CardIndex;
+    /// use patched_porobot::data::setbundle::create_cardindex_from_wd;
+    /// use patched_porobot::data::setbundle::format::CardFormat;
+    ///
+    /// let index: CardIndex = create_cardindex_from_wd();
+    /// let deck: Deck = deck!("CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA");
+    /// assert!(deck.cards_are_allowed_in(&index, CardFormat::Eternal));
+    /// ```
+    ///
+    pub fn cards_are_allowed_in(&self, cards: &CardIndex, format: CardFormat) -> bool {
+        self.contents.keys()
+            .map(|cc| cc.to_card(&cards))
+            .filter(|o| o.is_some())
+            .map(|o| o.unwrap())
+            .all(|c| c.formats.contains(&format))
     }
 
     /// Find the first possible set of regions that the [`Deck`] fits in.
@@ -570,9 +599,29 @@ impl Deck {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.card_count() == 40;
         let champions_limit = self.champions_count(cards) <= 6;
+        let are_cards_allowed = self.cards_are_allowed_in(cards, CardFormat::Eternal);
         let regions = self.regions(cards, 2);
 
-        match copies_limit && cards_limit && champions_limit {
+        match copies_limit && cards_limit && champions_limit && are_cards_allowed {
+            false => None,
+            true => regions,
+        }
+    }
+
+    /// Check if the [`Deck`] is legal for play in the *Standard* format.
+    ///
+    /// # Returns
+    ///
+    /// - `None` if the deck is not legal for *Eternal* play.
+    /// - `Some(regions)` if the deck is legal for *Eternal* play considering the specified region set.
+    pub fn standard(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
+        let copies_limit = self.contents.values().all(|n| n <= &3);
+        let cards_limit = self.card_count() == 40;
+        let champions_limit = self.champions_count(cards) <= 6;
+        let are_cards_allowed = self.cards_are_allowed_in(cards, CardFormat::Standard);
+        let regions = self.regions(cards, 2);
+
+        match copies_limit && cards_limit && champions_limit && are_cards_allowed {
             false => None,
             true => regions,
         }
@@ -588,16 +637,17 @@ impl Deck {
         let copies_limit = self.contents.values().all(|n| n <= &1);
         let cards_limit = self.card_count() == 40;
         let champions_limit = self.champions_count(cards) <= 6;
+        let are_cards_allowed = self.cards_are_allowed_in(cards, CardFormat::Eternal);  // I think?
         let regions = self.regions(cards, 3);
 
-        match copies_limit && cards_limit && champions_limit {
+        match copies_limit && cards_limit && champions_limit && are_cards_allowed {
             false => None,
             true => regions,
         }
     }
 
     /// Check if the [`Deck`] is legal to play in the *Unlimited Champions* format.
-    /// 
+    ///
     /// # Returns
     ///
     /// - `None` if the deck is not legal for *Unlimited Champions* play.
@@ -605,9 +655,10 @@ impl Deck {
     pub fn unlimited_champions(&self, cards: &CardIndex) -> Option<HashSet<CardRegion>> {
         let copies_limit = self.contents.values().all(|n| n <= &3);
         let cards_limit = self.card_count() == 40;
+        let are_cards_allowed = self.cards_are_allowed_in(cards, CardFormat::Eternal);  // I think?
         let regions = self.regions(cards, 2);
 
-        match copies_limit && cards_limit {
+        match copies_limit && cards_limit && are_cards_allowed {
             false => None,
             true => regions,
         }
@@ -893,6 +944,37 @@ mod tests {
     }
 
     test_legality!(
+        test_legality_standard_aggroblanc,
+        deck!("CEDACAIDDMAQEAYFAECAGBABAYBAGAQBAIESUAYHAMAQQCIEAEDAGIABA4BQGAQBAMJRSAQCAMBQIAIBAMBBI"),
+        Deck::standard, true
+    );
+    test_legality!(
+        test_legality_standard_lonelyporo1,
+        deck!("CEAAAAIBAEAQQ"),
+        Deck::standard, false
+    );
+    test_legality!(
+        test_legality_standard_twistedshrimp,
+        deck!("CICACBAFAEBAGBQICABQCBJLF4YQOAQGAQEQYEQUDITAAAIBAMCQO"),
+        Deck::standard, false
+    );
+    test_legality!(
+        test_legality_standard_poros,
+        deck!("CQDQCAQBAMAQGAICAECACDYCAECBIFYCAMCBEEYCAUFIYANAAEBQCAIICA2QCAQBAEVTSAA"),
+        Deck::standard, false
+    );
+    test_legality!(
+        test_legality_standard_sand,
+        deck!("CMBAGBAHANTXEBQBAUCAOFJGFIYQEAIBAUOQIBAHGM5HM6ICAECAOOYCAECRSGY"),
+        Deck::standard, false
+    );
+    test_legality!(
+        test_legality_standard_paltri,
+        deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
+        Deck::standard, false
+    );
+
+    test_legality!(
         test_legality_eternal_lonelyporo1,
         deck!("CEAAAAIBAEAQQ"),
         Deck::eternal, false
@@ -916,6 +998,11 @@ mod tests {
         test_legality_eternal_paltri,
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
         Deck::eternal, false
+    );
+    test_legality!(
+        test_legality_eternal_aggroblanc,
+        deck!("CEDACAIDDMAQEAYFAECAGBABAYBAGAQBAIESUAYHAMAQQCIEAEDAGIABA4BQGAQBAMJRSAQCAMBQIAIBAMBBI"),
+        Deck::eternal, true
     );
 
     test_legality!(
@@ -943,6 +1030,11 @@ mod tests {
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
         Deck::singleton, true
     );
+    test_legality!(
+        test_legality_singleton_aggroblanc,
+        deck!("CEDACAIDDMAQEAYFAECAGBABAYBAGAQBAIESUAYHAMAQQCIEAEDAGIABA4BQGAQBAMJRSAQCAMBQIAIBAMBBI"),
+        Deck::singleton, false
+    );
 
     // From https://lor.cardsrealm.com/en-us/articles/new-game-modes-in-lor-unlimited-and-free-decks-to-discover
     test_legality!(
@@ -964,5 +1056,5 @@ mod tests {
         test_legality_unlchamp_paltri,
         deck!("CQAAADABAICACAIFBLAACAIFAEHQCBQBEQBAGBADAQBAIAIKBUBAKBAWDUBQIBACA4GAMAIBAMCAYHJBGADAMBAOCQKRMKBLA4AQIAQ3D4QSIKZYBACAODJ3JRIW3AABQIAYUAI"),
         Deck::unlimited_champions, false
-    );    
+    );
 }

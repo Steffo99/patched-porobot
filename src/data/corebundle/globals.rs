@@ -6,6 +6,7 @@ use super::region::{LocalizedCardRegionIndex, LocalizedCardRegionVec};
 use super::set::{LocalizedCardSetIndex, LocalizedCardSetVec};
 use super::speed::{LocalizedSpellSpeedIndex, LocalizedSpellSpeedVec};
 use super::vocabterm::{LocalizedVocabTermIndex, LocalizedVocabTermVec};
+use super::format::{LocalizedCardFormatIndex, LocalizedCardFormatVec};
 use crate::data::anybundle::outcomes::{LoadingError, LoadingResult};
 use std::fs::File;
 use std::path::Path;
@@ -37,6 +38,9 @@ pub struct LocalizedGlobalsVecs {
 
     /// Card sets.
     pub sets: LocalizedCardSetVec,
+
+    /// Card formats.
+    pub formats: LocalizedCardFormatVec,
 }
 
 /// A parsed and indexed `globals.json` file from a [Data Dragon] [Core Bundle].
@@ -66,6 +70,9 @@ pub struct LocalizedGlobalsIndexes {
 
     /// Card sets.
     pub sets: LocalizedCardSetIndex,
+
+    /// Card formats.
+    pub formats: LocalizedCardFormatIndex,
 }
 
 impl LocalizedGlobalsVecs {
@@ -123,12 +130,20 @@ impl From<LocalizedGlobalsVecs> for LocalizedGlobalsIndexes {
                 }
                 hm
             },
+            formats: {
+                let mut hm = LocalizedCardFormatIndex::new();
+                for obj in o.formats {
+                    hm.insert(obj.format, obj);
+                }
+                hm
+            },
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::data::corebundle::format::LocalizedCardFormat;
     use super::LocalizedGlobalsVecs;
     use crate::data::corebundle::keyword::LocalizedCardKeyword;
     use crate::data::corebundle::rarity::LocalizedCardRarity;
@@ -136,6 +151,7 @@ mod tests {
     use crate::data::corebundle::set::LocalizedCardSet;
     use crate::data::corebundle::speed::LocalizedSpellSpeed;
     use crate::data::corebundle::vocabterm::LocalizedVocabTerm;
+    use crate::data::setbundle::format::CardFormat;
     use crate::data::setbundle::keyword::CardKeyword;
     use crate::data::setbundle::rarity::CardRarity;
     use crate::data::setbundle::region::CardRegion;
@@ -189,6 +205,13 @@ mod tests {
                             "name": "Call of the Mountain",
                             "nameRef": "Set3"
                         }
+                    ],
+                    "formats": [
+                        {
+                          "iconAbsolutePath": "http://dd.b.pvp.net/4_3_0/core/en_us/img/formats/queue_select_standard_toggle_active.png",
+                          "name": "Standard",
+                          "nameRef": "client_Formats_Standard_name"
+                        }
                     ]
                 }
             "#
@@ -234,6 +257,13 @@ mod tests {
                         set: CardSet::CallOfTheMountain,
                         name: "Call of the Mountain".to_string(),
                         icon_png: "http://dd.b.pvp.net/3_11_0/core/en_us/img/sets/set3_crispmip.png".to_string()
+                    }
+                ],
+                formats: vec![
+                    LocalizedCardFormat {
+                        format: CardFormat::Standard,
+                        name: "Standard".to_string(),
+                        icon_png: Some("http://dd.b.pvp.net/4_3_0/core/en_us/img/formats/queue_select_standard_toggle_active.png".to_string()),
                     }
                 ]
             }
