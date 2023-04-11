@@ -228,10 +228,10 @@ impl EventHandler {
                 None => format!("```text\n{}\n```", deck.to_code(DeckCodeFormat::F1).expect("to be able to serialize the deck code")),
             });
 
-        let (format, regions) = if let Some(regions) = deck.eternal(&engine.cards) {
+        let (format, regions) = if let Some(regions) = deck.standard(&engine.cards) {
+            ("<:standard:1095374776492638208> Standard 4.3", regions)
+        } else if let Some(regions) = deck.eternal(&engine.cards) {
             ("<:eternal:1095374779130839151> Eternal", regions)
-        } else if let Some(regions) = deck.standard(&engine.cards) {
-            ("<:standard:1095374776492638208> Standard", regions)
         } else if let Some(regions) = deck.unlimited_champions(&engine.cards) {
             ("Unlimited Champions", regions)
         } else if let Some(regions) = deck.singleton(&engine.cards) {
