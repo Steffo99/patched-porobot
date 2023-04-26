@@ -41,7 +41,7 @@ rand = { version = "0.8.5", optional = true }
 serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 anyhow = { version = "^1.0.68", optional = true }
 # matrix
-matrix-sdk = { version = "^0.6.2", features = ["anyhow"], optional = true }
+matrix-sdk-appservice = { path = "./vendor/matrix-rust-sdk/crates/matrix-sdk-appservice", features = ["anyhow"], optional = true }
 
 [features]
 # data = []  # Always included
@@ -49,7 +49,7 @@ exec = ["pretty_env_logger"]
 search = ["tantivy"]
 telegram = ["exec", "search", "teloxide", "reqwest", "tokio", "md5", "rand"]
 discord = ["exec", "search", "serenity", "tokio", "anyhow"]
-matrix = ["exec", "search", "matrix-sdk", "anyhow"]
+matrix = ["exec", "search", "matrix-sdk-appservice", "anyhow"]
 
 
 [lib]
