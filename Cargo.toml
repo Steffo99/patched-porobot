@@ -41,7 +41,7 @@ rand = { version = "0.8.5", optional = true }
 serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 anyhow = { version = "^1.0.68", optional = true }
 # matrix
-matrix-sdk = { version = "^0.6.2", optional = true }
+matrix-sdk = { version = "^0.6.2", features = ["anyhow"], optional = true }
 
 [features]
 # data = []  # Always included
