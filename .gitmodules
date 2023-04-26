@@ -1,0 +1,3 @@
+[submodule "vendor/matrix-rust-sdk"]
+	path = vendor/matrix-rust-sdk
+	url = https://github.com/matrix-org/matrix-rust-sdk.git
