@@ -33,6 +33,9 @@
 
 pub mod data;
 
+#[cfg(feature = "exec")]
+pub mod config;
+
 #[cfg(feature = "search")]
 pub mod search;
 

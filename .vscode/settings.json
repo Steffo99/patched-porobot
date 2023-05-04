@@ -18,5 +18,8 @@
         "telegram",
         "discord",
         "matrix",
+    ],
+    "rust-analyzer.linkedProjects": [
+        "./Cargo.toml"
     ]
 }

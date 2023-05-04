@@ -53,8 +53,7 @@ impl CardArt {
         use hmac::Mac;
         use std::env;
 
-        let key = env::var("POROXY_KEY")
-            .expect("POROXY_KEY to be set");
+        let key = crate::config::jpg::POROXY_KEY;
         let key = hex::decode(key)
             .expect("POROXY_KEY to be a valid hex code");
 
