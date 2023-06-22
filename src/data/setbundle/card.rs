@@ -147,7 +147,7 @@ pub struct Card {
     pub supertype: CardSupertype,
 
     /// The formats the card can be played in, such as [`Standard`](CardFormat::Standard) and [`Eternal`](CardFormat::Eternal).
-    #[serde(rename = "formatRefs")]
+    #[serde(rename = "formatRefs", default)]
     pub formats: Vec<CardFormat>
 }
 

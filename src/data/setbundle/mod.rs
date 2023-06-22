@@ -90,28 +90,31 @@ mod tests {
             async fn $id() {
                 let client = reqwest::Client::new();
                 let result = crate::data::setbundle::SetBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale, $set).await;
+                println!("{:#?}", &result);
                 assert!(result.is_ok());
             }
         };
     }
 
-    test_fetch!(test_fetch_4_3_0_en_us_set1, "4_3_0", "en_us", "set1");
-    test_fetch!(test_fetch_4_3_0_en_us_set2, "4_3_0", "en_us", "set2");
-    test_fetch!(test_fetch_4_3_0_en_us_set3, "4_3_0", "en_us", "set3");
-    test_fetch!(test_fetch_4_3_0_en_us_set4, "4_3_0", "en_us", "set4");
-    test_fetch!(test_fetch_4_3_0_en_us_set5, "4_3_0", "en_us", "set5");
-    test_fetch!(test_fetch_4_3_0_en_us_set6, "4_3_0", "en_us", "set6");
-    test_fetch!(test_fetch_4_3_0_en_us_set6cde, "4_3_0", "en_us", "set6cde");
-    test_fetch!(test_fetch_4_3_0_en_us_set7, "4_3_0", "en_us", "set7");
+    test_fetch!(test_fetch_4_5_0_en_us_set1, "4_5_0", "en_us", "set1");
+    test_fetch!(test_fetch_4_5_0_en_us_set2, "4_5_0", "en_us", "set2");
+    test_fetch!(test_fetch_4_5_0_en_us_set3, "4_5_0", "en_us", "set3");
+    test_fetch!(test_fetch_4_5_0_en_us_set4, "4_5_0", "en_us", "set4");
+    test_fetch!(test_fetch_4_5_0_en_us_set5, "4_5_0", "en_us", "set5");
+    test_fetch!(test_fetch_4_5_0_en_us_set6, "4_5_0", "en_us", "set6");
+    test_fetch!(test_fetch_4_5_0_en_us_set6cde, "4_5_0", "en_us", "set6cde");
+    test_fetch!(test_fetch_4_5_0_en_us_set7, "4_5_0", "en_us", "set7");
+    // test_fetch!(test_fetch_4_5_0_en_us_set7b, "4_5_0", "en_us", "set7b");  // TODO: Unignore me when set releases
     
-    test_fetch!(test_fetch_4_3_0_it_it_set1, "4_3_0", "it_it", "set1");
-    test_fetch!(test_fetch_4_3_0_it_it_set2, "4_3_0", "it_it", "set2");
-    test_fetch!(test_fetch_4_3_0_it_it_set3, "4_3_0", "it_it", "set3");
-    test_fetch!(test_fetch_4_3_0_it_it_set4, "4_3_0", "it_it", "set4");
-    test_fetch!(test_fetch_4_3_0_it_it_set5, "4_3_0", "it_it", "set5");
-    test_fetch!(test_fetch_4_3_0_it_it_set6, "4_3_0", "it_it", "set6");
-    test_fetch!(test_fetch_4_3_0_it_it_set6cde, "4_3_0", "it_it", "set6cde");
-    test_fetch!(test_fetch_4_3_0_it_it_set7, "4_3_0", "it_it", "set7");
+    test_fetch!(test_fetch_4_5_0_it_it_set1, "4_5_0", "it_it", "set1");
+    test_fetch!(test_fetch_4_5_0_it_it_set2, "4_5_0", "it_it", "set2");
+    test_fetch!(test_fetch_4_5_0_it_it_set3, "4_5_0", "it_it", "set3");
+    test_fetch!(test_fetch_4_5_0_it_it_set4, "4_5_0", "it_it", "set4");
+    test_fetch!(test_fetch_4_5_0_it_it_set5, "4_5_0", "it_it", "set5");
+    test_fetch!(test_fetch_4_5_0_it_it_set6, "4_5_0", "it_it", "set6");
+    test_fetch!(test_fetch_4_5_0_it_it_set6cde, "4_5_0", "it_it", "set6cde");
+    test_fetch!(test_fetch_4_5_0_it_it_set7, "4_5_0", "it_it", "set7");
+    // test_fetch!(test_fetch_4_5_0_it_it_set7b, "4_5_0", "it_it", "set7b");  // TODO: Unignore me when set releases
 
     test_fetch!(test_fetch_latest_en_us_set1, "latest", "en_us", "set1");
     test_fetch!(test_fetch_latest_en_us_set2, "latest", "en_us", "set2");
@@ -121,6 +124,7 @@ mod tests {
     test_fetch!(test_fetch_latest_en_us_set6, "latest", "en_us", "set6");
     test_fetch!(test_fetch_latest_en_us_set6cde, "latest", "en_us", "set6cde");
     test_fetch!(test_fetch_latest_en_us_set7, "latest", "en_us", "set7");
+    test_fetch!(test_fetch_latest_en_us_set7b, "latest", "en_us", "set7b");
 }
 
 
