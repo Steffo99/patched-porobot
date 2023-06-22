@@ -992,9 +992,12 @@ dependencies = [
 
 [[package]]
 name = "micronfig"
-version = "0.1.2"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09d5fa5735feed9ff4d6fc550793ef80d18b90f33f3f89af6176318f295383cd"
+checksum = "caf3c1187adebdc5ad8ca94618b966fe8f40e4a3c80fa2f3eaee47891b410156"
+dependencies = [
+ "lazy_static",
+]
 
 [[package]]
 name = "mime"
