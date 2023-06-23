@@ -332,6 +332,7 @@ impl CardSearchEngine {
                 fields.description,
                 fields.set,
                 fields.regions,
+                fields.keywords,
                 fields.flavor,
                 fields.artist,
                 fields.subtypes,
