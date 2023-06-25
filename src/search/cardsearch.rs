@@ -35,7 +35,7 @@ pub struct CardSearchEngine {
 }
 
 impl CardSearchEngine {
-    /// Create the [tantivy::tokenizer::TextAnalyzer] for card text.
+    /// Create the [TextAnalyzer] for card text.
     ///
     /// It should not alter text significantly, as it may contain important game vocabulary terms.
     fn tokenizer() -> TextAnalyzer {
@@ -44,7 +44,7 @@ impl CardSearchEngine {
         TextAnalyzer::from(SimpleTokenizer).filter(LowerCaser)
     }
 
-    /// Create the [tantivy::schema::TextOptions] for card codes.
+    /// Create the [TextOptions] for card codes.
     ///
     /// Card codes should:
     /// - TODO: be tokenized without alterations;
@@ -63,7 +63,7 @@ impl CardSearchEngine {
             .set_fast()
     }
 
-    /// Create the [tantivy::schema::TextOptions] for card keywords.
+    /// Create the [TextOptions] for card keywords.
     ///
     /// Card keywords should:
     /// - be tokenized with the [CardSearchEngine::tokenizer];
@@ -78,7 +78,7 @@ impl CardSearchEngine {
         )
     }
 
-    /// Create the [tantivy::schema::TextOptions] for card text fields.
+    /// Create the [TextOptions] for card text fields.
     ///
     /// Card text should:
     /// - TODO: be tokenized with the tokenizer for the locale language;
@@ -93,7 +93,7 @@ impl CardSearchEngine {
         )
     }
 
-    /// Create the [tantivy::schema::NumericOptions] for card numeric fields.
+    /// Create the [NumericOptions] for card numeric fields.
     ///
     /// Card numbers should:
     /// - be indexed.
