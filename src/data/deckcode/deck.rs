@@ -520,8 +520,7 @@ impl Deck {
     ///
     pub fn cards_are_allowed_in(&self, cards: &CardIndex, format: CardFormat) -> bool {
         self.contents.keys()
-            .map(|cc| cc.to_card(cards))
-            .flatten()
+            .filter_map(|cc| cc.to_card(cards))
             .all(|c| c.formats.contains(&format))
     }
 
