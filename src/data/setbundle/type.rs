@@ -9,6 +9,9 @@ pub enum CardType {
     /// A spell.
     Spell,
 
+    /// A equipment.
+    Equipment,
+
     /// An unit: either a minion, or a champion.
     ///
     /// Champions have their [supertype](super::card::Card::supertype) set to `Champion`, and their [rarity](super::card::Card::rarity) set to [CardRarity::Champion](super::rarity::CardRarity::Champion) as well.
@@ -33,6 +36,7 @@ pub enum CardType {
 impl From<&CardType> for &'static str {
     fn from(r#type: &CardType) -> Self {
         match r#type {
+            CardType::Equipment => "Equipment",
             CardType::Spell => "Spell",
             CardType::Unit => "Unit",
             CardType::Ability => "Ability",
