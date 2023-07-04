@@ -27,12 +27,16 @@ Legends of Runeterra game data crate and chat bots
 
 </details>
 
+---
+
 <details>
 <summary>The message the bot sends when it detects an interaction from the user, such as the default /start command.</summary>
 
 ![](media/td-start.png)
 
 </details>
+
+---
 
 <details>
 <summary>The card search prompt that appears when attempting to use the bot in a chat.</summary>
@@ -41,12 +45,16 @@ Legends of Runeterra game data crate and chat bots
 
 </details>
 
+---
+
 <details>
 <summary>A search for "poro". Many poros are displayed, and also Braum Level 2, since it contains "poro" in its description.</summary>
 
 ![](media/td-poro.png)
 
 </details>
+
+---
 
 <details>
 <summary>The message sent when a card is clicked from the menu. It contains both the card image and a plain text render of the card (for accessibility). Additionally, the flavor text, the artist name, and a link to the full illustration are provided.</summary>
@@ -55,12 +63,62 @@ Legends of Runeterra game data crate and chat bots
 
 </details>
 
+---
+
+<details>
+<summary>A search for a deck code, followed by "My new deck". It returns a button saying «Deck "My new deck" with 14 cards»</summary>
+
+![](media/td-deck.png)
+
+</details>
+
+---
+
+<details>
+<summary>The message sent when the Deck button is clicked from the menu. It contains the name of the deck, followed by the formats it's playable in, its regions, and the cards that it contains. Champions are underlined.</summary>
+
+![](media/td-eternal.png)
+
+</details>
+
+### Discord bot
+
+<details>
+<summary>The message the bot sends when an user sends <code>/help</code> command.</summary>
+
+![](media/ds-help.png)
+
+</details>
+
+---
+
+<details>
+<summary>The message the bot sends when an user sends the <code>/card query: patched porobot</code> command.</summary>
+
+![](media/ds-card.png)
+
+</details>
+
+---
+
+<details>
+<summary>The message the sends when an user sends the <code>/deck code: CECQCAQCA4AQIAYKAIAQGLRWAQAQECAPEUXAIAQDAEBQOCIBAIAQEMJYAA name: My new deck</code> command.</summary>
+
+![](media/ds-deck.png)
+
+</details>
+
+
 ## Licenses
+
+### Riot Games
 
 Patched Porobot isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
 
+### Open Source Licenses
+
 <details>
-<summary>List of licenses as output by cargo license</summary>
+<summary>List of licenses as output by <code>cargo license</code></summary>
 
 - **(Apache-2.0 OR MIT) AND BSD-3-Clause** (1): encoding_rs
 - **(MIT OR Apache-2.0) AND Unicode-DFS-2016** (1): unicode-ident
