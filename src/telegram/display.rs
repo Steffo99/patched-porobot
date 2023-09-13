@@ -138,37 +138,36 @@ fn display_subtypes(subtypes: &[CardSubtype]) -> String {
 fn display_keywords(keywords: &[CardKeyword], hm: &LocalizedCardKeywordIndex) -> String {
     let result = keywords
         .iter()
-        .filter(|keyword| match keyword {
-            CardKeyword::Countdown => false,
-            CardKeyword::OnPlay => false,
-            CardKeyword::Landmark => false,
-            CardKeyword::Shurima => false,
-            CardKeyword::Noxus => false,
-            CardKeyword::ClobberNoEmptySlotRequirement => false,
-            CardKeyword::Nab => false,
-            CardKeyword::Enlightened => false,
-            CardKeyword::Invoke => false,
-            CardKeyword::Drain => false,
-            CardKeyword::LastBreath => false,
-            CardKeyword::Demacia => false,
-            CardKeyword::BandleCity => false,
-            CardKeyword::Bilgewater => false,
-            CardKeyword::Runeterra => false,
-            CardKeyword::Recall => false,
-            CardKeyword::Weakest => false,
-            CardKeyword::Support => false,
-            CardKeyword::Obliterate => false,
-            CardKeyword::Imbue => false,
-            CardKeyword::Targon => false,
-            CardKeyword::ShadowIsles => false,
-            CardKeyword::AuraVisualFakeKeyword => false,
-            CardKeyword::Ionia => false,
-            CardKeyword::PiltoverZaun => false,
-            CardKeyword::SilenceIndividualKeyword => false,
-            CardKeyword::Plunder => false,
-            CardKeyword::Silenced => false,
-            _ => true,
-        })
+        .filter(|keyword| !matches!(keyword,
+            CardKeyword::Countdown |
+            CardKeyword::OnPlay |
+            CardKeyword::Landmark |
+            CardKeyword::Shurima |
+            CardKeyword::Noxus |
+            CardKeyword::ClobberNoEmptySlotRequirement |
+            CardKeyword::Nab |
+            CardKeyword::Enlightened |
+            CardKeyword::Invoke |
+            CardKeyword::Drain |
+            CardKeyword::LastBreath |
+            CardKeyword::Demacia |
+            CardKeyword::BandleCity |
+            CardKeyword::Bilgewater |
+            CardKeyword::Runeterra |
+            CardKeyword::Recall |
+            CardKeyword::Weakest |
+            CardKeyword::Support |
+            CardKeyword::Obliterate |
+            CardKeyword::Imbue |
+            CardKeyword::Targon |
+            CardKeyword::ShadowIsles |
+            CardKeyword::AuraVisualFakeKeyword |
+            CardKeyword::Ionia |
+            CardKeyword::PiltoverZaun |
+            CardKeyword::SilenceIndividualKeyword |
+            CardKeyword::Plunder |
+            CardKeyword::Silenced
+        ))
         .map(|keyword| keyword
             .localized(hm)
             .map(|o| format!("[<b>{}</b>: {}]\n", escape(&o.name), escape(&o.description)))
