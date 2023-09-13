@@ -120,7 +120,7 @@ fn display_stats(card: &Card) -> String {
 fn display_subtypes(subtypes: &[CardSubtype]) -> String {
     let result = subtypes
         .iter()
-        .map(|s| titlecase(&s))
+        .map(|s| titlecase(s))
         .map(|s| escape(&s))
         .map(|s| format!("<i>{s}</i>"))
         .join(", ");
