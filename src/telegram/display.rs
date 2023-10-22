@@ -286,19 +286,19 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
         })
         .join("\n");
 
-    let mut tags: Vec<&'static str> = vec![];
+    let mut tags: Vec<String> = vec![];
 
     let regions = if let Some(regions) = deck.standard(index) {
-        tags.push("#Standard_4_5");
+        tags.push("#Standard_4_5".to_string());
         regions
     } else if let Some(regions) = deck.eternal(index) {
-        tags.push("#Eternal");
+        tags.push("#Eternal".to_string());
         regions
     } else if let Some(regions) = deck.unlimited_champions(index) {
-        tags.push("#UnlimitedChampions");
+        tags.push("#UnlimitedChampions".to_string());
         regions
     } else if let Some(regions) = deck.singleton(index) {
-        tags.push("#Singleton");
+        tags.push("#Singleton".to_string());
         regions
     } else {
         HashSet::new()
@@ -306,18 +306,8 @@ pub fn display_deck(index: &CardIndex, deck: &Deck, code: &str, name: &Option<&s
 
     for region in regions {
         tags.push(match region {
-            CardRegion::Noxus => "#Noxus",
-            CardRegion::Demacia => "#Demacia",
-            CardRegion::Freljord => "#Freljord",
-            CardRegion::ShadowIsles => "#ShadowIsles",
-            CardRegion::Targon => "#Targon",
-            CardRegion::Ionia => "#Ionia",
-            CardRegion::Bilgewater => "#Bilgewater",
-            CardRegion::Shurima => "#Shurima",
-            CardRegion::PiltoverZaun => "#PiltoverZaun",
-            CardRegion::BandleCity => "#BandleCity",
-            CardRegion::Runeterra => "#Runeterra",
-            CardRegion::Unsupported => "<i>Unknown</i>",
+            CardRegion::Unsupported => "<i>Unknown</i>".to_string(),
+            _ => format!("#{}", region.to_tag().map_or_else(|| "<i>Unknown</i>", |r| r)),
         })
     }
 
