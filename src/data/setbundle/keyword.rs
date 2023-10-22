@@ -196,6 +196,7 @@ pub enum CardKeyword {
     /// Double Attack.
     ///
     /// > While attacking, it strikes both before AND at the same time as its blocker.
+    #[serde(rename = "DoubleStrike")]
     DoubleAttack,
 
     /// Vulnerable.
@@ -532,7 +533,7 @@ mod tests {
     test_deserialization!(deserialize_silenceindividualkeyword, r#""SilenceIndividualKeyword""#, CardKeyword::SilenceIndividualKeyword);
     test_deserialization!(deserialize_skill, r#""Skill""#, CardKeyword::Skill);
     test_deserialization!(deserialize_plunder, r#""Plunder""#, CardKeyword::Plunder);
-    test_deserialization!(deserialize_doubleattack, r#""DoubleAttack""#, CardKeyword::DoubleAttack);
+    test_deserialization!(deserialize_doubleattack, r#""DoubleStrike""#, CardKeyword::DoubleAttack);
     test_deserialization!(deserialize_vulnerable, r#""Vulnerable""#, CardKeyword::Vulnerable);
     test_deserialization!(deserialize_elusive, r#""Elusive""#, CardKeyword::Elusive);
     test_deserialization!(deserialize_stun, r#""Stun""#, CardKeyword::Stun);
