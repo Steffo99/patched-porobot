@@ -347,6 +347,11 @@ pub enum CardKeyword {
     /// > Equip to a unit to grant the listed bonuses. If the unit leaves play, the equipment will return to your hand. You may play each equipment at most once per round.
     Equipment,
 
+    /// Capture.
+    ///
+    /// > A Captured card is removed from the game. It returns when the Capturing unit leaves play.
+    Capture,
+
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
@@ -441,6 +446,7 @@ impl CardKeyword {
             CardKeyword::Plunder => "",
             CardKeyword::BlockElusive => "",
             CardKeyword::Flow => "",
+            CardKeyword::Capture => "<:capture:1056024295190577153>",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -535,5 +541,6 @@ mod tests {
     test_deserialization!(deserialize_deep, r#""Deep""#, CardKeyword::Deep);
     test_deserialization!(deserialize_flow, r#""Flow""#, CardKeyword::Flow);
     test_deserialization!(deserialize_equipment, r#""Equipment""#, CardKeyword::Equipment);
+    test_deserialization!(deserialize_capture, r#""Capture""#, CardKeyword::Capture);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
