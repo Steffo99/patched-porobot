@@ -12,8 +12,6 @@ use crate::data::deckcode::deck::Deck;
 use crate::data::deckcode::format::DeckCodeFormat;
 use crate::data::setbundle::r#type::CardType;
 use crate::data::setbundle::rarity::CardRarity;
-use crate::data::setbundle::region::CardRegion;
-use crate::data::setbundle::set::CardSet;
 use crate::data::setbundle::supertype::CardSupertype;
 use crate::search::cardsearch::CardSearchEngine;
 
