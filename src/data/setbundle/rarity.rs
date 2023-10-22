@@ -3,6 +3,7 @@
 use crate::data::corebundle::rarity::{LocalizedCardRarity, LocalizedCardRarityIndex};
 
 /// A possible [Card](super::card::Card) rarity.
+#[non_exhaustive]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum CardRarity {
     /// The card has no rarity, as it probably is not [collectible](super::card::Card::collectible).
@@ -19,6 +20,10 @@ pub enum CardRarity {
 
     /// A champion (orange hexagon) card, sometimes referred to as *Legendary*.
     Champion,
+
+    /// Unsupported rarity.
+    #[serde(other)]
+    Unsupported,
 }
 
 impl CardRarity {
@@ -56,9 +61,5 @@ mod tests {
     test_deserialization!(deserialize_rare, r#""Rare""#, CardRarity::Rare);
     test_deserialization!(deserialize_epic, r#""Epic""#, CardRarity::Epic);
     test_deserialization!(deserialize_champion, r#""Champion""#, CardRarity::Champion);
-
-    #[test]
-    fn deserialize_fallback() {
-        assert!(serde_json::de::from_str::<'static, CardRarity>("Xyzzy").is_err());
-    }
+    test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardRarity::Unsupported);
 }
