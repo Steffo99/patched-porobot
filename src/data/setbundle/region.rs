@@ -32,6 +32,28 @@ pub enum CardRegion {
     /// Runeterra.
     Runeterra,
 
+    /// Runeterra: Ryze.
+    Ryze,
+    /// Runeterra: Jhin.
+    Jhin,
+    /// Runeterra: Varus.
+    Varus,
+    /// Runeterra: Aatrox.
+    Aatrox,
+    /// Runeterra: Neeko.
+    Neeko,
+    /// Runeterra: Jax.
+    Jax,
+    /// Runeterra: Kayn.
+    Kayn,
+    /// Runeterra: Poro King.
+    PoroKing,
+    /// Runeterra: Evelynn.
+    Evelynn,
+    /// Runeterra: Bard.
+    Bard,
+
+
     /// Unsupported region.
     #[serde(other)]
     Unsupported,
@@ -104,6 +126,16 @@ impl CardRegion {
             CardRegion::PiltoverZaun => "<:piltoverzaun:1056022918959734835>",
             CardRegion::BandleCity => "<:bandlecity:1056024280493735976>",
             CardRegion::Runeterra => "<:runeterra:1056022895031238727>",
+            CardRegion::Ryze => "",
+            CardRegion::Jhin => "",
+            CardRegion::Varus => "",
+            CardRegion::Aatrox => "",
+            CardRegion::Neeko => "",
+            CardRegion::Jax => "",
+            CardRegion::Kayn => "",
+            CardRegion::PoroKing => "",
+            CardRegion::Evelynn => "",
+            CardRegion::Bard => "",
             CardRegion::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -180,5 +212,15 @@ mod tests {
     test_deserialization!(deserialize_piltoverzaun, r#""PiltoverZaun""#, CardRegion::PiltoverZaun);
     test_deserialization!(deserialize_bandlecity, r#""BandleCity""#, CardRegion::BandleCity);
     test_deserialization!(deserialize_runeterra, r#""Runeterra""#, CardRegion::Runeterra);
+    test_deserialization!(deserialize_runeterra_ryze, r#""Ryze""#, CardRegion::Ryze);
+    test_deserialization!(deserialize_runeterra_jhin, r#""Jhin""#, CardRegion::Jhin);
+    test_deserialization!(deserialize_runeterra_varus, r#""Varus""#, CardRegion::Varus);
+    test_deserialization!(deserialize_runeterra_aatrox, r#""Aatrox""#, CardRegion::Aatrox);
+    test_deserialization!(deserialize_runeterra_neeko, r#""Neeko""#, CardRegion::Neeko);
+    test_deserialization!(deserialize_runeterra_jax, r#""Jax""#, CardRegion::Jax);
+    test_deserialization!(deserialize_runeterra_kayn, r#""Kayn""#, CardRegion::Kayn);
+    test_deserialization!(deserialize_runeterra_poroking, r#""PoroKing""#, CardRegion::PoroKing);
+    test_deserialization!(deserialize_runeterra_evelynn, r#""Evelynn""#, CardRegion::Evelynn);
+    test_deserialization!(deserialize_runeterra_bard, r#""Bard""#, CardRegion::Bard);
     test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardRegion::Unsupported);
 }
