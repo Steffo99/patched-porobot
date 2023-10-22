@@ -368,6 +368,9 @@ pub enum CardKeyword {
     /// > A champion in play levels up everywhere once this condition is met. Some champions must be in play to see their condition progress.
     LevelUp,
 
+    /// ???
+    Freljord,
+
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
@@ -466,6 +469,7 @@ impl CardKeyword {
             CardKeyword::Attack => "",
             CardKeyword::ElementalSkill => "<:elementalskill:1165762476974026814>",
             CardKeyword::LevelUp => "",
+            CardKeyword::Freljord => "<:freljord:1056024331437735936>",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -564,5 +568,6 @@ mod tests {
     test_deserialization!(deserialize_attack, r#""AttackSkillMark""#, CardKeyword::Attack);
     test_deserialization!(deserialize_elementalskill, r#""ElementalSkill""#, CardKeyword::ElementalSkill);
     test_deserialization!(deserialize_levelup, r#""LevelUp""#, CardKeyword::LevelUp);
+    test_deserialization!(deserialize_freljord, r#""Freljord""#, CardKeyword::Freljord);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
