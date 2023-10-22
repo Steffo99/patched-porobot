@@ -358,6 +358,11 @@ pub enum CardKeyword {
     #[serde(rename = "AttackSkillMark")]
     Attack,
 
+    /// Skill with the elemental marker.
+    ///
+    /// > A unit's spell-like effect that allows enemy reactions. It's elemental!
+    ElementalSkill,
+
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
@@ -454,6 +459,7 @@ impl CardKeyword {
             CardKeyword::Flow => "",
             CardKeyword::Capture => "<:capture:1056024295190577153>",
             CardKeyword::Attack => "",
+            CardKeyword::ElementalSkill => "<:elementalskill:1165762476974026814>",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -550,5 +556,6 @@ mod tests {
     test_deserialization!(deserialize_equipment, r#""Equipment""#, CardKeyword::Equipment);
     test_deserialization!(deserialize_capture, r#""Capture""#, CardKeyword::Capture);
     test_deserialization!(deserialize_attack, r#""AttackSkillMark""#, CardKeyword::Attack);
+    test_deserialization!(deserialize_elementalskill, r#""ElementalSkill""#, CardKeyword::ElementalSkill);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
