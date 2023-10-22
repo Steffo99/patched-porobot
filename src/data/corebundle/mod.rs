@@ -101,6 +101,12 @@ pub async fn create_globalindexes_from_dd_latest(locale: &str) -> globals::Local
 
 #[cfg(test)]
 mod tests {
+    use crate::data::setbundle::format::CardFormat;
+    use crate::data::setbundle::keyword::CardKeyword;
+    use crate::data::setbundle::rarity::CardRarity;
+    use crate::data::setbundle::region::CardRegion;
+    use crate::data::setbundle::set::CardSet;
+    use crate::data::setbundle::speed::SpellSpeed;
     macro_rules! test_fetch {
         ( $id:ident, $version:literal, $locale:literal ) => {
             #[tokio::test]
@@ -115,4 +121,26 @@ mod tests {
     test_fetch!(test_fetch_4_9_0_en_us, "4_9_0", "en_us");
     test_fetch!(test_fetch_4_9_0_it_it, "4_9_0", "it_it");
     test_fetch!(test_fetch_latest_en_us, "latest", "en_us");
+
+    macro_rules! test_supported {
+        ( $id:ident, $version:literal, $locale:literal ) => {
+            #[tokio::test]
+            async fn $id() {
+                let client = reqwest::Client::new();
+                let result = crate::data::corebundle::CoreBundle::fetch(&client, &format!("https://dd.b.pvp.net/{}", $version), $locale).await;
+                let result = result.expect("fetch request to be successful");
+
+                result.globals.keywords.iter().for_each(|o| assert_ne!(o.keyword, CardKeyword::Unsupported, "{:?} is unsupported", o));
+                result.globals.regions.iter().for_each(|o| assert_ne!(o.region, CardRegion::Unsupported, "{:?} is unsupported", o));
+                result.globals.spell_speeds.iter().for_each(|o| assert_ne!(o.spell_speed, SpellSpeed::Unsupported, "{:?} is unsupported", o));
+                result.globals.rarities.iter().for_each(|o| assert_ne!(o.rarity, CardRarity::Unsupported, "{:?} is unsupported", o));
+                result.globals.sets.iter().for_each(|o| assert_ne!(o.set, CardSet::Unsupported, "{:?} is unsupported", o));
+                result.globals.formats.iter().for_each(|o| assert_ne!(o.format, CardFormat::Unsupported, "{:?} is unsupported", o));
+            }
+        };
+    }
+
+    test_supported!(test_supported_4_9_0_en_us, "4_9_0", "en_us");
+    test_supported!(test_supported_4_9_0_it_it, "4_9_0", "it_it");
+    test_supported!(test_supported_latest_en_us, "latest", "en_us");
 }
