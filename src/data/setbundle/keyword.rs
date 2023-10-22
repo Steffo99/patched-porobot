@@ -352,6 +352,12 @@ pub enum CardKeyword {
     /// > A Captured card is removed from the game. It returns when the Capturing unit leaves play.
     Capture,
 
+    /// Attack.
+    ///
+    /// > Get this effect when this unit attacks.
+    #[serde(rename = "AttackSkillMark")]
+    Attack,
+
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
@@ -447,6 +453,7 @@ impl CardKeyword {
             CardKeyword::BlockElusive => "",
             CardKeyword::Flow => "",
             CardKeyword::Capture => "<:capture:1056024295190577153>",
+            CardKeyword::Attack => "",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -542,5 +549,6 @@ mod tests {
     test_deserialization!(deserialize_flow, r#""Flow""#, CardKeyword::Flow);
     test_deserialization!(deserialize_equipment, r#""Equipment""#, CardKeyword::Equipment);
     test_deserialization!(deserialize_capture, r#""Capture""#, CardKeyword::Capture);
+    test_deserialization!(deserialize_attack, r#""AttackSkillMark""#, CardKeyword::Attack);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
