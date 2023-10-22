@@ -44,6 +44,10 @@ pub enum CardSet {
     #[serde(rename = "Set7b")]
     HeartOfTheHuntress,
 
+    /// Fate's Voyage.
+    #[serde(rename = "Set8")]
+    FatesVoyage,
+
     /// Events, cards released "outside" a set.
     #[serde(rename = "SetEvent")]
     Events,
@@ -163,6 +167,7 @@ mod tests {
     test_deserialization!(deserialize_set6cde, r#""Set6cde""#, CardSet::TheDarkinSaga);
     test_deserialization!(deserialize_set7, r#""Set7""#, CardSet::GloryInNavori);
     test_deserialization!(deserialize_set7b, r#""Set7b""#, CardSet::HeartOfTheHuntress);
+    test_deserialization!(deserialize_set8, r#""Set8""#, CardSet::FatesVoyage);
     test_deserialization!(deserialize_setevent, r#""SetEvent""#, CardSet::Events);
     test_deserialization!(deserialize_fallback, r#""Xyzzy""#, CardSet::Unsupported);
 }
