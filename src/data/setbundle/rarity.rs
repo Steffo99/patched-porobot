@@ -50,6 +50,20 @@ impl CardRarity {
             CardRarity::Unsupported => "",
         }
     }
+
+    /// Get the color associated with this [`CardRarity`].
+    ///
+    /// Used for example to determine the color of the Discord embed.
+    pub fn color(&self) -> u32 {
+        match self {
+            CardRarity::None => 0x202225,
+            CardRarity::Common => 0x1e6a49,
+            CardRarity::Rare => 0x244778,
+            CardRarity::Epic => 0x502970,
+            CardRarity::Champion => 0x81541f,
+            CardRarity::Unsupported => 0xff0000,
+        }
+    }
 }
 
 #[cfg(test)]
