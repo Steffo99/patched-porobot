@@ -112,7 +112,7 @@ mod tests {
         };
     }
 
-    test_fetch!(test_fetch_4_5_0_en_us, "4_5_0", "en_us");
-    test_fetch!(test_fetch_4_5_0_it_it, "4_5_0", "it_it");
+    test_fetch!(test_fetch_4_9_0_en_us, "4_9_0", "en_us");
+    test_fetch!(test_fetch_4_9_0_it_it, "4_9_0", "it_it");
     test_fetch!(test_fetch_latest_en_us, "latest", "en_us");
 }
