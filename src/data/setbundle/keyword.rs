@@ -363,6 +363,11 @@ pub enum CardKeyword {
     /// > A unit's spell-like effect that allows enemy reactions. It's elemental!
     ElementalSkill,
 
+    /// Level up!
+    ///
+    /// > A champion in play levels up everywhere once this condition is met. Some champions must be in play to see their condition progress.
+    LevelUp,
+
     /// Unsupported card keyword.
     #[serde(other)]
     Unsupported,
@@ -460,6 +465,7 @@ impl CardKeyword {
             CardKeyword::Capture => "<:capture:1056024295190577153>",
             CardKeyword::Attack => "",
             CardKeyword::ElementalSkill => "<:elementalskill:1165762476974026814>",
+            CardKeyword::LevelUp => "",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }
@@ -557,5 +563,6 @@ mod tests {
     test_deserialization!(deserialize_capture, r#""Capture""#, CardKeyword::Capture);
     test_deserialization!(deserialize_attack, r#""AttackSkillMark""#, CardKeyword::Attack);
     test_deserialization!(deserialize_elementalskill, r#""ElementalSkill""#, CardKeyword::ElementalSkill);
+    test_deserialization!(deserialize_levelup, r#""LevelUp""#, CardKeyword::LevelUp);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
