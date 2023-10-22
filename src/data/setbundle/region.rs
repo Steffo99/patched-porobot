@@ -112,6 +112,30 @@ impl CardRegion {
         }
     }
 
+    /// Get the long code of this [`CardRegion`].
+    ///
+    /// If the region has no short code, it will return [`None`].
+    ///
+    /// Used for deck hashtags in the Telegram bot.
+    pub fn to_tag(&self) -> Option<&'static str> {
+        match self {
+            Self::Demacia => Some("Demacia"),
+            Self::Freljord => Some("Freljord"),
+            Self::Ionia => Some("Ionia"),
+            Self::Noxus => Some("Noxus"),
+            Self::PiltoverZaun => Some("PiltoverZaun"),
+            Self::ShadowIsles => Some("ShadowIsles"),
+            Self::Bilgewater => Some("Bilgewater"),
+            Self::Shurima => Some("Shurima"),
+            Self::Targon => Some("Targon"),
+            Self::BandleCity => Some("BandleCity"),
+            Self::Runeterra => Some("Runeterra"),
+            _ => None,
+        }
+    }
+
+    /// Get the human friendly
+
     /// Get the Discord emoji code associated with this [`CardRegion`].
     pub fn discord_emoji(&self) -> &'static str {
         match self {
