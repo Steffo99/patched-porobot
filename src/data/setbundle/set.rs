@@ -102,6 +102,24 @@ impl CardSet {
             _ => None,
         }
     }
+
+    /// Get the Discord emoji code associated with this [`CardSet`].
+    pub fn discord_emoji(&self) -> &'static str {
+        match self {
+            CardSet::Foundations => "<:foundations:1071644734667366410>",
+            CardSet::RisingTides => "<:rising_tides:1071644736126976160>",
+            CardSet::CallOfTheMountain => "<:call_of_the_mountain:1071644738555478076>",
+            CardSet::EmpiresOfTheAscended => "<:empires_of_the_ascended:1071644740342255616>",
+            CardSet::BeyondTheBandlewood => "<:beyond_the_bandlewood:1071644742640750734>",
+            CardSet::Worldwalker => "<:worldwalker:1071644743798370315>",
+            CardSet::TheDarkinSaga => "<:the_darkin_saga:1071644746411417610>",
+            CardSet::GloryInNavori => "<:glory_in_navori:1095363395890458756>",
+            CardSet::HeartOfTheHuntress => "<:heart_of_the_huntress:1165769749922320494>",
+            CardSet::FatesVoyage => "<:fates_voyage:1165769932995317851>",
+            CardSet::Events => "",
+            CardSet::Unsupported => "<:invaliddeck:1056022952396730438>",
+        }
+    }
 }
 
 /// Get the [`CardSet`] from its internal id.
