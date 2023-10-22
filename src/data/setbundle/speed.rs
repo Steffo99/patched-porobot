@@ -3,6 +3,7 @@
 use crate::data::corebundle::speed::{LocalizedSpellSpeed, LocalizedSpellSpeedIndex};
 
 /// A possible [`Spell`](super::type::CardType::Spell) speed.
+#[non_exhaustive]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum SpellSpeed {
     /// Non-spell cards have this speed.
@@ -14,6 +15,9 @@ pub enum SpellSpeed {
     Fast,
     /// Either a Burst or a Focus spell; to disambiguate between the two, check for the `Focus` keyword.
     Burst,
+    /// Unsupported spell speed.
+    #[serde(other)]
+    Unsupported,
 }
 
 impl SpellSpeed {
@@ -50,9 +54,5 @@ mod tests {
     test_deserialization!(deserialize_slow, r#""Slow""#, SpellSpeed::Slow);
     test_deserialization!(deserialize_fast, r#""Fast""#, SpellSpeed::Fast);
     test_deserialization!(deserialize_burst, r#""Burst""#, SpellSpeed::Burst);
-
-    #[test]
-    fn deserialize_fallback() {
-        assert!(serde_json::de::from_str::<'static, SpellSpeed>("Xyzzy").is_err());
-    }
+    test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, SpellSpeed::Unsupported);
 }
