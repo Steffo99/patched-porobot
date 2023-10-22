@@ -38,6 +38,18 @@ impl CardRarity {
     ) -> Option<&'hm LocalizedCardRarity> {
         hm.get(self)
     }
+
+    /// Get the Discord emoji code associated with this [`CardRarity`].
+    pub fn discord_emoji(&self) -> &'static str {
+        match self {
+            CardRarity::None => "",
+            CardRarity::Common => "<:common:1056024315046412358>",
+            CardRarity::Rare => "<:rare:1056022907433799690>",
+            CardRarity::Epic => "<:epic:1056023004028608622>",
+            CardRarity::Champion => "<:champion:1056024303856001034>",
+            CardRarity::Unsupported => "",
+        }
+    }
 }
 
 #[cfg(test)]
