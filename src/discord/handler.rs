@@ -94,13 +94,11 @@ impl EventHandler {
                     }
 
                     if !card.keywords.is_empty() {
-                        e.field("Keywords", card.keywords.iter().map(|r|
-                            format!(
-                                "{} {}",
-                                r.discord_emoji(),
-                                r.localized(&engine.globals.keywords).map_or_else(|| String::from("Missing translation"), |l| l.name.clone())
-                            )
-                        ).join(", "), true);
+                        e.field("Keywords", card.keywords.iter().map(|r| {
+                            let icon = r.discord_emoji();
+                            let text = r.localized(&engine.globals.keywords).map_or_else(|| String::from("Unknown"), |l| l.name.clone());
+                            format!("{icon} {text}")
+                        }).join(", "), true);
                     }
 
                     e.field("Mana cost", format!("{} mana", card.cost), true);
@@ -121,56 +119,30 @@ impl EventHandler {
                         vec
                     }.join(", "), true);
 
-                    e.field("Regions", card.regions.iter().map(|r| match r {
-                        CardRegion::Noxus => "<:noxus:1056022924169064498> Noxus",
-                        CardRegion::Demacia => "<:demacia:1056023014128484412> Demacia",
-                        CardRegion::Freljord => "<:freljord:1056024331437735936> Freljord",
-                        CardRegion::ShadowIsles => "<:shadowisles:1056022886848135292> Shadow Isles",
-                        CardRegion::Targon => "<:targon:1056022866174418944> Targon",
-                        CardRegion::Ionia => "<:ionia:1056022949569777708> Ionia",
-                        CardRegion::Bilgewater => "<:bilgewater:1056024288215437484> Bilgewater",
-                        CardRegion::Shurima => "<:shurima:1056022884616765500> Shurima",
-                        CardRegion::PiltoverZaun => "<:piltoverzaun:1056022918959734835> Piltover & Zaun",
-                        CardRegion::BandleCity => "<:bandlecity:1056024280493735976> Bandle City",
-                        CardRegion::Runeterra => "<:runeterra:1056022895031238727> Runeterra",
-                        CardRegion::Unsupported => "<:invaliddeck:1056022952396730438> Unknown",
+                    e.field("Regions", card.regions.iter().map(|r| {
+                        let icon = r.discord_emoji();
+                        let text = r.localized(&engine.globals.regions).map_or_else(|| String::from("Unknown"), |r| r.name.clone());
+                        format!("{icon} {text}")
                     }).join(", "), false);
 
-                    e.field("Set", match card.set {
-                        CardSet::Foundations => "<:foundations:1071644734667366410> Foundations",
-                        CardSet::RisingTides => "<:rising_tides:1071644736126976160> Rising Tides",
-                        CardSet::CallOfTheMountain => "<:call_of_the_mountain:1071644738555478076> Call of the Mountain",
-                        CardSet::EmpiresOfTheAscended => "<:empires_of_the_ascended:1071644740342255616> Empires of the Ascended",
-                        CardSet::BeyondTheBandlewood => "<:beyond_the_bandlewood:1071644742640750734> Beyond the Bandlewood",
-                        CardSet::Worldwalker => "<:worldwalker:1071644743798370315> Worldwalker",
-                        CardSet::TheDarkinSaga => "<:the_darkin_saga:1071644746411417610> The Darkin Saga",
-                        CardSet::GloryInNavori => "<:glory_in_navori:1095363395890458756> Glory in Navori",
-                        CardSet::HeartOfTheHuntress => "Heart of the Huntress", // TODO: Add icon
-                        CardSet::Events => "Events", // TODO: Add icon
-                        CardSet::Unsupported => "<:invaliddeck:1056022952396730438> Unknown",
+                    e.field("Set", {
+                        let icon = card.set.discord_emoji();
+                        let text = card.set.localized(&engine.globals.sets).map_or_else(|| String::from("Unknown"), |r| r.name.clone());
+                        format!("{icon} {text}")
                     }, true);
 
-                    e.field("Rarity", match card.supertype {
-                        CardSupertype::Champion => "<:champion:1056024303856001034> Champion",
-                        _ => match card.rarity {
-                            CardRarity::None => "None",
-                            CardRarity::Common => "<:common:1056024315046412358> Common",
-                            CardRarity::Rare => "<:rare:1056022907433799690> Rare",
-                            CardRarity::Epic => "<:epic:1056023004028608622> Epic",
-                            CardRarity::Champion => "<:champion:1056024303856001034> Champion",
-                        }
-                    }, true);
+                    let actual_rarity = match card.supertype {
+                        CardSupertype::Champion => CardRarity::Champion,
+                        _ => card.rarity
+                    };
 
-                    e.color(match card.supertype {
-                        CardSupertype::Champion => 0x81541f,
-                        _ => match card.rarity {
-                            CardRarity::None => 0x202225,
-                            CardRarity::Common => 0x1e6a49,
-                            CardRarity::Rare => 0x244778,
-                            CardRarity::Epic => 0x502970,
-                            CardRarity::Champion => 0x81541f,
-                        }
-                    });
+                    e.field("Rarity", {
+                        let icon = actual_rarity.discord_emoji();
+                        let text = actual_rarity.localized(&engine.globals.rarities).map_or_else(|| String::from("Unknown"), |r| r.name.clone());
+                        format!("{icon} {text}")
+                    } , true);
+
+                    e.color(actual_rarity.color());
 
                     if !card.localized_flavor_text.is_empty() {
                         e.footer(|f| f.text(card.localized_flavor_text.clone()));
