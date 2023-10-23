@@ -14,7 +14,7 @@ Legends of Runeterra game data crate and chat bots
 
 [![Crates.io](https://img.shields.io/crates/v/patched_porobot)](https://crates.io/crates/patched_porobot)
  
-[![Documentation](https://img.shields.io/docsrs/patched_porobot)](https://docs.rs/patched_porobot/0.9.2/patched_porobot/)
+[![Documentation](https://img.shields.io/docsrs/patched_porobot)](https://docs.rs/patched_porobot/latest/patched_porobot/)
 
 ## Screenshots
 
