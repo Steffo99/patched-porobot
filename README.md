@@ -1,6 +1,12 @@
-# ![](icon.png) Patched Porobot
+<div align="center">
+
+![](icon.png)
+
+# Patched Porobot
 
 Legends of Runeterra game data crate and chat bots
+
+</div>
 
 ## Links
 
