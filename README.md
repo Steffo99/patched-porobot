@@ -13,10 +13,6 @@ Legends of Runeterra game data crate and chat bots
 [![Telegram Bot](https://img.shields.io/badge/telegram%20bot-done-success)](https://t.me/patchedporobot)
  
 [![Discord Bot](https://img.shields.io/badge/discord%20bot-done-success)](https://discord.com/api/oauth2/authorize?client_id=1071989978743193672&scope=applications.commands)
- 
-![Matrix Bot](https://img.shields.io/badge/matrix%20bot-to%20do-inactive)
- 
-![Fediverse Bot](https://img.shields.io/badge/fediverse%20bot-to%20do-inactive)
 
 [![Crates.io](https://img.shields.io/crates/v/patched_porobot)](https://crates.io/crates/patched_porobot)
  

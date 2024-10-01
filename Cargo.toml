@@ -46,7 +46,6 @@ rand = { version = "0.8.5", optional = true }
 # discord
 serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 anyhow = { version = "^1.0.68", optional = true }
-# matrix
 
 
 [dev-dependencies]
@@ -60,7 +59,6 @@ exec = ["pretty_env_logger"]
 search = ["tantivy"]
 telegram = ["exec", "search", "jpg", "teloxide", "tokio", "md5", "rand"]
 discord = ["exec", "search", "serenity", "tokio", "anyhow"]
-matrix = ["exec", "search"]
 
 
 [lib]
@@ -73,7 +71,3 @@ required-features = ["telegram"]
 [[bin]]
 name = "patched_porobot_discord"
 required-features = ["discord"]
-
-[[bin]]
-name = "patched_porobot_matrix"
-required-features = ["matrix"]
