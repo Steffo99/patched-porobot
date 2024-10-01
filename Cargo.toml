@@ -19,32 +19,32 @@ rustdoc-args = ["--document-private-items"]
 [dependencies]
 # base
 log = { version = "0.4.17" }
-itertools = { version = "0.10.3" }
+itertools = { version = "0.13.0" }
 regex = { version = "1.6.0" }
 lazy_static = { version = "1.4.0" }
 data-encoding = { version = "2.3.2" }
 varint-rs = { version = "2.2.0" }
 glob = { version = "0.3.0" }
-reqwest = { version = "0.11.11", features = ["rustls-tls", "json"], default-features = false }
+reqwest = { version = "0.12.8", features = ["rustls-tls", "json"], default-features = false }
 # jpg
 hex = { version = "0.4.3", optional = true }
-base64 = { version = "0.21.0", optional = true }
+base64 = { version = "0.22.1", optional = true }
 hmac = { version = "0.12.1", optional = true }
 sha2 = { version = "0.10.6", optional = true }
 # exec
-pretty_env_logger = { version = "0.4.0", optional = true }
+pretty_env_logger = { version = "0.5.0", optional = true }
 # data
 serde = { version = "1.0.140", features = ["derive"] }
 serde_json = { version = "1.0.82" }
 # search
-tantivy = { version = "0.19.1", optional = true }
+tantivy = { version = "0.22.0", optional = true }
 # telegram
-teloxide = { version = "0.12.0", features = ["rustls", "ctrlc_handler", "auto-send"], default-features = false, optional = true }
+teloxide = { version = "0.13.0", features = ["rustls", "ctrlc_handler"], default-features = false, optional = true }
 tokio = { version =  "1.20.3", features = ["rt-multi-thread", "macros"], optional = true }
 md5 = { version = "0.7.0", optional = true }
 rand = { version = "0.8.5", optional = true }
 # discord
-serenity = { version = "0.11.5", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
+serenity = { version = "0.12.2", features = ["client", "cache", "gateway", "rustls_backend", "model"], default-features = false, optional = true }
 anyhow = { version = "^1.0.68", optional = true }
 
 
