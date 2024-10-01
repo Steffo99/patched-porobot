@@ -52,7 +52,8 @@ pub enum CardRegion {
     Evelynn,
     /// Runeterra: Bard.
     Bard,
-
+    /// Runeterra: Elder Dragon.
+    ElderDragon,
 
     /// Unsupported region.
     #[serde(other)]
@@ -160,6 +161,7 @@ impl CardRegion {
             CardRegion::PoroKing => "",
             CardRegion::Evelynn => "",
             CardRegion::Bard => "",
+            CardRegion::ElderDragon => "",
             CardRegion::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }

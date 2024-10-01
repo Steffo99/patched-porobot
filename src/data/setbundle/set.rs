@@ -43,10 +43,14 @@ pub enum CardSet {
     /// Heart of the Huntress.
     #[serde(rename = "Set7b")]
     HeartOfTheHuntress,
-
+    
     /// Fate's Voyage.
     #[serde(rename = "Set8")]
     FatesVoyage,
+    
+    /// Dreamlit Paths.
+    #[serde(rename = "Set9")]
+    DreamlitPaths,
 
     /// Events, cards released "outside" a set.
     #[serde(rename = "SetEvent")]
@@ -116,7 +120,8 @@ impl CardSet {
             CardSet::GloryInNavori => "<:glory_in_navori:1095363395890458756>",
             CardSet::HeartOfTheHuntress => "<:heart_of_the_huntress:1165769749922320494>",
             CardSet::FatesVoyage => "<:fates_voyage:1165769932995317851>",
-            CardSet::Events => "",
+            CardSet::DreamlitPaths => "", // TODO
+            CardSet::Events => "", // TODO
             CardSet::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
     }

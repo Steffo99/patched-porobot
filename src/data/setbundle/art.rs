@@ -33,6 +33,7 @@ impl CardArt {
     fn imgproxy_convert_to_jpg(url: &str) -> String {
         use base64::Engine;
 
+        let url = url.replace("http:", "https:");
         let url = base64::prelude::BASE64_URL_SAFE.encode(url);
         let url = format!("/{url}.jpg");
 

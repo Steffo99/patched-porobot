@@ -220,10 +220,11 @@ pub enum CardKeyword {
     Fated,
 
     #[serde(alias = "BlocksElusive")]
-    /// ???
+    #[serde(alias = "BlockElusive")]
+    /// Sharpsight.
     ///
     /// > Can block Elusive units.
-    BlockElusive,
+    Sharpsight,
 
     /// Fury.
     ///
@@ -331,6 +332,11 @@ pub enum CardKeyword {
     ///
     /// > Can only be blocked by enemies with 3 or more Power.
     Fearsome,
+    
+    /// Deathless.
+    ///
+    /// > The next time this unit dies, remove Deathless and revive it Stunned with 1 Health.
+    Deathless,
 
     /// Can't Block.
     CantBlock,
@@ -371,6 +377,23 @@ pub enum CardKeyword {
 
     /// ???
     Freljord,
+    
+    /// > Activatable once per round. When activated, play the skill of the current Act at Focus speed, then transform me to the next Act.
+    #[serde(rename = "Story:Focus")]
+    StoryFocus,
+    
+    /// > Activatable once per round. When activated, play the skill of the current Act at Slow speed, then transform me to the next Act.
+    #[serde(rename = "Story:Slow")]
+    StorySlow,
+    
+    /// > Applies a negative effect as long as it's in hand. Multiples of the same curse on a unit combine, increasing their cost and effect. Cannot be targeted in hand.
+    Curse,
+    
+    /// This unit has +1|+1. This keyword can stack.
+    Spirit,
+    
+    /// > This unit has -1|-1. This keyword can stack.
+    Gloom,
 
     /// Unsupported card keyword.
     #[serde(other)]
@@ -464,12 +487,18 @@ impl CardKeyword {
             CardKeyword::Nightfall => "",
             CardKeyword::Daybreak => "",
             CardKeyword::Plunder => "",
-            CardKeyword::BlockElusive => "",
+            CardKeyword::Sharpsight => "",
             CardKeyword::Flow => "",
             CardKeyword::Capture => "<:capture:1056024295190577153>",
             CardKeyword::Attack => "",
             CardKeyword::ElementalSkill => "<:elementalskill:1165762476974026814>",
             CardKeyword::LevelUp => "",
+            CardKeyword::StoryFocus => "",  // TODO
+            CardKeyword::StorySlow => "",  // TODO
+            CardKeyword::Spirit => "",  // TODO
+            CardKeyword::Gloom => "",  // TODO
+            CardKeyword::Curse => "",  // TODO
+            CardKeyword::Deathless => "",  // TODO
             CardKeyword::Freljord => "<:freljord:1056024331437735936>",
             CardKeyword::Unsupported => "<:invaliddeck:1056022952396730438>",
         }
@@ -538,8 +567,9 @@ mod tests {
     test_deserialization!(deserialize_elusive, r#""Elusive""#, CardKeyword::Elusive);
     test_deserialization!(deserialize_stun, r#""Stun""#, CardKeyword::Stun);
     test_deserialization!(deserialize_fated, r#""Fated""#, CardKeyword::Fated);
-    test_deserialization!(deserialize_blockelusive, r#""BlockElusive""#, CardKeyword::BlockElusive);
-    test_deserialization!(deserialize_blockelusive2, r#""BlocksElusive""#, CardKeyword::BlockElusive);
+    test_deserialization!(deserialize_blockelusive, r#""BlockElusive""#, CardKeyword::Sharpsight);
+    test_deserialization!(deserialize_blockelusive2, r#""BlocksElusive""#, CardKeyword::Sharpsight);
+    test_deserialization!(deserialize_sharpsight, r#""Sharpsight""#, CardKeyword::Sharpsight);
     test_deserialization!(deserialize_fury, r#""Fury""#, CardKeyword::Fury);
     test_deserialization!(deserialize_barrier, r#""Barrier""#, CardKeyword::Barrier);
     test_deserialization!(deserialize_immobile, r#""Immobile""#, CardKeyword::Immobile);
@@ -570,5 +600,11 @@ mod tests {
     test_deserialization!(deserialize_elementalskill, r#""ElementalSkill""#, CardKeyword::ElementalSkill);
     test_deserialization!(deserialize_levelup, r#""LevelUp""#, CardKeyword::LevelUp);
     test_deserialization!(deserialize_freljord, r#""Freljord""#, CardKeyword::Freljord);
+    test_deserialization!(deserialize_curse, r#""Curse""#, CardKeyword::Curse);
+    test_deserialization!(deserialize_spirit, r#""Spirit""#, CardKeyword::Spirit);
+    test_deserialization!(deserialize_gloom, r#""Gloom""#, CardKeyword::Gloom);
+    test_deserialization!(deserialize_deathless, r#""Deathless""#, CardKeyword::Deathless);
+    test_deserialization!(deserialize_storyslow, r#""Story:Slow""#, CardKeyword::StorySlow);
+    test_deserialization!(deserialize_storyfocus, r#""Story:Focus""#, CardKeyword::StoryFocus);
     test_deserialization!(deserialize_unsupported, r#""Xyzzy""#, CardKeyword::Unsupported);
 }
