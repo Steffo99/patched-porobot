@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} rust:1.68-bullseye AS builder
+FROM --platform=${BUILDPLATFORM} rust:1.81 AS builder
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
@@ -60,7 +60,7 @@ RUN \
 
 #############################################################################
 
-FROM --platform=${TARGETPLATFORM} rust:1.68-slim-bullseye AS final
+FROM --platform=${TARGETPLATFORM} rust:1.81-slim-bullseye AS final
 
 WORKDIR /usr/src/patched_porobot/
 COPY --from=builder \
